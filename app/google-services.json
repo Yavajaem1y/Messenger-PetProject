@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "648417097029",
+    "firebase_url": "https://pet-project-messenger-default-rtdb.firebaseio.com",
+    "project_id": "pet-project-messenger",
+    "storage_bucket": "pet-project-messenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:648417097029:android:23307215621589514b7a2c",
+        "android_client_info": {
+          "package_name": "com.androidlesson.petprojectmessenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt7Yx_p8Wab_HKx4cflt3wUEcWmp5ltbE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

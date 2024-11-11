@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".presentation.main.fragmentsBottomNavigationBar.CurrentUserProfileFragment">
+
+    <ImageView
+        android:id="@+id/iv_logout"
+        android:focusable="true"
+        android:src="@drawable/ic_logout"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:clickable="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+        <RelativeLayout
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginBottom="10dp">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/civ_curr_user_avatar"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/ic_empty_user_avatar"
+                app:civ_circle_background_color="#4000"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ciw_add_profile_photo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/baseline_add_24"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:clickable="true"
+                app:civ_circle_background_color="@color/cardview_dark_background"
+                />
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/tv_curr_user_name_and_surname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name surname"
+            android:textSize="20sp"/>
+    </LinearLayout>
+</RelativeLayout>
