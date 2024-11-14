@@ -1,96 +1,51 @@
 package com.androidlesson.petprojectmessenger.presentation.main.di.mainActivityViewModel;
+import android.util.Log;
 
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.androidlesson.domain.main.mainUseCase.SaveCurrentUserDataUseCase;
-import com.androidlesson.domain.main.models.FullUserData;
-import com.androidlesson.domain.main.models.UserNameAndSurname;
-import com.androidlesson.domain.main.repository.MainFirebaseRepository;
-import com.androidlesson.domain.main.repository.callbacks.CallbackCurrentUserInfoFromFireBase;
-import com.androidlesson.domain.main.repository.callbacks.CallbackSaveUserData;
-import com.androidlesson.domain.main.repository.MainSharedPreferencesRepository;
-import com.androidlesson.petprojectmessenger.presentation.main.di.mainFragmentViewModel.callbacks.CurrentUserDataFromDB;
-
-import java.util.Objects;
+import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
+import com.androidlesson.domain.main.models.UserData;
+import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
+import com.androidlesson.petprojectmessenger.presentation.main.MainFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.SetCurrentUserDataFragment;
 
 public class MainActivityViewModel extends ViewModel {
 
-    private MutableLiveData<Boolean> getCurrentUserDataSceneMutableLiveData=new MutableLiveData<>();
+    private LoadUserDataUseCase loadUserDataUseCase;
 
-    public LiveData<Boolean> getCurrentUserDataSceneLiveData() {
-        return getCurrentUserDataSceneMutableLiveData;
+    //Initialization use-cases
+    public MainActivityViewModel(LoadUserDataUseCase loadUserDataUseCase) {
+        this.loadUserDataUseCase=loadUserDataUseCase;
+        loadCurrentUserData();
     }
 
-    private MainSharedPreferencesRepository mainSharedPreferencesRepository;
-    private MainFirebaseRepository mainFirebaseRepository;
-    private SaveCurrentUserDataUseCase saveCurrentUserDataUseCase;
-    private CurrentUserDataFromDB currentUserDataFromDB;
-
-    private FullUserData userData=null;
-
-    public MainActivityViewModel(MainSharedPreferencesRepository mainSharedPreferencesRepository,
-                                 MainFirebaseRepository mainFirebaseRepository,
-                                 SaveCurrentUserDataUseCase saveCurrentUserDataUseCase) {
-        this.mainSharedPreferencesRepository = mainSharedPreferencesRepository;
-        this.saveCurrentUserDataUseCase=saveCurrentUserDataUseCase;
-        this.mainFirebaseRepository=mainFirebaseRepository;
-
-        currentUserDataFromDB=new CurrentUserDataFromDB() {
-            @Override
-            public void setCurrentUserData(FullUserData userData) {
-            }
-
-            @Override
-            public FullUserData getCurrentUserData() {
-                return userData;
-            }
-        };
-
-        checkCurrentUserData();
+    private MutableLiveData<Fragment> currentFragmentMutableLiveData=new MutableLiveData<>();
+    public LiveData<Fragment> getCurrentFragmentLiveData(){
+        return currentFragmentMutableLiveData;
     }
 
-    public CurrentUserDataFromDB getCurrentUserDataFromDB(){
-        return currentUserDataFromDB;
-    }
+    private UserData currentUserData;
 
-    private CallbackSaveUserData callbackSaveUserData=new CallbackSaveUserData() {
+    private CallbackGetUserData callbackGetUserData=new CallbackGetUserData() {
         @Override
-        public void checkUserDataSave() {
-            checkCurrentUserData();
-        }
-    };
-
-    private CallbackCurrentUserInfoFromFireBase callbackCurrentUserInfoFromFireBase=new CallbackCurrentUserInfoFromFireBase() {
-        @Override
-        public void callbackUserInfo(FullUserData fullUserData) {
-            if (fullUserData ==null) getCurrentUserDataSceneMutableLiveData.postValue(true);
+        public void getUserData(UserData userData) {
+            if (userData==null) {
+                Log.d("AAA","UserData from db = null");
+                currentFragmentMutableLiveData.setValue(new SetCurrentUserDataFragment());
+            }
             else {
-                userData=fullUserData;
-                mainSharedPreferencesRepository.refreshCurrentUserNameAndSurname(new UserNameAndSurname(fullUserData.getUserName(), fullUserData.getUserSurname()));
-                getCurrentUserDataSceneMutableLiveData.postValue(false);
+                Log.d("AAA","UserData from db = "+userData.getUserId()+" "+userData.getUserName());
+                currentUserData=userData;
+                currentFragmentMutableLiveData.setValue(new MainFragment(currentUserData));
             }
         }
     };
 
-
-    private void checkCurrentUserData(){
-        this.userData = mainSharedPreferencesRepository.loadUserData();
-        if (Objects.equals(userData.getUserID(), "") || Objects.equals(userData.getUserName(), "") || Objects.equals(userData.getUserSurname(), "")){
-            mainFirebaseRepository.getCurrentUserData(callbackCurrentUserInfoFromFireBase);
-        }
-        else {
-            getCurrentUserDataSceneMutableLiveData.postValue(false);
-        }
+    private void loadCurrentUserData(){
+        Log.d("AAA","LoadData start");
+        loadUserDataUseCase.execute(callbackGetUserData);
     }
-
-    //For SetCurrentUserDataFragment
-    public void saveCurrUserData(FullUserData fullUserData){
-        saveCurrentUserDataUseCase.execute(fullUserData,callbackSaveUserData);
-        this.userData=fullUserData;
-    }
-
-
-
 }

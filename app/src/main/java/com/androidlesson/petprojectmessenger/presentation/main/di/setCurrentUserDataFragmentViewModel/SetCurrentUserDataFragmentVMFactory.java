@@ -1,6 +1,7 @@
-package com.androidlesson.petprojectmessenger.presentation.main.di.mainActivityViewModel;
+package com.androidlesson.petprojectmessenger.presentation.main.di.setCurrentUserDataFragmentViewModel;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -9,25 +10,25 @@ import com.androidlesson.data.main.repository.MainFirebaseRepositoryImpl;
 import com.androidlesson.data.main.repository.MainSharedPrefRepositoryImpl;
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.androidlesson.domain.main.repository.MainSharedPrefRepository;
-import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
+import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
 
-public class MainActivityViewModelFactory implements ViewModelProvider.Factory {
+public class SetCurrentUserDataFragmentVMFactory implements ViewModelProvider.Factory {
 
-    private MainFirebaseRepository firebaseRepository;
     private MainSharedPrefRepository sharedPrefRepository;
+    private MainFirebaseRepository firebaseRepository;
 
-    private LoadUserDataUseCase loadUserDataUseCase;
+    private SaveUserDataUseCase saveUserDataUseCase;
 
-    public MainActivityViewModelFactory(Context context) {
-        firebaseRepository=new MainFirebaseRepositoryImpl();
+    public SetCurrentUserDataFragmentVMFactory(Context context) {
         sharedPrefRepository=new MainSharedPrefRepositoryImpl(context);
+        firebaseRepository=new MainFirebaseRepositoryImpl();
 
-        loadUserDataUseCase=new LoadUserDataUseCase(firebaseRepository,sharedPrefRepository);
+        saveUserDataUseCase=new SaveUserDataUseCase(firebaseRepository,sharedPrefRepository);
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new MainActivityViewModel(loadUserDataUseCase);
+        return (T) new SetCurrentUserDataFragmentVM(saveUserDataUseCase);
     }
 }

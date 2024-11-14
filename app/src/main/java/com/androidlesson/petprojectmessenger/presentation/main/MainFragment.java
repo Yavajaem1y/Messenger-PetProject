@@ -3,23 +3,26 @@ package com.androidlesson.petprojectmessenger.presentation.main;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.petprojectmessenger.databinding.FragmentMainBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.di.mainFragmentViewModel.MainFragmentViewModel;
 import com.androidlesson.petprojectmessenger.presentation.main.di.mainFragmentViewModel.MainFragmentViewModelFactory;
-import com.androidlesson.petprojectmessenger.presentation.main.di.mainFragmentViewModel.callbacks.CurrentUserDataFromDB;
 
 public class MainFragment extends Fragment {
 
     private FragmentMainBinding binding;
-    private MainFragmentViewModel mainFragmentViewModel;
-    private CurrentUserDataFromDB currentUserDataFromDB;
+    private MainFragmentViewModel vm;
 
-    public MainFragment(CurrentUserDataFromDB currentUserDataFromDB) {
-        this.currentUserDataFromDB = currentUserDataFromDB;
+    //User data from activity
+    private UserData currUserData;
+    public MainFragment(UserData currUserData) {
+        this.currUserData = currUserData;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,26 +30,13 @@ public class MainFragment extends Fragment {
         binding = FragmentMainBinding.inflate(inflater, container, false);
 
         initialization();
-        selectFragment();
-        setObserve();
 
         return binding.getRoot();
     }
 
     private void initialization() {
-        mainFragmentViewModel = new ViewModelProvider(this, new MainFragmentViewModelFactory(currentUserDataFromDB)).get(MainFragmentViewModel.class);
+        vm = new ViewModelProvider(this, new MainFragmentViewModelFactory()).get(MainFragmentViewModel.class);
+        Log.d("AAA","MainFragment start");
     }
 
-    private void selectFragment() {
-        binding.bnvMainBottomBar.setOnItemSelectedListener(item -> {
-            mainFragmentViewModel.selectFragment(item.getItemId());
-            return true;
-        });
-    }
-
-    private void setObserve() {
-        mainFragmentViewModel.selectedFragmentLiveData.observe(getViewLifecycleOwner(), fragment -> {
-            getParentFragmentManager().beginTransaction().replace(binding.flMainFragmentContainer.getId(), fragment).commit();
-        });
-    }
 }
