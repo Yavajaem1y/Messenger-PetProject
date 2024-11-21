@@ -48,7 +48,13 @@ dependencies {
     implementation ("androidx.navigation:navigation-fragment-ktx:2.6.0")
     implementation ("androidx.navigation:navigation-ui-ktx:2.6.0")
 
+    //Glide
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+
+    //Dagger
+    implementation("com.google.dagger:dagger:2.52")
+    annotationProcessor("com.google.dagger:dagger-compiler:2.52")
+    implementation("javax.inject:javax.inject:1")
 
     implementation(libs.appcompat)
     implementation(libs.material)

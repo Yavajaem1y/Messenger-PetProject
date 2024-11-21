@@ -6,4 +6,5 @@ import com.androidlesson.domain.main.models.UserNameAndSurname;
 public interface MainFirebaseRepository {
     public void getUserData(CallbackGetUserData callbackGetUserData);
     public void saveUserData(UserNameAndSurname userNameAndSurname, CallbackGetUserData callbackGetUserData);
+    public void logOut();
 }

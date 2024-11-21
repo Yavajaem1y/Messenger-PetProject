@@ -18,6 +18,7 @@ import com.androidlesson.domain.main.models.Error;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.models.UserNameAndSurname;
 import com.androidlesson.petprojectmessenger.databinding.FragmentSetCurrentUserDataBinding;
+import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackUserDataIsSaved;
 import com.androidlesson.petprojectmessenger.presentation.main.di.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVM;
 import com.androidlesson.petprojectmessenger.presentation.main.di.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVMFactory;
 
@@ -30,7 +31,11 @@ public class SetCurrentUserDataFragment extends Fragment {
 
     private SetCurrentUserDataFragmentVM vm;
 
-    private CallbackGetUserData callbackGetUserData;
+    private CallbackUserDataIsSaved callbackUserDataIsSaved;
+
+    public SetCurrentUserDataFragment(CallbackUserDataIsSaved callbackUserDataIsSaved) {
+        this.callbackUserDataIsSaved = callbackUserDataIsSaved;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +64,7 @@ public class SetCurrentUserDataFragment extends Fragment {
         vm.getUserDataLiveData().observe(getActivity(), new Observer<UserData>() {
             @Override
             public void onChanged(UserData userData) {
+                callbackUserDataIsSaved.UserDataIsSaved(userData);
             }
         });
 

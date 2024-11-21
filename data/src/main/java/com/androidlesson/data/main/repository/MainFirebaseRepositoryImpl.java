@@ -65,4 +65,9 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
             }
         });
     }
+
+    @Override
+    public void logOut() {
+        FirebaseAuth.getInstance().signOut();
+    }
 }

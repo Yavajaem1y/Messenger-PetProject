@@ -22,7 +22,8 @@ public class LoadUserDataUseCase {
         @Override
         public void getUserData(UserData userDataFromDB) {
             if (userDataFromDB!=null && userData!=userDataFromDB && callbackGetUserData!=null){
-                callbackGetUserData.getUserData(userData);
+                sharedPrefRepository.saveUserData(userDataFromDB);
+                callbackGetUserData.getUserData(userDataFromDB);
             }
         }
     };

@@ -46,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,fragment).commit();
             }
         });
+
+        vm.logOutLiveData().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) finish();
+            }
+        });
     }
 
 }

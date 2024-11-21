@@ -6,4 +6,5 @@ import com.androidlesson.domain.main.models.UserNameAndSurname;
 public interface MainSharedPrefRepository {
     public UserData getUserData();
     public void saveUserData(UserData userData);
+    public void logOut();
 }

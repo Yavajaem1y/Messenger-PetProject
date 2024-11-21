@@ -40,4 +40,10 @@ public class MainSharedPrefRepositoryImpl implements MainSharedPrefRepository {
         editor.putString(USER_NAME_FROM_SP,userData.getUserName()).apply();
         editor.putString(USER_SURNAME_FROM_SP,userData.getUserSurname()).apply();
     }
+
+    @Override
+    public void logOut() {
+        SharedPreferences.Editor editor=spDataBase.edit();
+        editor.clear().apply();
+    }
 }

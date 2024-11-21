@@ -10,6 +10,7 @@ import com.androidlesson.data.main.repository.MainSharedPrefRepositoryImpl;
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.androidlesson.domain.main.repository.MainSharedPrefRepository;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
+import com.androidlesson.domain.main.usecase.LogOutUseCase;
 
 public class MainActivityViewModelFactory implements ViewModelProvider.Factory {
 
@@ -17,17 +18,19 @@ public class MainActivityViewModelFactory implements ViewModelProvider.Factory {
     private MainSharedPrefRepository sharedPrefRepository;
 
     private LoadUserDataUseCase loadUserDataUseCase;
+    private LogOutUseCase logOutUseCase;
 
     public MainActivityViewModelFactory(Context context) {
         firebaseRepository=new MainFirebaseRepositoryImpl();
         sharedPrefRepository=new MainSharedPrefRepositoryImpl(context);
 
         loadUserDataUseCase=new LoadUserDataUseCase(firebaseRepository,sharedPrefRepository);
+        logOutUseCase=new LogOutUseCase(firebaseRepository,sharedPrefRepository);
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new MainActivityViewModel(loadUserDataUseCase);
+        return (T) new MainActivityViewModel(loadUserDataUseCase,logOutUseCase);
     }
 }
