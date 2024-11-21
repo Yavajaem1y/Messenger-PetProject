@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.petprojectmessenger.databinding.FragmentCurrentUserProfileBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
-import com.androidlesson.petprojectmessenger.presentation.main.di.mainFragmentViewModel.fragmentsViewModel.CurrentUserProfileViewModel;
-import com.androidlesson.petprojectmessenger.presentation.main.di.mainFragmentViewModel.fragmentsViewModel.CurrentUserProfileViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.CurrentUserProfileViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.CurrentUserProfileViewModelFactory;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;

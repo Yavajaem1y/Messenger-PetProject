@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.androidlesson.petprojectmessenger.R;
 import com.androidlesson.petprojectmessenger.databinding.ActivityMainBinding;
-import com.androidlesson.petprojectmessenger.presentation.main.di.mainActivityViewModel.MainActivityViewModel;
-import com.androidlesson.petprojectmessenger.presentation.main.di.mainActivityViewModel.MainActivityViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModelFactory;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -13,14 +13,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
 import com.androidlesson.domain.main.models.Error;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.models.UserNameAndSurname;
 import com.androidlesson.petprojectmessenger.databinding.FragmentSetCurrentUserDataBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackUserDataIsSaved;
-import com.androidlesson.petprojectmessenger.presentation.main.di.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVM;
-import com.androidlesson.petprojectmessenger.presentation.main.di.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVMFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVM;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVMFactory;
 
 public class SetCurrentUserDataFragment extends Fragment {
 

@@ -1,4 +1,4 @@
-package com.androidlesson.petprojectmessenger.presentation.main.di.setCurrentUserDataFragmentViewModel;
+package com.androidlesson.petprojectmessenger.presentation.main.viewModels.setCurrentUserDataFragmentViewModel;
 
 import android.content.Context;
 

@@ -54,7 +54,6 @@ dependencies {
     //Dagger
     implementation("com.google.dagger:dagger:2.52")
     annotationProcessor("com.google.dagger:dagger-compiler:2.52")
-    implementation("javax.inject:javax.inject:1")
 
     implementation(libs.appcompat)
     implementation(libs.material)

@@ -1,4 +1,4 @@
-package com.androidlesson.petprojectmessenger.presentation.main.di.mainFragmentViewModel.fragmentsViewModel;
+package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel;
 
 import android.content.Context;
 
@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.androidlesson.domain.main.models.UserData;
-import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
 
 public class CurrentUserProfileViewModelFactory implements ViewModelProvider.Factory {
 

@@ -1,4 +1,4 @@
-package com.androidlesson.petprojectmessenger.presentation.main.di.mainActivityViewModel;
+package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel;
 
 import android.content.Context;
 import androidx.annotation.NonNull;

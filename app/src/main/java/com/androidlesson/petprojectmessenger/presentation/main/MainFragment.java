@@ -13,8 +13,8 @@ import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.petprojectmessenger.R;
 import com.androidlesson.petprojectmessenger.databinding.FragmentMainBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
-import com.androidlesson.petprojectmessenger.presentation.main.di.mainFragmentViewModel.MainFragmentViewModel;
-import com.androidlesson.petprojectmessenger.presentation.main.di.mainFragmentViewModel.MainFragmentViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModelFactory;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainFragment extends Fragment {

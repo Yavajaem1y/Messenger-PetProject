@@ -11,16 +11,14 @@ import com.androidlesson.domain.authorization.authorizationUseCase.RegistrationU
 import com.androidlesson.domain.authorization.repository.AuthorizationRepository;
 
 public class AuthorizationViewModelFactory implements ViewModelProvider.Factory {
-    private AuthorizationRepository authorizationRepository;
     private LoginUseCase loginUseCase;
     private RegistrationUseCase registrationUseCase;
     private CheckCurrentUserUseCase checkCurrentUserUseCase;
 
-    public AuthorizationViewModelFactory() {
-        authorizationRepository=new AuthotizationRepositoryImpl();
-        loginUseCase=new LoginUseCase(authorizationRepository);
-        registrationUseCase=new RegistrationUseCase(authorizationRepository);
-        checkCurrentUserUseCase=new CheckCurrentUserUseCase(authorizationRepository);
+    public AuthorizationViewModelFactory(LoginUseCase loginUseCase, RegistrationUseCase registrationUseCase, CheckCurrentUserUseCase checkCurrentUserUseCase) {
+        this.loginUseCase = loginUseCase;
+        this.registrationUseCase = registrationUseCase;
+        this.checkCurrentUserUseCase = checkCurrentUserUseCase;
     }
 
     @NonNull

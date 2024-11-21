@@ -19,7 +19,10 @@ import com.androidlesson.domain.authorization.models.LoginData;
 import com.androidlesson.domain.authorization.models.RegistrationData;
 import com.androidlesson.domain.authorization.repository.CallbackAuthorizaiton;
 import com.androidlesson.petprojectmessenger.R;
+import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.presentation.main.MainActivity;
+
+import javax.inject.Inject;
 
 
 public class AuthorizationActivity extends AppCompatActivity {
@@ -31,6 +34,9 @@ public class AuthorizationActivity extends AppCompatActivity {
     private RelativeLayout rl_progress_bar;
 
     private AuthorizationViewModel vm;
+
+    @Inject
+    AuthorizationViewModelFactory authorizationViewModelFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +53,8 @@ public class AuthorizationActivity extends AppCompatActivity {
     }
 
     private void initialization(){
-        vm=new ViewModelProvider(this,new AuthorizationViewModelFactory()).get(AuthorizationViewModel.class);
+        ((App) getApplication()).appComponent.inject(this);
+        vm=new ViewModelProvider(this).get(AuthorizationViewModel.class);
 
         et_email=findViewById(R.id.et_email);
         et_password=findViewById(R.id.et_password);
