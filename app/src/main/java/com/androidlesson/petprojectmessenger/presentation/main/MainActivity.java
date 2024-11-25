@@ -1,6 +1,7 @@
 package com.androidlesson.petprojectmessenger.presentation.main;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private MainActivityViewModel vm;
+
+    private Fragment currFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +39,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void init(){
         vm = new ViewModelProvider(this, new MainActivityViewModelFactory(getApplicationContext())).get(MainActivityViewModel.class);
+        FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+        currFragment=vm.getCurrentFragmentLiveData().getValue();
+        if (currFragment!=null) fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,currFragment).commit();
     }
 
     private void setObserver(){
         vm.getCurrentFragmentLiveData().observe(this, new Observer<Fragment>() {
             @Override
             public void onChanged(Fragment fragment) {
-                FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,fragment).commit();
+                if (fragment!=null && (currFragment==null || currFragment!=fragment)){
+                    Log.d("AAA","Refresh fragment in MainActivity to "+fragment);
+                    currFragment=fragment;
+                    FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,fragment).commit();
+                }
+            }
+        });
+
+        vm.newUserDataHasBeenReceivedLiveData().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer==2){
+                    FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+                    currFragment=vm.getCurrentFragmentLiveData().getValue();
+                    if (currFragment!=null) fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,currFragment).commit();
+                }
             }
         });
 
