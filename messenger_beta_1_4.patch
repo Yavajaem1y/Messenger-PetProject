@@ -1,0 +1,541 @@
+Subject: [PATCH] messenger beta 1.4
+---
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainActivity.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainActivity.java
+--- a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainActivity.java	(revision 155b101898919a3f374bd9b48dc5bddf42d26c26)
++++ b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainActivity.java	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
+@@ -1,6 +1,7 @@
+ package com.androidlesson.petprojectmessenger.presentation.main;
+ 
+ import android.os.Bundle;
++import android.util.Log;
+ 
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.fragment.app.Fragment;
+@@ -18,6 +19,8 @@
+     private ActivityMainBinding binding;
+     private MainActivityViewModel vm;
+ 
++    private Fragment currFragment;
++
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+@@ -36,15 +39,33 @@
+ 
+     private void init(){
+         vm = new ViewModelProvider(this, new MainActivityViewModelFactory(getApplicationContext())).get(MainActivityViewModel.class);
++        FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
++        currFragment=vm.getCurrentFragmentLiveData().getValue();
++        if (currFragment!=null) fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,currFragment).commit();
+     }
+ 
+     private void setObserver(){
+         vm.getCurrentFragmentLiveData().observe(this, new Observer<Fragment>() {
+             @Override
+             public void onChanged(Fragment fragment) {
+-                FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+-                fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,fragment).commit();
++                if (fragment!=null && (currFragment==null || currFragment!=fragment)){
++                    Log.d("AAA","Refresh fragment in MainActivity to "+fragment);
++                    currFragment=fragment;
++                    FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
++                    fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,fragment).commit();
++                }
+             }
++        });
++
++        vm.newUserDataHasBeenReceivedLiveData().observe(this, new Observer<Integer>() {
++            @Override
++            public void onChanged(Integer integer) {
++                if (integer==2){
++                    FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
++                    currFragment=vm.getCurrentFragmentLiveData().getValue();
++                    if (currFragment!=null) fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,currFragment).commit();
++                }
++            }
+         });
+ 
+         vm.logOutLiveData().observe(this, new Observer<Boolean>() {
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainFragment.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainFragment.java
+--- a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainFragment.java	(revision 155b101898919a3f374bd9b48dc5bddf42d26c26)
++++ b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/MainFragment.java	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
+@@ -1,10 +1,13 @@
+ package com.androidlesson.petprojectmessenger.presentation.main;
+ 
+ import android.os.Bundle;
++
++import androidx.annotation.Nullable;
+ import androidx.fragment.app.Fragment;
+ import androidx.lifecycle.Observer;
+ import androidx.lifecycle.ViewModelProvider;
+ 
++import android.util.Log;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+@@ -13,8 +16,9 @@
+ import com.androidlesson.petprojectmessenger.R;
+ import com.androidlesson.petprojectmessenger.databinding.FragmentMainBinding;
+ import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
++import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableCallbackLogOut;
++import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableUserData;
+ import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModel;
+-import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModelFactory;
+ import com.google.android.material.bottomnavigation.BottomNavigationView;
+ 
+ public class MainFragment extends Fragment {
+@@ -24,12 +28,29 @@
+ 
+     private BottomNavigationView bottomNavigationView;
+ 
++    private Fragment currFragment;
++
+     //User data from activity
+     private UserData currUserData;
+     private CallbackLogOut callbackLogOut;
+-    public MainFragment(UserData currUserData, CallbackLogOut callbackLogOut) {
+-        this.currUserData = currUserData;
+-        this.callbackLogOut=callbackLogOut;
++
++
++    public static MainFragment newInstance(SerializableUserData serializableUserData, SerializableCallbackLogOut serializableCallbackLogOut) {
++        MainFragment fragment = new MainFragment();
++        Bundle args = new Bundle();
++        args.putSerializable("USERDATA",serializableUserData);
++        args.putSerializable("CALLBACK_LOG_OUT",serializableCallbackLogOut);
++        fragment.setArguments(args);
++        return fragment;
++    }
++
++    @Override
++    public void onCreate(@Nullable Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        if(getArguments()!=null){
++            currUserData=((SerializableUserData)getArguments().get("USERDATA")).getUserData();
++            callbackLogOut=((SerializableCallbackLogOut)getArguments().get("CALLBACK_LOG_OUT")).getCallbackLogOut();
++        }
+     }
+ 
+     public View onCreateView(LayoutInflater inflater, ViewGroup container,
+@@ -46,7 +67,12 @@
+     }
+ 
+     private void initialization() {
+-        vm = new ViewModelProvider(this, new MainFragmentViewModelFactory(currUserData,callbackLogOut)).get(MainFragmentViewModel.class);
++        vm = new ViewModelProvider(requireActivity()).get(MainFragmentViewModel.class);
++
++        currFragment=vm.getMainFragmentSceneLiveData().getValue();
++        if (currFragment!=null) getParentFragmentManager().beginTransaction().replace(R.id.fl_main_fragment_container, currFragment).commit();
++
++        vm.setFragmentsInfo(currUserData,callbackLogOut);
+ 
+         bottomNavigationView=binding.bnvMainBottomBar;
+     }
+@@ -55,8 +81,11 @@
+         vm.getMainFragmentSceneLiveData().observe(getViewLifecycleOwner(), new Observer<Fragment>() {
+             @Override
+             public void onChanged(Fragment fragment) {
+-                getParentFragmentManager().beginTransaction().replace(R.id.fl_main_fragment_container,fragment).commit();
+-
++                if (fragment!=null && (currFragment==null || currFragment!=fragment)) {
++                    Log.d("AAA", "Refresh fragment in MainFragment to" + fragment);
++                    currFragment=fragment;
++                    getParentFragmentManager().beginTransaction().replace(R.id.fl_main_fragment_container, fragment).commit();
++                }
+             }
+         });
+     }
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/fragmentsBottomNavigationBar/CurrentUserProfileFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/fragmentsBottomNavigationBar/CurrentUserProfileFragment.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/fragmentsBottomNavigationBar/CurrentUserProfileFragment.java
+--- a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/fragmentsBottomNavigationBar/CurrentUserProfileFragment.java	(revision 155b101898919a3f374bd9b48dc5bddf42d26c26)
++++ b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/fragmentsBottomNavigationBar/CurrentUserProfileFragment.java	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
+@@ -2,6 +2,7 @@
+ 
+ import android.os.Bundle;
+ 
++import androidx.annotation.Nullable;
+ import androidx.fragment.app.Fragment;
+ import androidx.lifecycle.Observer;
+ import androidx.lifecycle.ViewModelProvider;
+@@ -16,7 +17,10 @@
+ 
+ import com.androidlesson.domain.main.models.UserData;
+ import com.androidlesson.petprojectmessenger.databinding.FragmentCurrentUserProfileBinding;
++import com.androidlesson.petprojectmessenger.presentation.main.MainFragment;
+ import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
++import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableCallbackLogOut;
++import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableUserData;
+ import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.CurrentUserProfileViewModel;
+ import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.CurrentUserProfileViewModelFactory;
+ 
+@@ -32,11 +36,27 @@
+     private TextView tv_name_and_surname;
+     private CircleImageView ciw_profile_avatar,ciw_add_profile_photo;
+ 
+-    private UserData userData;
++    //User data from fragment
++    private UserData currUserData;
+     private CallbackLogOut callbackLogOut;
+-    public CurrentUserProfileFragment(UserData userData, CallbackLogOut callbackLogOut) {
+-        this.userData = userData;
+-        this.callbackLogOut=callbackLogOut;
++
++
++    public static MainFragment newInstance(SerializableUserData serializableUserData, SerializableCallbackLogOut serializableCallbackLogOut) {
++        MainFragment fragment = new MainFragment();
++        Bundle args = new Bundle();
++        args.putSerializable("USERDATA",serializableUserData);
++        args.putSerializable("CALLBACK_LOG_OUT",serializableCallbackLogOut);
++        fragment.setArguments(args);
++        return fragment;
++    }
++
++    @Override
++    public void onCreate(@Nullable Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        if(getArguments()!=null){
++            currUserData=((SerializableUserData)getArguments().get("USERDATA")).getUserData();
++            callbackLogOut=((SerializableCallbackLogOut)getArguments().get("CALLBACK_LOG_OUT")).getCallbackLogOut();
++        }
+     }
+ 
+     @Override
+@@ -54,7 +74,9 @@
+     }
+ 
+     private void init() {
+-        vm=new ViewModelProvider((ViewModelStoreOwner) getContext(),new CurrentUserProfileViewModelFactory(getContext(),userData)).get(CurrentUserProfileViewModel.class);
++        vm=new ViewModelProvider(requireActivity(),new CurrentUserProfileViewModelFactory(getContext())).get(CurrentUserProfileViewModel.class);
++
++        vm.setVMInfo(currUserData);
+ 
+         iv_logout=binding.ivLogout;
+         tv_name_and_surname=binding.tvCurrUserNameAndSurname;
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/model/SerializableCallbackLogOut.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/model/SerializableCallbackLogOut.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/model/SerializableCallbackLogOut.java
+new file mode 100644
+--- /dev/null	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
++++ b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/model/SerializableCallbackLogOut.java	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
+@@ -0,0 +1,18 @@
++package com.androidlesson.petprojectmessenger.presentation.main.model;
++
++import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
++
++import java.io.Serializable;
++
++public class SerializableCallbackLogOut implements Serializable {
++
++    private CallbackLogOut callbackLogOut;
++
++    public SerializableCallbackLogOut(CallbackLogOut callbackLogOut) {
++        this.callbackLogOut = callbackLogOut;
++    }
++
++    public CallbackLogOut getCallbackLogOut() {
++        return callbackLogOut;
++    }
++}
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/model/SerializableUserData.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/model/SerializableUserData.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/model/SerializableUserData.java
+new file mode 100644
+--- /dev/null	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
++++ b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/model/SerializableUserData.java	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
+@@ -0,0 +1,18 @@
++package com.androidlesson.petprojectmessenger.presentation.main.model;
++
++import com.androidlesson.domain.main.models.UserData;
++
++import java.io.Serializable;
++
++public class SerializableUserData implements Serializable {
++
++    private UserData userData;
++
++    public SerializableUserData(UserData userData) {
++        this.userData = userData;
++    }
++
++    public UserData getUserData() {
++        return userData;
++    }
++}
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainActivityViewModel/MainActivityViewModel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainActivityViewModel/MainActivityViewModel.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainActivityViewModel/MainActivityViewModel.java
+--- a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainActivityViewModel/MainActivityViewModel.java	(revision 155b101898919a3f374bd9b48dc5bddf42d26c26)
++++ b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainActivityViewModel/MainActivityViewModel.java	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
+@@ -1,4 +1,5 @@
+ package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel;
++import android.os.Bundle;
+ import android.util.Log;
+ 
+ import androidx.fragment.app.Fragment;
+@@ -14,17 +15,24 @@
+ import com.androidlesson.petprojectmessenger.presentation.main.SetCurrentUserDataFragment;
+ import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
+ import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackUserDataIsSaved;
++import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableCallbackLogOut;
++import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableUserData;
+ 
+ public class MainActivityViewModel extends ViewModel {
+ 
+     private LoadUserDataUseCase loadUserDataUseCase;
+     private LogOutUseCase logOutUseCase;
+ 
++    private Bundle bundleForMainFragment;
++
+     //Initialization use-cases
+     public MainActivityViewModel(LoadUserDataUseCase loadUserDataUseCase, LogOutUseCase logOutUseCase) {
+         this.loadUserDataUseCase=loadUserDataUseCase;
+         this.logOutUseCase=logOutUseCase;
+ 
++        bundleForMainFragment=new Bundle();
++        bundleForMainFragment.putSerializable("CALLBACK_LOG_OUT",new SerializableCallbackLogOut(callbackLogOut));
++
+         logOutMutableLiveData.setValue(false);
+ 
+         loadCurrentUserData();
+@@ -40,7 +48,10 @@
+         return logOutMutableLiveData;
+     }
+ 
+-    private UserData currentUserData;
++    public MutableLiveData<Integer> newUserDataHasBeenReceivedMutableLiveData=new MutableLiveData<>(0);
++    public LiveData<Integer> newUserDataHasBeenReceivedLiveData(){
++        return newUserDataHasBeenReceivedMutableLiveData;
++    }
+ 
+     private CallbackLogOut callbackLogOut=new CallbackLogOut() {
+         @Override
+@@ -53,12 +64,16 @@
+     private CallbackUserDataIsSaved callbackUserDataIsSaved=new CallbackUserDataIsSaved() {
+         @Override
+         public void UserDataIsSaved(UserData userData) {
+-            currentUserData=userData;
+-            currentFragmentMutableLiveData.setValue(new MainFragment(currentUserData,callbackLogOut));
++            bundleForMainFragment.putSerializable("USERDATA",new SerializableUserData(userData));
++            Fragment mainFragment=new MainFragment();
++            mainFragment.setArguments(bundleForMainFragment);
++            currentFragmentMutableLiveData.setValue(mainFragment);
+         }
+     };
+ 
+-    private CallbackGetUserData callbackGetUserData=new CallbackGetUserData() {
++    private UserData currUserData;
++
++    private final CallbackGetUserData callbackGetUserData=new CallbackGetUserData() {
+         @Override
+         public void getUserData(UserData userData) {
+             if (userData==null) {
+@@ -66,9 +81,14 @@
+                 currentFragmentMutableLiveData.setValue(new SetCurrentUserDataFragment(callbackUserDataIsSaved));
+             }
+             else {
+-                Log.d("AAA","UserData from db = "+userData.getUserId()+" "+userData.getUserName()+" "+userData.getUserSurname());
+-                currentUserData=userData;
+-                currentFragmentMutableLiveData.setValue(new MainFragment(currentUserData,callbackLogOut));
++                if (currUserData==null || !MainActivityViewModel.this.equals(currUserData,userData)){
++                    currUserData=userData;
++                    bundleForMainFragment.putSerializable("USERDATA",new SerializableUserData(userData));
++                    Log.d("AAA","UserData from db = "+userData.getUserId()+" "+userData.getUserName()+" "+userData.getUserSurname());
++                    Fragment mainFragment=new MainFragment();
++                    mainFragment.setArguments(bundleForMainFragment);
++                    currentFragmentMutableLiveData.setValue(mainFragment);
++                }
+             }
+         }
+     };
+@@ -77,4 +97,8 @@
+         Log.d("AAA","LoadData start");
+         loadUserDataUseCase.execute(callbackGetUserData);
+     }
++
++    private boolean equals(UserData first,UserData second){
++        return first.getUserName().equals(second.getUserName()) && first.getUserSurname().equals(second.getUserSurname()) && first.getUserId().equals(second.getUserId());
++    }
+ }
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/MainFragmentViewModel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/MainFragmentViewModel.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/MainFragmentViewModel.java
+--- a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/MainFragmentViewModel.java	(revision 155b101898919a3f374bd9b48dc5bddf42d26c26)
++++ b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/MainFragmentViewModel.java	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
+@@ -1,5 +1,8 @@
+ package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel;
+ 
++import android.os.Bundle;
++import android.util.Log;
++
+ import androidx.fragment.app.Fragment;
+ import androidx.lifecycle.LiveData;
+ import androidx.lifecycle.MutableLiveData;
+@@ -11,6 +14,9 @@
+ import com.androidlesson.petprojectmessenger.presentation.main.fragmentsBottomNavigationBar.AllUsersFragment;
+ import com.androidlesson.petprojectmessenger.presentation.main.fragmentsBottomNavigationBar.ChatsFragment;
+ import com.androidlesson.petprojectmessenger.presentation.main.fragmentsBottomNavigationBar.CurrentUserProfileFragment;
++import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableCallbackLogOut;
++import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableUserData;
++
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+@@ -18,19 +24,35 @@
+     private final Map<Integer,Fragment> fragmentMap=new HashMap<>();
+     private UserData userData;
+ 
+-    public MainFragmentViewModel(UserData userData, CallbackLogOut callbackLogOut) {
+-        if (userData!=null) this.userData=userData;
+-        fragmentMap.put(R.id.navigation_current_user_profile,new CurrentUserProfileFragment(userData,callbackLogOut));
+-        fragmentMap.put(R.id.navigation_chats,new ChatsFragment());
+-        fragmentMap.put(R.id.navigation_all_users,new AllUsersFragment());
+-        mainFragmentSceneMutableLiveData.setValue(fragmentMap.get(R.id.navigation_current_user_profile));
++    public MainFragmentViewModel() {
++        Log.d("AAA","VM create");
++    }
++
++    //Set fragments with info since last activity
++    public void setFragmentsInfo(UserData userData,CallbackLogOut callbackLogOut){
++        if (fragmentMap.isEmpty() || this.userData!=userData){
++            //Creating user profile fragment
++            this.userData=userData;
++            Bundle bundleForCurrentUserProfileFragment=new Bundle();
++            bundleForCurrentUserProfileFragment.putSerializable("USERDATA",new SerializableUserData(this.userData));
++            bundleForCurrentUserProfileFragment.putSerializable("CALLBACK_LOG_OUT",new SerializableCallbackLogOut(callbackLogOut));
++            Fragment currUserProfileFragment=new CurrentUserProfileFragment();
++            currUserProfileFragment.setArguments(bundleForCurrentUserProfileFragment);
++            fragmentMap.put(R.id.navigation_current_user_profile,currUserProfileFragment);
++
++            //Creating other models
++            fragmentMap.put(R.id.navigation_chats,new ChatsFragment());
++            fragmentMap.put(R.id.navigation_all_users,new AllUsersFragment());
++            Log.d("AAA","Map is empty");
++            mainFragmentSceneMutableLiveData.setValue(fragmentMap.get(R.id.navigation_current_user_profile));
++        }
+     }
+ 
++    //The logic of replacing fragments
+     private MutableLiveData<Fragment> mainFragmentSceneMutableLiveData=new MutableLiveData<>();
+     public LiveData<Fragment> getMainFragmentSceneLiveData(){
+         return mainFragmentSceneMutableLiveData;
+     }
+-
+     public void replaceFragment(int id){
+         if (mainFragmentSceneMutableLiveData!=null && mainFragmentSceneMutableLiveData.getValue()!=fragmentMap.get(id)){
+             mainFragmentSceneMutableLiveData.setValue(fragmentMap.get(id));
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModel.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModel.java
+--- a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModel.java	(revision 155b101898919a3f374bd9b48dc5bddf42d26c26)
++++ b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModel.java	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
+@@ -1,5 +1,7 @@
+ package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel;
+ 
++import android.util.Log;
++
+ import androidx.lifecycle.LiveData;
+ import androidx.lifecycle.MutableLiveData;
+ import androidx.lifecycle.ViewModel;
+@@ -8,8 +10,12 @@
+ 
+ public class CurrentUserProfileViewModel extends ViewModel {
+ 
+-    public CurrentUserProfileViewModel(UserData userData) {
+-        if(userData!=null) userDataMutableLiveData.setValue(userData);
++    public CurrentUserProfileViewModel() {
++        Log.d("AAA","Profile VM create");
++    }
++
++    public void setVMInfo(UserData userData){
++        userDataMutableLiveData.setValue(userData);
+     }
+ 
+     private MutableLiveData<UserData> userDataMutableLiveData=new MutableLiveData<>();
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModelFactory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModelFactory.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModelFactory.java
+--- a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModelFactory.java	(revision 155b101898919a3f374bd9b48dc5bddf42d26c26)
++++ b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/fragmentsViewModel/CurrentUserProfileViewModelFactory.java	(revision 82c89867cf604473bc8c3134b86a3bcffb5d0a9c)
+@@ -10,15 +10,13 @@
+ 
+ public class CurrentUserProfileViewModelFactory implements ViewModelProvider.Factory {
+ 
+-    private UserData userData;
+ 
+-    public CurrentUserProfileViewModelFactory(Context context, UserData userData) {
+-        this.userData=userData;
++    public CurrentUserProfileViewModelFactory(Context context) {
+     }
+ 
+     @NonNull
+     @Override
+     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+-        return (T) new CurrentUserProfileViewModel(userData);
++        return (T) new CurrentUserProfileViewModel();
+     }
+ }
+Index: app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/MainFragmentViewModelFactory.java
+===================================================================
+diff --git a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/MainFragmentViewModelFactory.java b/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/MainFragmentViewModelFactory.java
+deleted file mode 100644
+--- a/app/src/main/java/com/androidlesson/petprojectmessenger/presentation/main/viewModels/mainFragmentViewModel/MainFragmentViewModelFactory.java	(revision 155b101898919a3f374bd9b48dc5bddf42d26c26)
++++ /dev/null	(revision 155b101898919a3f374bd9b48dc5bddf42d26c26)
+@@ -1,25 +0,0 @@
+-package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel;
+-
+-import androidx.annotation.NonNull;
+-import androidx.lifecycle.ViewModel;
+-import androidx.lifecycle.ViewModelProvider;
+-
+-import com.androidlesson.domain.main.models.UserData;
+-import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
+-
+-public class MainFragmentViewModelFactory implements ViewModelProvider.Factory {
+-
+-    private UserData userData;
+-    private CallbackLogOut callbackLogOut;
+-
+-    public MainFragmentViewModelFactory(UserData userData,CallbackLogOut callbackLogOut) {
+-        this.userData=userData;
+-        this.callbackLogOut=callbackLogOut;
+-    }
+-
+-    @NonNull
+-    @Override
+-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+-        return (T) new MainFragmentViewModel(userData,callbackLogOut);
+-    }
+-}
+\ No newline at end of file
