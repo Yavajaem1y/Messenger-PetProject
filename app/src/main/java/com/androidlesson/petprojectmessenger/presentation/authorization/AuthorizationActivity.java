@@ -54,7 +54,7 @@ public class AuthorizationActivity extends AppCompatActivity {
 
     private void initialization(){
         ((App) getApplication()).appComponent.inject(this);
-        vm=new ViewModelProvider(this).get(AuthorizationViewModel.class);
+        vm=new ViewModelProvider(this,authorizationViewModelFactory).get(AuthorizationViewModel.class);
 
         et_email=findViewById(R.id.et_email);
         et_password=findViewById(R.id.et_password);
