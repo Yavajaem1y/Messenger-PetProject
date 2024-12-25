@@ -110,7 +110,7 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
 
         });
     }
-
+//
     private void addOnScrollListener(){
         scrollView_main.getViewTreeObserver().addOnScrollChangedListener(() -> {
             int scrollY = scrollView_main.getScrollY();
