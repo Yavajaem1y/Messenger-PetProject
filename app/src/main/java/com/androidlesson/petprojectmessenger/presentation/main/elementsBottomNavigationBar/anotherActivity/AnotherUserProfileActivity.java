@@ -39,7 +39,7 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
     private ScrollView scrollView_main;
     private RelativeLayout relativeLayout_bottom;
     private ImageView iv_dots_menu;
-    private LinearLayout b_add_to_friends;
+    private LinearLayout b_add_to_friends, b_send_a_message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,7 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
         relativeLayout_bottom=findViewById(R.id.rl_bottom_layout);
         iv_dots_menu=findViewById(R.id.iv_dots_menu);
         b_add_to_friends=findViewById(R.id.ll_button_add_to_friends);
+        b_send_a_message=findViewById(R.id.ll_button_send_a_message);
 
         UserData userData = (UserData) getIntent().getSerializableExtra("ANOTHER_USER_DATA");
         currUser=(UserData) getIntent().getSerializableExtra("CURRENT_USER_DATA");
@@ -103,6 +104,10 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
     private void setOnClickListener(){
         b_add_to_friends.setOnClickListener(v->{
             vm.addToFriend(currUser);
+        });
+
+        b_send_a_message.setOnClickListener(v->{
+
         });
     }
 

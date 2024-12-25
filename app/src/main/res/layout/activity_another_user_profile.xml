@@ -144,7 +144,7 @@
         android:id="@+id/rl_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/top_element_bg"
+        android:background="@drawable/top_element_bg_with_rounding_up"
         android:padding="15dp"
         android:nestedScrollingEnabled="true">
         <TextView

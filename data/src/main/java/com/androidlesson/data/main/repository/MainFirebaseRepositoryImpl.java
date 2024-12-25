@@ -20,6 +20,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -137,6 +138,8 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
             }
         });
     }
+
+    public
 
     @Override
     public void checkAvailableIds(String id, CallbackCheckAvailableIds callbackcheckAvailableIds) {

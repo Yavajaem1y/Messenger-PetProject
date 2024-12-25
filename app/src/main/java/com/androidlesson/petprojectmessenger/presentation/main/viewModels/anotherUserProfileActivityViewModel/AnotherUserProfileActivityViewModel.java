@@ -37,21 +37,10 @@ public class AnotherUserProfileActivityViewModel extends ViewModel {
 
     public void addToFriend(UserData currentUser){
         UserData user=anotherUserDataMutableLiveData.getValue();
-        List<String> c =user.getFriendsIds();
-        if (c!=null){
-            if (c.isEmpty()) Log.d("friend","c a is empty");
-            for (String i : c) {
-                Log.d("friend", "friend a - " + i);
-            }
-        }
-        else Log.d("friend","c a == null");
-        c =user.getTaskToFriendsIds();
-        if (c!=null){
-            if (c.isEmpty()) Log.d("friend","c a is empty");
-            for (String i:c){
-            Log.d("friend","task to friend a - "+i);
-        }
-        } else Log.d("friend","c a == null");
         addToFriendsUseCase.execute(anotherUserDataMutableLiveData.getValue(),currentUser);
+    }
+
+    public void sendAMessage(UserData currentUser){
+        UserData user=anotherUserDataMutableLiveData.getValue();
     }
 }
