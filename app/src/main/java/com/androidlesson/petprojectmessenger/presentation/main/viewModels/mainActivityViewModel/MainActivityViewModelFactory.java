@@ -14,18 +14,12 @@ import com.androidlesson.domain.main.usecase.LogOutUseCase;
 
 public class MainActivityViewModelFactory implements ViewModelProvider.Factory {
 
-    private MainFirebaseRepository firebaseRepository;
-    private MainSharedPrefRepository sharedPrefRepository;
-
     private LoadUserDataUseCase loadUserDataUseCase;
     private LogOutUseCase logOutUseCase;
 
-    public MainActivityViewModelFactory(Context context) {
-        firebaseRepository=new MainFirebaseRepositoryImpl();
-        sharedPrefRepository=new MainSharedPrefRepositoryImpl(context);
-
-        loadUserDataUseCase=new LoadUserDataUseCase(firebaseRepository,sharedPrefRepository);
-        logOutUseCase=new LogOutUseCase(firebaseRepository,sharedPrefRepository);
+    public MainActivityViewModelFactory(LoadUserDataUseCase loadUserDataUseCase, LogOutUseCase logOutUseCase) {
+        this.loadUserDataUseCase = loadUserDataUseCase;
+        this.logOutUseCase = logOutUseCase;
     }
 
     @NonNull

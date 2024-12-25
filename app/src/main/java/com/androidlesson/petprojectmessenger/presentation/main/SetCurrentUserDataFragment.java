@@ -15,20 +15,28 @@ import android.widget.Toast;
 
 import com.androidlesson.domain.main.models.Error;
 import com.androidlesson.domain.main.models.UserData;
-import com.androidlesson.domain.main.models.UserNameAndSurname;
+import com.androidlesson.domain.main.models.UserInfo;
+import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.databinding.FragmentSetCurrentUserDataBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackUserDataIsSaved;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVM;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVMFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 public class SetCurrentUserDataFragment extends Fragment {
 
     private FragmentSetCurrentUserDataBinding binding;
 
-    private EditText et_name,et_surname;
+    private EditText et_name,et_surname,et_user_id;
     private Button b_save_data;
 
     private SetCurrentUserDataFragmentVM vm;
+    @Inject
+    SetCurrentUserDataFragmentVMFactory setCurrentUserDataFragmentVMFactory;
 
     private CallbackUserDataIsSaved callbackUserDataIsSaved;
 
@@ -52,11 +60,13 @@ public class SetCurrentUserDataFragment extends Fragment {
     }
 
     private void initialization(){
-        vm= new ViewModelProvider(this,new SetCurrentUserDataFragmentVMFactory(getContext())).get(SetCurrentUserDataFragmentVM.class);
+        ((App) requireActivity().getApplication()).appComponent.injectSetCurrentUserDataFragment(this);
+        vm= new ViewModelProvider(this,setCurrentUserDataFragmentVMFactory).get(SetCurrentUserDataFragmentVM.class);
 
         et_name=binding.etCurrentUserName;
         et_surname=binding.etCurrentUserSurname;
         b_save_data=binding.bSaveCurrUserData;
+        et_user_id=binding.etCurrentUserId;
     }
 
     private void setObserver(){
@@ -79,7 +89,8 @@ public class SetCurrentUserDataFragment extends Fragment {
         b_save_data.setOnClickListener(v->{
             String name=et_name.getText().toString().trim();
             String surname=et_surname.getText().toString().trim();
-            vm.SaveUserData(new UserNameAndSurname(name,surname));
+            String userId=et_user_id.getText().toString().trim();
+            vm.SaveUserData(new UserData(userId,name,surname));
         });
     }
 

@@ -1,4 +1,4 @@
-package com.androidlesson.petprojectmessenger.presentation.main.fragmentsBottomNavigationBar;
+package com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments;
 
 import android.os.Bundle;
 
@@ -11,9 +11,7 @@ import android.view.ViewGroup;
 import com.androidlesson.petprojectmessenger.databinding.FragmentChatWithUserBinding;
 
 public class ChatsFragment extends Fragment {
-
     private FragmentChatWithUserBinding binding;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

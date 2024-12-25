@@ -14,16 +14,10 @@ import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
 
 public class SetCurrentUserDataFragmentVMFactory implements ViewModelProvider.Factory {
 
-    private MainSharedPrefRepository sharedPrefRepository;
-    private MainFirebaseRepository firebaseRepository;
-
     private SaveUserDataUseCase saveUserDataUseCase;
 
-    public SetCurrentUserDataFragmentVMFactory(Context context) {
-        sharedPrefRepository=new MainSharedPrefRepositoryImpl(context);
-        firebaseRepository=new MainFirebaseRepositoryImpl();
-
-        saveUserDataUseCase=new SaveUserDataUseCase(firebaseRepository,sharedPrefRepository);
+    public SetCurrentUserDataFragmentVMFactory(SaveUserDataUseCase saveUserDataUseCase) {
+        this.saveUserDataUseCase=saveUserDataUseCase;
     }
 
     @NonNull

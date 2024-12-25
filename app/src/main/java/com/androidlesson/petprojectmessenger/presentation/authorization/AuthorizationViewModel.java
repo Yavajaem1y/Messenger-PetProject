@@ -6,7 +6,6 @@ import android.view.View;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.androidlesson.data.authorization.AuthotizationRepositoryImpl;
 import com.androidlesson.domain.authorization.authorizationUseCase.AuthorizationError;
 import com.androidlesson.domain.authorization.authorizationUseCase.CheckCurrentUserUseCase;
 import com.androidlesson.domain.authorization.authorizationUseCase.LoginUseCase;

@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="main_text">#FF000000</color>
+    <color name="secondary_text">#3D3D3D</color>
+    <color name="layout_background">#FFFFFF</color>
+    <color name="app_background">#EDEDED</color>
+    <color name="accent_color">#A7C957</color>
+    <color name="secondary_accent_color">#D3E4B7</color>
 </resources>

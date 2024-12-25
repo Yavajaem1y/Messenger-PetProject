@@ -8,7 +8,7 @@ import com.androidlesson.domain.main.callbacks.CallbackError;
 import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
 import com.androidlesson.domain.main.models.Error;
 import com.androidlesson.domain.main.models.UserData;
-import com.androidlesson.domain.main.models.UserNameAndSurname;
+import com.androidlesson.domain.main.models.UserInfo;
 import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
 
 public class SetCurrentUserDataFragmentVM extends ViewModel {
@@ -44,7 +44,7 @@ public class SetCurrentUserDataFragmentVM extends ViewModel {
         }
     };
 
-    public void SaveUserData(UserNameAndSurname user){
+    public void SaveUserData(UserData user){
         saveUserDataUseCase.execute(user,callbackError,callbackGetUserData);
     }
 }

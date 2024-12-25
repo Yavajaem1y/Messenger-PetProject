@@ -17,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.androidlesson.domain.authorization.models.LoginData;
 import com.androidlesson.domain.authorization.models.RegistrationData;
-import com.androidlesson.domain.authorization.repository.CallbackAuthorizaiton;
 import com.androidlesson.petprojectmessenger.R;
 import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.presentation.main.MainActivity;
@@ -53,7 +52,7 @@ public class AuthorizationActivity extends AppCompatActivity {
     }
 
     private void initialization(){
-        ((App) getApplication()).appComponent.inject(this);
+        ((App) getApplication()).appComponent.injectAuthorizationActivity(this);
         vm=new ViewModelProvider(this,authorizationViewModelFactory).get(AuthorizationViewModel.class);
 
         et_email=findViewById(R.id.et_email);

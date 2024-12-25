@@ -10,12 +10,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.petprojectmessenger.R;
-import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
-import com.androidlesson.petprojectmessenger.presentation.main.fragmentsBottomNavigationBar.AllUsersFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.fragmentsBottomNavigationBar.ChatsFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.fragmentsBottomNavigationBar.CurrentUserProfileFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableCallbackLogOut;
-import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableUserData;
+import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.AllUsersFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.ChatsFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.CurrentUserProfileFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,20 +26,25 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     //Set fragments with info since last activity
-    public void setFragmentsInfo(UserData userData,CallbackLogOut callbackLogOut){
+    public void setFragmentsInfo(UserData userData){
         if (fragmentMap.isEmpty() || this.userData!=userData){
-            //Creating user profile fragment
+
             this.userData=userData;
             Bundle bundleForCurrentUserProfileFragment=new Bundle();
-            bundleForCurrentUserProfileFragment.putSerializable("USERDATA",new SerializableUserData(this.userData));
-            bundleForCurrentUserProfileFragment.putSerializable("CALLBACK_LOG_OUT",new SerializableCallbackLogOut(callbackLogOut));
+            bundleForCurrentUserProfileFragment.putSerializable("USERDATA",userData);
+
+            //Creating user profile fragment
             Fragment currUserProfileFragment=new CurrentUserProfileFragment();
             currUserProfileFragment.setArguments(bundleForCurrentUserProfileFragment);
             fragmentMap.put(R.id.navigation_current_user_profile,currUserProfileFragment);
 
+            //Creating all users fragment
+            Fragment allUsersFragment= new AllUsersFragment();
+            allUsersFragment.setArguments(bundleForCurrentUserProfileFragment);
+            fragmentMap.put(R.id.navigation_all_users,allUsersFragment);
+
             //Creating other models
             fragmentMap.put(R.id.navigation_chats,new ChatsFragment());
-            fragmentMap.put(R.id.navigation_all_users,new AllUsersFragment());
             Log.d("AAA","Map is empty");
             mainFragmentSceneMutableLiveData.setValue(fragmentMap.get(R.id.navigation_current_user_profile));
         }
@@ -53,7 +55,14 @@ public class MainFragmentViewModel extends ViewModel {
     public LiveData<Fragment> getMainFragmentSceneLiveData(){
         return mainFragmentSceneMutableLiveData;
     }
+
+    private MutableLiveData<Integer> selectedItemIdBNVMutableLiveData=new MutableLiveData<>();
+    public LiveData<Integer> getSelectedItemIdBNVLiveData(){
+        return selectedItemIdBNVMutableLiveData;
+    }
+
     public void replaceFragment(int id){
+        selectedItemIdBNVMutableLiveData.setValue(id);
         if (mainFragmentSceneMutableLiveData!=null && mainFragmentSceneMutableLiveData.getValue()!=fragmentMap.get(id)){
             mainFragmentSceneMutableLiveData.setValue(fragmentMap.get(id));
         }

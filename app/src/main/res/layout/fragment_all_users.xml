@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.main.fragmentsBottomNavigationBar.AllUsersFragment">
+    tools:context=".presentation.main.elementsBottomNavigationBar.fragments.AllUsersFragment"
+    android:background="@color/app_background">
 
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_users"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="all_users" />
+        android:layout_height="match_parent">
+    </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>

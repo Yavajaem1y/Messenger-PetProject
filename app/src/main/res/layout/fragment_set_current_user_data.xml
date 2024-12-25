@@ -12,6 +12,11 @@
         android:layout_centerInParent="true"
         android:gravity="center">
         <EditText
+            android:id="@+id/et_current_user_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your id"/>
+        <EditText
             android:id="@+id/et_current_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

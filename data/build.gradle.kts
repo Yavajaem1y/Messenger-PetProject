@@ -31,6 +31,8 @@ android {
 
 dependencies {
 
+    implementation("io.reactivex.rxjava3:rxjava:3.1.6")
+
     implementation(project(":domain"))
 
     implementation(libs.firebase.auth)

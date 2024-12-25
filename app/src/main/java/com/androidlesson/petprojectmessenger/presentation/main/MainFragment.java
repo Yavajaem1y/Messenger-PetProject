@@ -1,5 +1,7 @@
 package com.androidlesson.petprojectmessenger.presentation.main;
 
+import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -15,9 +17,6 @@ import android.view.ViewGroup;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.petprojectmessenger.R;
 import com.androidlesson.petprojectmessenger.databinding.FragmentMainBinding;
-import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
-import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableCallbackLogOut;
-import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableUserData;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -32,14 +31,12 @@ public class MainFragment extends Fragment {
 
     //User data from activity
     private UserData currUserData;
-    private CallbackLogOut callbackLogOut;
 
 
-    public static MainFragment newInstance(SerializableUserData serializableUserData, SerializableCallbackLogOut serializableCallbackLogOut) {
+    public static MainFragment newInstance(UserData userData) {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
-        args.putSerializable("USERDATA",serializableUserData);
-        args.putSerializable("CALLBACK_LOG_OUT",serializableCallbackLogOut);
+        args.putSerializable("USERDATA",userData);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,8 +45,7 @@ public class MainFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments()!=null){
-            currUserData=((SerializableUserData)getArguments().get("USERDATA")).getUserData();
-            callbackLogOut=((SerializableCallbackLogOut)getArguments().get("CALLBACK_LOG_OUT")).getCallbackLogOut();
+            currUserData=((UserData)getArguments().get("USERDATA"));
         }
     }
 
@@ -72,9 +68,10 @@ public class MainFragment extends Fragment {
         currFragment=vm.getMainFragmentSceneLiveData().getValue();
         if (currFragment!=null) getParentFragmentManager().beginTransaction().replace(R.id.fl_main_fragment_container, currFragment).commit();
 
-        vm.setFragmentsInfo(currUserData,callbackLogOut);
+        vm.setFragmentsInfo(currUserData);
 
         bottomNavigationView=binding.bnvMainBottomBar;
+        bottomNavigationView.setItemIconTintList(null);
     }
 
     private void setObserver(){
@@ -88,6 +85,9 @@ public class MainFragment extends Fragment {
                 }
             }
         });
+
+
+
     }
 
     private void setOnItemClicker(){
@@ -96,5 +96,4 @@ public class MainFragment extends Fragment {
             return false;
         });
     }
-
 }

@@ -10,16 +10,22 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.androidlesson.petprojectmessenger.R;
+import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.databinding.ActivityMainBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModel;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModelFactory;
 
-public class MainActivity extends AppCompatActivity {
+import javax.inject.Inject;
+
+public class MainActivity extends AppCompatActivity implements OnDataPass{
 
     private ActivityMainBinding binding;
     private MainActivityViewModel vm;
 
     private Fragment currFragment;
+
+    @Inject
+    MainActivityViewModelFactory mainActivityVMFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init(){
-        vm = new ViewModelProvider(this, new MainActivityViewModelFactory(getApplicationContext())).get(MainActivityViewModel.class);
+        ((App) getApplication()).appComponent.injectMainActivity(this);
+        vm = new ViewModelProvider(this,mainActivityVMFactory).get(MainActivityViewModel.class);
         FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
         currFragment=vm.getCurrentFragmentLiveData().getValue();
         if (currFragment!=null) fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,currFragment).commit();
@@ -67,13 +74,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        vm.logOutLiveData().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) finish();
-            }
-        });
     }
 
+    @Override
+    public void onDataPass(String data) {
+        vm.logOut();
+        finish();
+    }
 }

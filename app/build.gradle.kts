@@ -55,6 +55,9 @@ dependencies {
     implementation("com.google.dagger:dagger:2.52")
     annotationProcessor("com.google.dagger:dagger-compiler:2.52")
 
+    implementation("io.reactivex.rxjava3:rxjava:3.1.6")
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

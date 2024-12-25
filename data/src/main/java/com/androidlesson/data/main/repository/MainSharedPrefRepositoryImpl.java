@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.androidlesson.domain.main.models.UserData;
-import com.androidlesson.domain.main.models.UserNameAndSurname;
 import com.androidlesson.domain.main.repository.MainSharedPrefRepository;
 
 public class MainSharedPrefRepositoryImpl implements MainSharedPrefRepository {

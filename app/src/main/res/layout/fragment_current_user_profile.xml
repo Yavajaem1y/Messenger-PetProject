@@ -4,7 +4,101 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.main.fragmentsBottomNavigationBar.CurrentUserProfileFragment">
+    android:background="@color/app_background"
+    tools:context=".presentation.main.elementsBottomNavigationBar.fragments.CurrentUserProfileFragment">
+
+    <ScrollView
+        android:id="@+id/sv_main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <RelativeLayout
+                android:id="@+id/ll_main_user_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_with_lower_roundness_bg">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civ_curr_user_avatar"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/ic_empty_user_avatar"
+                    app:civ_circle_background_color="@color/secondary_accent_color"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"
+                    app:civ_border_width="3dp"
+                    app:civ_border_color="@color/accent_color"/>
+                <TextView
+                    android:id="@+id/tv_curr_user_name_and_surname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/civ_curr_user_avatar"
+                    android:text="name surname"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:layout_below="@id/tv_curr_user_name_and_surname"
+                    android:id="@+id/tv_more_detailed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="More info"
+                    android:textColor="@color/secondary_text"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/ll_curr_user_counter_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:padding="10dp"
+                android:background="@drawable/rounded_layout_bg"
+                android:layout_below="@id/ll_main_user_info">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 friends"
+                    android:textColor="@color/secondary_text"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_curr_user_publication_storage"
+                android:layout_width="match_parent"
+                android:layout_height="600dp"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_layout_bg"
+                android:layout_below="@id/ll_curr_user_counter_friends">
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_element_bg"
+        android:padding="15dp"
+        android:nestedScrollingEnabled="true">
+        <TextView
+            android:id="@+id/tv_currnet_user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User id"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/iv_logout"
@@ -16,39 +110,4 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_centerInParent="true">
-        <RelativeLayout
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginBottom="10dp">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/civ_curr_user_avatar"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:src="@drawable/ic_empty_user_avatar"
-                app:civ_circle_background_color="#4000"/>
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/ciw_add_profile_photo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/baseline_add_24"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:clickable="true"
-                app:civ_circle_background_color="@color/cardview_dark_background"
-                />
-        </RelativeLayout>
-        <TextView
-            android:id="@+id/tv_curr_user_name_and_surname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="name surname"
-            android:textSize="20sp"/>
-    </LinearLayout>
 </RelativeLayout>

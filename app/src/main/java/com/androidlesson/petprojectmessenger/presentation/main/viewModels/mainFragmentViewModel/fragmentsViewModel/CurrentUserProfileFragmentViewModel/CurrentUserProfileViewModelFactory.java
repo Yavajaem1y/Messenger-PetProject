@@ -1,17 +1,13 @@
-package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel;
-
-import android.content.Context;
+package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.CurrentUserProfileFragmentViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.androidlesson.domain.main.models.UserData;
-
 public class CurrentUserProfileViewModelFactory implements ViewModelProvider.Factory {
 
 
-    public CurrentUserProfileViewModelFactory(Context context) {
+    public CurrentUserProfileViewModelFactory() {
     }
 
     @NonNull

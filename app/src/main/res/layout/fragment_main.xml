@@ -22,12 +22,12 @@
             android:layout_height="80dp"
             app:menu="@menu/main_bottom_nav_menu"
             app:labelVisibilityMode="unlabeled"
+            app:itemIconTint="@color/white"
             app:itemIconSize="40dp"
-            android:layout_alignParentBottom="true"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            app:itemActiveIndicatorStyle="@color/accent_color"
+            android:layout_alignParentBottom="true"
+            android:background="@color/secondary_text"
+            />
     </RelativeLayout>
 
 </FrameLayout>

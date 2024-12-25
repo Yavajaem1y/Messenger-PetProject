@@ -13,10 +13,7 @@ import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
 import com.androidlesson.domain.main.usecase.LogOutUseCase;
 import com.androidlesson.petprojectmessenger.presentation.main.MainFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.SetCurrentUserDataFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackLogOut;
 import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackUserDataIsSaved;
-import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableCallbackLogOut;
-import com.androidlesson.petprojectmessenger.presentation.main.model.SerializableUserData;
 
 public class MainActivityViewModel extends ViewModel {
 
@@ -31,9 +28,6 @@ public class MainActivityViewModel extends ViewModel {
         this.logOutUseCase=logOutUseCase;
 
         bundleForMainFragment=new Bundle();
-        bundleForMainFragment.putSerializable("CALLBACK_LOG_OUT",new SerializableCallbackLogOut(callbackLogOut));
-
-        logOutMutableLiveData.setValue(false);
 
         loadCurrentUserData();
     }
@@ -43,28 +37,15 @@ public class MainActivityViewModel extends ViewModel {
         return currentFragmentMutableLiveData;
     }
 
-    private MutableLiveData<Boolean> logOutMutableLiveData=new MutableLiveData<>();
-    public LiveData<Boolean> logOutLiveData(){
-        return logOutMutableLiveData;
-    }
-
     public MutableLiveData<Integer> newUserDataHasBeenReceivedMutableLiveData=new MutableLiveData<>(0);
     public LiveData<Integer> newUserDataHasBeenReceivedLiveData(){
         return newUserDataHasBeenReceivedMutableLiveData;
     }
 
-    private CallbackLogOut callbackLogOut=new CallbackLogOut() {
-        @Override
-        public void logout() {
-            logOutUseCase.execute();
-            logOutMutableLiveData.setValue(true);
-        }
-    };
-
     private CallbackUserDataIsSaved callbackUserDataIsSaved=new CallbackUserDataIsSaved() {
         @Override
         public void UserDataIsSaved(UserData userData) {
-            bundleForMainFragment.putSerializable("USERDATA",new SerializableUserData(userData));
+            bundleForMainFragment.putSerializable("USERDATA",userData);
             Fragment mainFragment=new MainFragment();
             mainFragment.setArguments(bundleForMainFragment);
             currentFragmentMutableLiveData.setValue(mainFragment);
@@ -83,7 +64,7 @@ public class MainActivityViewModel extends ViewModel {
             else {
                 if (currUserData==null || !MainActivityViewModel.this.equals(currUserData,userData)){
                     currUserData=userData;
-                    bundleForMainFragment.putSerializable("USERDATA",new SerializableUserData(userData));
+                    bundleForMainFragment.putSerializable("USERDATA",userData);
                     Log.d("AAA","UserData from db = "+userData.getUserId()+" "+userData.getUserName()+" "+userData.getUserSurname());
                     Fragment mainFragment=new MainFragment();
                     mainFragment.setArguments(bundleForMainFragment);
@@ -100,5 +81,9 @@ public class MainActivityViewModel extends ViewModel {
 
     private boolean equals(UserData first,UserData second){
         return first.getUserName().equals(second.getUserName()) && first.getUserSurname().equals(second.getUserSurname()) && first.getUserId().equals(second.getUserId());
+    }
+
+    public void logOut(){
+        logOutUseCase.execute();
     }
 }
