@@ -139,8 +139,6 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
         });
     }
 
-    public
-
     @Override
     public void checkAvailableIds(String id, CallbackCheckAvailableIds callbackcheckAvailableIds) {
         firebaseDatabase.getReference(DATABASE_SYSTEM_ID_TO_APP_ID).addListenerForSingleValueEvent(new ValueEventListener() {
