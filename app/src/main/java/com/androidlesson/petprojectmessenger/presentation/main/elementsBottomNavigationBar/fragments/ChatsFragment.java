@@ -8,15 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidlesson.petprojectmessenger.databinding.FragmentChatWithUserBinding;
+import com.androidlesson.petprojectmessenger.databinding.FragmentAllUserChatsBinding;
 
 public class ChatsFragment extends Fragment {
-    private FragmentChatWithUserBinding binding;
+    private FragmentAllUserChatsBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding= FragmentChatWithUserBinding.inflate(inflater, container, false);
+        binding= FragmentAllUserChatsBinding.inflate(inflater, container, false);
 
         return binding.getRoot();
     }

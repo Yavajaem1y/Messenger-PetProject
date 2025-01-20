@@ -10,6 +10,7 @@ import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllUserUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
 import com.androidlesson.domain.main.usecase.LogOutUseCase;
+import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
 import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
 
 import dagger.Module;
@@ -60,5 +61,8 @@ public class DomainModule {
         return new AddToFriendsUseCase(firebaseRepository);
     }
 
-
+    @Provides
+    public ObserveCurrentUserDataUseCase provideObserveCurrentUserDataUseCase(MainFirebaseRepository firebaseRepository){
+        return new ObserveCurrentUserDataUseCase(firebaseRepository);
+    }
 }

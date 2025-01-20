@@ -43,7 +43,9 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     private final String USER_ID="userId";
     private final String USER_SURNAME="userSurname";
     private final String USER_FRIENDS_IDS="friendsIds";
-    private final String USER_SUBSCRIBERS_IDS="taskToFriendsIds";
+    private final String USER_TASK_TO_FRIEND="taskToFriendsIds";
+    private final String USER_SUBSCRIBERS_IDS="subscribersIds";
+    private final String USER_CHATS_IDS="chatIds";
 
     //Initialization FirebaseDatabase
     public MainFirebaseRepositoryImpl() {
@@ -65,58 +67,73 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     //Get current user data
     @Override
     public void getUserData(CallbackGetUserData callbackGetUserData) {
-        firebaseDatabase.getReference(DATABASE_SYSTEM_ID_TO_APP_ID).child(userSystemId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    userId=snapshot.child(USER_ID).getValue(String.class);
-                    Log.d("AAA","id from db "+userId);
-                    firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(userId)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()) {
-                                        String name = snapshot.child(USER_NAME).getValue(String.class);
-                                        String surname = snapshot.child(USER_SURNAME).getValue(String.class);
+        if (userId == null) {
+            callbackGetUserData.getUserData(null);
+            return;  // Возвращаем, если userId еще не задан
+        }
 
-                                        List<String> friendsIds = new ArrayList<>();
-                                        for (DataSnapshot fIds : snapshot.child(USER_FRIENDS_IDS).getChildren()) {
-                                            if (fIds.exists()) {
-                                                friendsIds.add(fIds.getValue(String.class));
-                                            }
-                                        }
+        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String name = snapshot.child(USER_NAME).getValue(String.class);
+                            String surname = snapshot.child(USER_SURNAME).getValue(String.class);
 
-                                        List<String> subscribersIds = new ArrayList<>();
-                                        for (DataSnapshot fIds : snapshot.child(USER_SUBSCRIBERS_IDS).getChildren()) {
-                                            if (fIds.exists()) {
-                                                subscribersIds.add(fIds.getValue(String.class));
-                                            }
-                                        }
-
-                                        if (name != null && surname != null) {
-                                            callbackGetUserData.getUserData(new UserData(userId, name, surname, friendsIds, subscribersIds));
-                                        } else {
-                                            callbackGetUserData.getUserData(null);
-                                        }
-                                    } else {
-                                        callbackGetUserData.getUserData(null);
+                            if (name != null && surname != null) {
+                                List<String> friendsIds = new ArrayList<>();
+                                for (DataSnapshot friendSnapshot : snapshot.child(USER_FRIENDS_IDS).getChildren()) {
+                                    String friendId = friendSnapshot.getValue(String.class);
+                                    if (friendId != null) {
+                                        friendsIds.add(friendId);
                                     }
                                 }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    callbackGetUserData.getUserData(null);
+
+                                List<String> subscribersIds = new ArrayList<>();
+                                for (DataSnapshot fIds : snapshot.child(USER_SUBSCRIBERS_IDS).getChildren()) {
+                                    if (fIds.exists()) {
+                                        String subscriberId = fIds.getValue(String.class);
+                                        if (subscriberId != null) {
+                                            subscribersIds.add(subscriberId);
+                                        }
+                                    }
                                 }
-                            });
-                }
 
-            }
+                                List<String> taskToFriendsIds = new ArrayList<>();
+                                for (DataSnapshot fIds : snapshot.child(USER_TASK_TO_FRIEND).getChildren()) {
+                                    if (fIds.exists()) {
+                                        String taskId = fIds.getValue(String.class);
+                                        if (taskId != null) {
+                                            taskToFriendsIds.add(taskId);
+                                        }
+                                    }
+                                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                                List<String> chatsIds = new ArrayList<>();
+                                for (DataSnapshot fIds : snapshot.child(USER_CHATS_IDS).getChildren()) {
+                                    if (fIds.exists()) {
+                                        String chatId = fIds.getValue(String.class);
+                                        if (chatId != null) {
+                                            chatsIds.add(chatId);
+                                        }
+                                    }
+                                }
 
-            }
-        });
+                                callbackGetUserData.getUserData(new UserData(userId, name, surname, friendsIds, taskToFriendsIds, subscribersIds, chatsIds));
+                            } else {
+                                callbackGetUserData.getUserData(null);
+                            }
+                        } else {
+                            callbackGetUserData.getUserData(null);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callbackGetUserData.getUserData(null);
+                    }
+                });
     }
 
     @Override
@@ -146,8 +163,10 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     for (DataSnapshot child:snapshot.getChildren()){
-                        String idFromDb=child.child(USER_ID).getValue(String.class);
-                        if (id.equals(idFromDb)) callbackcheckAvailableIds.check(true);
+                        if (!child.getKey().equals("LAST_KEY")) {
+                            String idFromDb = child.child(USER_ID).getValue(String.class);
+                            if (id.equals(idFromDb)) callbackcheckAvailableIds.check(true);
+                        }
 
                     }
                     callbackcheckAvailableIds.check(false);
@@ -203,11 +222,13 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     List<UserData> users = new ArrayList<>();
+                    List<String> existingKeys = new ArrayList<>();
 
                     for (DataSnapshot child : snapshot.getChildren()) {
                         String key = child.getKey();
                         if (!key.equals(userId) && !existingKeys.contains(key)) {
                             existingKeys.add(key);
+
                             String userName = child.child(USER_NAME).getValue(String.class);
                             String userSurname = child.child(USER_SURNAME).getValue(String.class);
 
@@ -225,16 +246,24 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                                 }
                             }
 
-                            if (subscribersIds.isEmpty()) {
-                                Log.d("friend", "subscribersIds is empty");
+                            List<String> taskToFriendIds = new ArrayList<>();
+                            for (DataSnapshot fIds : child.child(USER_TASK_TO_FRIEND).getChildren()) {
+                                if (fIds.exists()) {
+                                    taskToFriendIds.add(fIds.getValue(String.class));
+                                }
                             }
-                            else Log.d("friend", "subscribersIds has "+subscribersIds.size());
 
-                            users.add(new UserData(key, userName, userSurname, friendsIds, subscribersIds));
+                            List<String> chatsIds = new ArrayList<>();
+                            for (DataSnapshot fIds : child.child(USER_CHATS_IDS).getChildren()) {
+                                if (fIds.exists()) {
+                                    chatsIds.add(fIds.getValue(String.class));
+                                }
+                            }
+
+                            users.add(new UserData(key, userName, userSurname, friendsIds, taskToFriendIds, subscribersIds, chatsIds));
                         }
                     }
 
-                    // Возвращаем результат, когда все данные обработаны
                     emitter.onNext(users);
                     emitter.onComplete();
                 }
@@ -249,16 +278,47 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
 
     @Override
     public void addFriend(UserData currUser, UserData anotherUser) {
-        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(currUser.getUserId()).setValue(new UserInfo(currUser));
-        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(anotherUser.getUserId()).setValue(new UserInfo(anotherUser));
+        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(anotherUser.getUserId()).child(USER_TASK_TO_FRIEND).setValue(anotherUser.getTaskToFriendsIds());
+        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(anotherUser.getUserId()).child(USER_FRIENDS_IDS).setValue(anotherUser.getFriendsIds());
+
+        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(currUser.getUserId()).child(USER_FRIENDS_IDS).setValue(currUser.getFriendsIds());
+        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(currUser.getUserId()).child(USER_SUBSCRIBERS_IDS).setValue(currUser.getSubscribersIds());
+
     }
 
     @Override
-    public void subscribeOnUser(UserData anotherUser) {
-        List<String> c=anotherUser.getTaskToFriendsIds();
-        for (String i:c){
-            Log.d("friend","task to db - "+i);
-        }
-        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(anotherUser.getUserId()).setValue(new UserInfo(anotherUser));
+    public void subscribeOnUser(UserData currUser,UserData anotherUser) {
+        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(anotherUser.getUserId()).child(USER_SUBSCRIBERS_IDS).setValue(anotherUser.getSubscribersIds());
+        firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(currUser.getUserId()).child(USER_TASK_TO_FRIEND).setValue(currUser.getTaskToFriendsIds());
+    }
+
+    @Override
+    public void observeUserData(CallbackGetUserData callbackGetUserData) {
+        firebaseDatabase.getReference(DATABASE_SYSTEM_ID_TO_APP_ID).child(userSystemId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    userId = snapshot.child(USER_ID).getValue(String.class);
+                    firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(userId).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            UserData user=snapshot.getValue(UserData.class);
+                            user.setUserId(userId);
+                            if (user!=null) callbackGetUserData.getUserData(user);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

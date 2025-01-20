@@ -3,9 +3,13 @@ package com.androidlesson.petprojectmessenger.presentation.main;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -81,4 +85,5 @@ public class MainActivity extends AppCompatActivity implements OnDataPass{
         vm.logOut();
         finish();
     }
+
 }

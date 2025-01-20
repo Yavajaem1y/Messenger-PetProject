@@ -1,14 +1,9 @@
 package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.androidlesson.data.main.repository.MainFirebaseRepositoryImpl;
-import com.androidlesson.data.main.repository.MainSharedPrefRepositoryImpl;
-import com.androidlesson.domain.main.repository.MainFirebaseRepository;
-import com.androidlesson.domain.main.repository.MainSharedPrefRepository;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
 import com.androidlesson.domain.main.usecase.LogOutUseCase;
 

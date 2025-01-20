@@ -1,5 +1,7 @@
 package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.AllUsersFragmetViewModel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -16,7 +18,13 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class AllUsersFragmentViewModel extends ViewModel {
     private final CompositeDisposable disposable = new CompositeDisposable();
+
     private String lastKey = null;
+    private UserData currUser;
+    private boolean filerFriends;
+
+    private List<UserData> allUsers=new ArrayList<>();
+    private List<UserData> friends = new ArrayList<>();
 
     private LoadAllUserUseCase loadAllUserUseCase;
 
@@ -27,6 +35,10 @@ public class AllUsersFragmentViewModel extends ViewModel {
     private final MutableLiveData<List<UserData>> usersLiveData = new MutableLiveData<>();
     public LiveData<List<UserData>> getUsersLiveData() {
         return usersLiveData;
+    }
+
+    private void setCurrUser(UserData currUser){
+        this.currUser=currUser;
     }
 
 
@@ -40,13 +52,37 @@ public class AllUsersFragmentViewModel extends ViewModel {
                             if (!users.isEmpty()) {
                                 lastKey = users.get(users.size() - 1).getUserId();
                             }
-                            List<UserData> currentUsers = usersLiveData.getValue() != null ? usersLiveData.getValue() : new ArrayList<>();
-                            currentUsers.addAll(users);
-                            usersLiveData.setValue(currentUsers);
-                        }, throwable -> {
+                            allUsers.addAll(users);
 
+                            Log.d("AAA",String.valueOf(allUsers.size()));
+
+                            filterFriends(users);
+                            filterUsers();
+
+                        }, throwable -> {
+                            Log.e("LoadError", "Error loading users", throwable);
                         })
         );
+    }
+
+    public void setFilerFriends(boolean bool){
+        filerFriends=bool;
+    }
+
+    private void filterFriends(List<UserData> newUsers) {
+        if (currUser.getFriendsIds() == null || currUser.getFriendsIds().isEmpty()) return;
+
+        for (UserData user : newUsers) {
+            if (currUser.getFriendsIds().contains(user.getUserId())) {
+                friends.add(user);
+                Log.d("friend",user.getUserId());
+            }
+        }
+    }
+
+    private void filterUsers() {
+        List<UserData> filteredList = Boolean.TRUE.equals(filerFriends) ? allUsers : friends;
+        usersLiveData.setValue(filteredList);
     }
 
     @Override

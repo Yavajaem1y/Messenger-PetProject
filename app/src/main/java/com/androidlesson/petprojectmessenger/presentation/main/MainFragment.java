@@ -16,14 +16,26 @@ import android.view.ViewGroup;
 
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.petprojectmessenger.R;
+import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.databinding.FragmentMainBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.MainFragmentViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import javax.inject.Inject;
 
 public class MainFragment extends Fragment {
 
     private FragmentMainBinding binding;
     private MainFragmentViewModel vm;
+    private SharedViewModel sharedVM;
+
+    @Inject
+    MainFragmentViewModelFactory mvFactory;
+    @Inject
+    SharedViewModelFactory svmFactory;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -63,12 +75,17 @@ public class MainFragment extends Fragment {
     }
 
     private void initialization() {
-        vm = new ViewModelProvider(requireActivity()).get(MainFragmentViewModel.class);
+        ((App) requireActivity().getApplication()).appComponent.injectMainFragment(this);
+
+        vm = new ViewModelProvider(requireActivity(),mvFactory).get(MainFragmentViewModel.class);
+        sharedVM=new ViewModelProvider(requireActivity(),svmFactory).get(SharedViewModel.class);
+
+        sharedVM.loadUserData();
 
         currFragment=vm.getMainFragmentSceneLiveData().getValue();
         if (currFragment!=null) getParentFragmentManager().beginTransaction().replace(R.id.fl_main_fragment_container, currFragment).commit();
 
-        vm.setFragmentsInfo(currUserData);
+        vm.setFragmentsInfo();
 
         bottomNavigationView=binding.bnvMainBottomBar;
         bottomNavigationView.setItemIconTintList(null);
@@ -79,15 +96,18 @@ public class MainFragment extends Fragment {
             @Override
             public void onChanged(Fragment fragment) {
                 if (fragment!=null && (currFragment==null || currFragment!=fragment)) {
-                    Log.d("AAA", "Refresh fragment in MainFragment to" + fragment);
                     currFragment=fragment;
                     getParentFragmentManager().beginTransaction().replace(R.id.fl_main_fragment_container, fragment).commit();
                 }
             }
         });
 
-
-
+        sharedVM.getUserData().observe(getViewLifecycleOwner(), new Observer<UserData>() {
+            @Override
+            public void onChanged(UserData userData) {
+                vm.setUserData(userData);
+            }
+        });
     }
 
     private void setOnItemClicker(){

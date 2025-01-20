@@ -15,15 +15,11 @@ import android.widget.Toast;
 
 import com.androidlesson.domain.main.models.Error;
 import com.androidlesson.domain.main.models.UserData;
-import com.androidlesson.domain.main.models.UserInfo;
 import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.databinding.FragmentSetCurrentUserDataBinding;
-import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackUserDataIsSaved;
+import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackWithUserData;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVM;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVMFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,9 +34,9 @@ public class SetCurrentUserDataFragment extends Fragment {
     @Inject
     SetCurrentUserDataFragmentVMFactory setCurrentUserDataFragmentVMFactory;
 
-    private CallbackUserDataIsSaved callbackUserDataIsSaved;
+    private CallbackWithUserData callbackUserDataIsSaved;
 
-    public SetCurrentUserDataFragment(CallbackUserDataIsSaved callbackUserDataIsSaved) {
+    public SetCurrentUserDataFragment(CallbackWithUserData callbackUserDataIsSaved) {
         this.callbackUserDataIsSaved = callbackUserDataIsSaved;
     }
 
@@ -73,7 +69,7 @@ public class SetCurrentUserDataFragment extends Fragment {
         vm.getUserDataLiveData().observe(getActivity(), new Observer<UserData>() {
             @Override
             public void onChanged(UserData userData) {
-                callbackUserDataIsSaved.UserDataIsSaved(userData);
+                callbackUserDataIsSaved.getUserData(userData);
             }
         });
 

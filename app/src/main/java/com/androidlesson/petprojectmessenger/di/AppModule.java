@@ -9,13 +9,15 @@ import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllUserUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
 import com.androidlesson.domain.main.usecase.LogOutUseCase;
+import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
 import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
 import com.androidlesson.petprojectmessenger.presentation.authorization.AuthorizationViewModelFactory;
-import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.anotherActivity.AnotherUserProfileActivity;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.anotherUserProfileActivityViewModel.AnotherUserProfileActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.AllUsersFragmetViewModel.AllUsersFragmentViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.MainFragmentViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVMFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
 
 import dagger.Module;
 import dagger.Provides;
@@ -33,6 +35,12 @@ public class AppModule {
     @Provides
     public Context provideContext() {
         return context;
+    }
+
+    //SharedViewModelFactory
+    @Provides
+    public SharedViewModelFactory provideSharedViewModelFactory(ObserveCurrentUserDataUseCase observeCurrentUserDataUseCase){
+        return new SharedViewModelFactory(observeCurrentUserDataUseCase);
     }
 
     //AuthorizationViewModelFactory
@@ -63,5 +71,10 @@ public class AppModule {
     @Provides
     public AnotherUserProfileActivityViewModelFactory provideAnotherUserProfileActivityViewModelFactory(AddToFriendsUseCase addToFriendsUseCase) {
         return new AnotherUserProfileActivityViewModelFactory(addToFriendsUseCase);
+    }
+
+    @Provides
+    public MainFragmentViewModelFactory provideMainFragmentViewModelFactory() {
+        return new MainFragmentViewModelFactory();
     }
 }

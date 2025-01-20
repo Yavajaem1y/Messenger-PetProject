@@ -1,9 +1,12 @@
 package com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,14 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.databinding.FragmentAllUsersBinding;
-import com.androidlesson.petprojectmessenger.presentation.main.MainFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.adapter.UserAdapter;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.AllUsersFragmetViewModel.AllUsersFragmentViewModel;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.AllUsersFragmetViewModel.AllUsersFragmentViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
 
 import javax.inject.Inject;
 
@@ -27,22 +32,17 @@ public class AllUsersFragment extends Fragment {
     private FragmentAllUsersBinding binding;
 
     private AllUsersFragmentViewModel vm;
+    private SharedViewModel sharedViewModel;
+
     @Inject
     AllUsersFragmentViewModelFactory allUsersFragmentViewModelFactory;
+    @Inject
+    SharedViewModelFactory sharedViewModelFactory;
+    private RelativeLayout rl_all_users_filter, rl_my_friends_filter;
+    private RecyclerView recyclerView;
 
     private UserAdapter userAdapter;
-    private RecyclerView recyclerView;
     private boolean isLoading = false;
-
-    private UserData currUser;
-
-    public static MainFragment newInstance(UserData userData) {
-        MainFragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("USERDATA",userData);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +50,8 @@ public class AllUsersFragment extends Fragment {
         binding= FragmentAllUsersBinding.inflate(inflater, container, false);
 
         initialization();
+
+        setOnClickListener();
 
         setObserver();
 
@@ -61,13 +63,15 @@ public class AllUsersFragment extends Fragment {
     private void initialization(){
         ((App) requireActivity().getApplication()).appComponent.injectAllUsersFragment(this);
         vm= new ViewModelProvider(this,allUsersFragmentViewModelFactory).get(AllUsersFragmentViewModel.class);
+        sharedViewModel=new ViewModelProvider(this,sharedViewModelFactory).get(SharedViewModel.class);
 
         recyclerView=binding.rvUsers;
+        rl_all_users_filter=binding.rlAllUsersFilter;
+        rl_my_friends_filter=binding.rlMyFriendsFilter;
 
-        if(getArguments()!=null){
-            currUser=(UserData) getArguments().get("USERDATA");
-        }
+        UserData currUser=sharedViewModel.getUserData().getValue();
 
+        vm.setFilerFriends(false);
         userAdapter = new UserAdapter(getContext(),currUser);
         recyclerView.setAdapter(userAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -77,8 +81,29 @@ public class AllUsersFragment extends Fragment {
 
     private void setObserver(){
         vm.getUsersLiveData().observe(getViewLifecycleOwner(), users -> {
-            userAdapter.addUsers(users);
+            userAdapter.updateData(users);
             isLoading = false;
+        });
+
+        sharedViewModel.getUserData().observe(getViewLifecycleOwner(), new Observer<UserData>() {
+            @Override
+            public void onChanged(UserData userData) {
+                userAdapter.setCurrUser(userData);
+            }
+        });
+    }
+
+    private void setOnClickListener(){
+        rl_all_users_filter.setOnClickListener(v->{
+            vm.setFilerFriends(false);
+            binding.tvTextAllUsersFilter.setTextColor(Color.parseColor("#D3E4B7"));
+            binding.tvTextMyFriendsFilter.setTextColor(Color.parseColor("#FFFFFFFF"));
+        });
+
+        rl_my_friends_filter.setOnClickListener(v->{
+            vm.setFilerFriends(true);
+            binding.tvTextMyFriendsFilter.setTextColor(Color.parseColor("#D3E4B7"));
+            binding.tvTextAllUsersFilter.setTextColor(Color.parseColor("#FFFFFFFF"));
         });
     }
 

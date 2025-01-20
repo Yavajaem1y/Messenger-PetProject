@@ -18,5 +18,6 @@ public interface MainFirebaseRepository {
     public void logOut();
     public Observable<List<UserData>> loadAllUser(String lastKey, int limit);
     public void addFriend(UserData currUser,UserData anotherUser);
-    public void subscribeOnUser(UserData anotherUser);
+    public void subscribeOnUser(UserData currUser,UserData anotherUser);
+    public void observeUserData(CallbackGetUserData callbackGetUserData);
 }

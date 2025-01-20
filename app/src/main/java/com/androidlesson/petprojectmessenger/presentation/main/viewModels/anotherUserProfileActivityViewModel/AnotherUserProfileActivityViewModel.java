@@ -36,8 +36,7 @@ public class AnotherUserProfileActivityViewModel extends ViewModel {
     }
 
     public void addToFriend(UserData currentUser){
-        UserData user=anotherUserDataMutableLiveData.getValue();
-        addToFriendsUseCase.execute(anotherUserDataMutableLiveData.getValue(),currentUser);
+        addToFriendsUseCase.execute(currentUser,getAnotherUserDataLiveData().getValue());
     }
 
     public void sendAMessage(UserData currentUser){

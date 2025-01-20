@@ -13,36 +13,29 @@ public class AddToFriendsUseCase {
         this.firebaseRepository = firebaseRepository;
     }
 
-    public void execute(UserData anotherUser,UserData currUser){
+    public void execute(UserData currUser,UserData anotherUser){
+        if (currUser!=null && anotherUser!=null){
+            if (currUser.getFriendsIds().contains(anotherUser.getUserId()) || anotherUser.getSubscribersIds().contains(currUser.getUserId())){
+                return;
+            }
+            else{
+                if (anotherUser.getTaskToFriendsIds().contains(currUser.getUserId())){
 
-        List<String> currUserSubscribers=currUser.getTaskToFriendsIds();
-        List<String> currUserFriends =currUser.getFriendsIds();
+                    anotherUser.removeTaskToFriend(currUser.getUserId());
+                    anotherUser.addToFriend(currUser.getUserId());
 
-        List<String> anotherUserSubscribers=anotherUser.getTaskToFriendsIds();
-        List<String> anotherUserFriends= anotherUser.getFriendsIds();
+                    currUser.addToFriend(anotherUser.getUserId());
+                    currUser.removeSubscriber(anotherUser.getUserId());
 
-        if (anotherUserSubscribers.contains(currUser.getUserId()) || currUserFriends.contains(anotherUser.getUserId())) return;
+                    firebaseRepository.addFriend(currUser,anotherUser);
+                }
+                else{
+                    anotherUser.addSubscriber(currUser.getUserId());
+                    currUser.addTaskToFriend(anotherUser.getUserId());
 
-        if (currUserSubscribers!=null && currUserSubscribers.contains(anotherUser.getUserId())){
-
-            currUserSubscribers.remove(anotherUser.getUserId());
-            currUser.setTaskToFriendsIds(currUserSubscribers);
-            if (currUserFriends==null) currUserFriends=new ArrayList<>();
-            currUserFriends.add(anotherUser.getUserId());
-            currUser.setFriendsIds(currUserFriends);
-
-            if (anotherUserFriends==null) anotherUserFriends=new ArrayList<>();
-            anotherUserFriends.add(currUser.getUserId());
-            anotherUser.setFriendsIds(anotherUserFriends);
-
-            firebaseRepository.addFriend(currUser,anotherUser);
-        }
-        else {
-            if(anotherUserSubscribers==null) anotherUserSubscribers=new ArrayList<>();
-            anotherUserSubscribers.add(currUser.getUserId());
-            anotherUser.setTaskToFriendsIds(anotherUserSubscribers);
-
-            firebaseRepository.subscribeOnUser(anotherUser);
+                    firebaseRepository.subscribeOnUser(currUser,anotherUser);
+                }
+            }
         }
     }
 }

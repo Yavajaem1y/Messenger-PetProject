@@ -9,10 +9,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.androidlesson.domain.main.models.UserData;
+import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
 import com.androidlesson.petprojectmessenger.R;
 import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.AllUsersFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.ChatsFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.CurrentUserProfileFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,30 +24,22 @@ public class MainFragmentViewModel extends ViewModel {
     private UserData userData;
 
     public MainFragmentViewModel() {
-        Log.d("AAA","VM create");
     }
 
     //Set fragments with info since last activity
-    public void setFragmentsInfo(UserData userData){
+    public void setFragmentsInfo(){
         if (fragmentMap.isEmpty() || this.userData!=userData){
-
-            this.userData=userData;
-            Bundle bundleForCurrentUserProfileFragment=new Bundle();
-            bundleForCurrentUserProfileFragment.putSerializable("USERDATA",userData);
 
             //Creating user profile fragment
             Fragment currUserProfileFragment=new CurrentUserProfileFragment();
-            currUserProfileFragment.setArguments(bundleForCurrentUserProfileFragment);
             fragmentMap.put(R.id.navigation_current_user_profile,currUserProfileFragment);
 
             //Creating all users fragment
             Fragment allUsersFragment= new AllUsersFragment();
-            allUsersFragment.setArguments(bundleForCurrentUserProfileFragment);
             fragmentMap.put(R.id.navigation_all_users,allUsersFragment);
 
             //Creating other models
             fragmentMap.put(R.id.navigation_chats,new ChatsFragment());
-            Log.d("AAA","Map is empty");
             mainFragmentSceneMutableLiveData.setValue(fragmentMap.get(R.id.navigation_current_user_profile));
         }
     }
@@ -66,5 +60,9 @@ public class MainFragmentViewModel extends ViewModel {
         if (mainFragmentSceneMutableLiveData!=null && mainFragmentSceneMutableLiveData.getValue()!=fragmentMap.get(id)){
             mainFragmentSceneMutableLiveData.setValue(fragmentMap.get(id));
         }
+    }
+
+    public void setUserData(UserData userData){
+        this.userData=userData;
     }
 }

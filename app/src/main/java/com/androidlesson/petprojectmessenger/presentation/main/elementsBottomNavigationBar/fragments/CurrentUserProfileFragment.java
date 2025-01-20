@@ -20,11 +20,16 @@ import android.widget.TextView;
 
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.petprojectmessenger.R;
+import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.databinding.FragmentCurrentUserProfileBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.MainFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.OnDataPass;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.CurrentUserProfileFragmentViewModel.CurrentUserProfileViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
 
+
+import javax.inject.Inject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -33,30 +38,19 @@ public class CurrentUserProfileFragment extends Fragment {
     private FragmentCurrentUserProfileBinding binding;
     private CurrentUserProfileViewModel vm;
 
+    private SharedViewModel sharedViewModel;
+    @Inject
+    SharedViewModelFactory sharedViewModelFactory;
+
     private ImageView iv_logout;
     private TextView tv_name_and_surname,tv_user_id;
     private CircleImageView ciw_profile_avatar;
     private ScrollView sv_main;
     private RelativeLayout rl_bottom;
 
-    //User data from fragment
-    private UserData currUserData;
-
-
-    public static MainFragment newInstance(UserData userData) {
-        MainFragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("USERDATA",userData);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments()!=null){
-            currUserData=(UserData) getArguments().get("USERDATA");
-        }
     }
 
     @Override
@@ -76,9 +70,12 @@ public class CurrentUserProfileFragment extends Fragment {
     }
 
     private void init() {
-        vm=new ViewModelProvider(requireActivity()).get(CurrentUserProfileViewModel.class);
+        ((App) requireActivity().getApplication()).appComponent.injectCurrentUserProfileFragment(this);
 
-        vm.setVMInfo(currUserData);
+        vm=new ViewModelProvider(requireActivity()).get(CurrentUserProfileViewModel.class);
+        sharedViewModel=new ViewModelProvider(requireActivity(),sharedViewModelFactory).get(SharedViewModel.class);
+
+        vm.setVMInfo(sharedViewModel.getUserData().getValue());
 
         iv_logout=binding.ivLogout;
         tv_name_and_surname=binding.tvCurrUserNameAndSurname;
@@ -124,6 +121,13 @@ public class CurrentUserProfileFragment extends Fragment {
                     rl_bottom.setVisibility(View.GONE);
                     iv_logout.setColorFilter(getResources().getColor(R.color.accent_color));
                 }
+            }
+        });
+
+        sharedViewModel.getUserData().observe(getViewLifecycleOwner(), new Observer<UserData>() {
+            @Override
+            public void onChanged(UserData userData) {
+                vm.setVMInfo(userData);
             }
         });
     }

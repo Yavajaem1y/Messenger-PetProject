@@ -8,12 +8,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
-import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
+import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackWithUserData;
+import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.usecase.LogOutUseCase;
 import com.androidlesson.petprojectmessenger.presentation.main.MainFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.SetCurrentUserDataFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackUserDataIsSaved;
 
 public class MainActivityViewModel extends ViewModel {
 
@@ -42,41 +42,41 @@ public class MainActivityViewModel extends ViewModel {
         return newUserDataHasBeenReceivedMutableLiveData;
     }
 
-    private CallbackUserDataIsSaved callbackUserDataIsSaved=new CallbackUserDataIsSaved() {
+    private CallbackWithUserData callbackUserDataIsSaved=new CallbackWithUserData() {
         @Override
-        public void UserDataIsSaved(UserData userData) {
-            bundleForMainFragment.putSerializable("USERDATA",userData);
-            Fragment mainFragment=new MainFragment();
-            mainFragment.setArguments(bundleForMainFragment);
-            currentFragmentMutableLiveData.setValue(mainFragment);
+        public void getUserData(UserData userData) {
+            createMainFragment(userData);
         }
     };
 
     private UserData currUserData;
 
-    private final CallbackGetUserData callbackGetUserData=new CallbackGetUserData() {
+    private final CallbackGetUserData callbackWithUserData = new CallbackGetUserData() {
         @Override
         public void getUserData(UserData userData) {
             if (userData==null) {
                 Log.d("AAA","UserData from db = null");
-                currentFragmentMutableLiveData.setValue(new SetCurrentUserDataFragment(callbackUserDataIsSaved));
+                currentFragmentMutableLiveData.setValue(new SetCurrentUserDataFragment( callbackUserDataIsSaved));
             }
             else {
                 if (currUserData==null || !MainActivityViewModel.this.equals(currUserData,userData)){
                     currUserData=userData;
-                    bundleForMainFragment.putSerializable("USERDATA",userData);
-                    Log.d("AAA","UserData from db = "+userData.getUserId()+" "+userData.getUserName()+" "+userData.getUserSurname());
-                    Fragment mainFragment=new MainFragment();
-                    mainFragment.setArguments(bundleForMainFragment);
-                    currentFragmentMutableLiveData.setValue(mainFragment);
+                    createMainFragment(userData);
                 }
             }
         }
     };
 
+    private void createMainFragment(UserData userData){
+        bundleForMainFragment.putSerializable("USERDATA",userData);
+        Fragment mainFragment=new MainFragment();
+        mainFragment.setArguments(bundleForMainFragment);
+        currentFragmentMutableLiveData.setValue(mainFragment);
+    }
+
     private void loadCurrentUserData(){
         Log.d("AAA","LoadData start");
-        loadUserDataUseCase.execute(callbackGetUserData);
+        loadUserDataUseCase.execute(callbackWithUserData);
     }
 
     private boolean equals(UserData first,UserData second){

@@ -20,9 +20,7 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private final List<UserData> users = new ArrayList<>();
-    int startPosition = 0;
-
-    private Context context;
+    private final Context context;
     private UserData currUser;
 
     public UserAdapter(Context context, UserData currUser) {
@@ -30,14 +28,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         this.currUser = currUser;
     }
 
-    public void addUsers(List<UserData> newUsers) {
-        for (UserData userData:newUsers){
-            if (!users.contains(userData)){
-                startPosition +=1;
-                users.add(userData);
-                notifyItemRangeInserted(startPosition, newUsers.size());
-            }
-        }
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(List<UserData> newUsers) {
+        users.clear();
+        users.addAll(newUsers);
+        notifyDataSetChanged();
+    }
+
+    public void setCurrUser(UserData user){
+        currUser=user;
     }
 
     @NonNull
@@ -48,16 +47,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         UserData user = users.get(position);
         holder.bind(user);
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, AnotherUserProfileActivity.class);
-
             intent.putExtra("ANOTHER_USER_DATA", user);
             intent.putExtra("CURRENT_USER_DATA", currUser);
-
             context.startActivity(intent);
         });
     }
