@@ -3,6 +3,7 @@ package com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNa
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +31,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     @SuppressLint("NotifyDataSetChanged")
     public void updateData(List<UserData> newUsers) {
-        users.clear();
-        users.addAll(newUsers);
+        if (newUsers == null || newUsers.isEmpty()) {
+            users.clear();
+        } else {
+            users.clear();
+            users.addAll(newUsers);
+        }
         notifyDataSetChanged();
     }
 

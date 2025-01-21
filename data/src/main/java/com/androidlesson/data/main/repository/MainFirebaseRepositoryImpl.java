@@ -232,35 +232,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                             String userName = child.child(USER_NAME).getValue(String.class);
                             String userSurname = child.child(USER_SURNAME).getValue(String.class);
 
-                            List<String> friendsIds = new ArrayList<>();
-                            for (DataSnapshot fIds : child.child(USER_FRIENDS_IDS).getChildren()) {
-                                if (fIds.exists()) {
-                                    friendsIds.add(fIds.getValue(String.class));
-                                }
-                            }
-
-                            List<String> subscribersIds = new ArrayList<>();
-                            for (DataSnapshot fIds : child.child(USER_SUBSCRIBERS_IDS).getChildren()) {
-                                if (fIds.exists()) {
-                                    subscribersIds.add(fIds.getValue(String.class));
-                                }
-                            }
-
-                            List<String> taskToFriendIds = new ArrayList<>();
-                            for (DataSnapshot fIds : child.child(USER_TASK_TO_FRIEND).getChildren()) {
-                                if (fIds.exists()) {
-                                    taskToFriendIds.add(fIds.getValue(String.class));
-                                }
-                            }
-
-                            List<String> chatsIds = new ArrayList<>();
-                            for (DataSnapshot fIds : child.child(USER_CHATS_IDS).getChildren()) {
-                                if (fIds.exists()) {
-                                    chatsIds.add(fIds.getValue(String.class));
-                                }
-                            }
-
-                            users.add(new UserData(key, userName, userSurname, friendsIds, taskToFriendIds, subscribersIds, chatsIds));
+                            users.add(new UserData(key, userName, userSurname));
                         }
                     }
 
@@ -304,7 +276,9 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             UserData user=snapshot.getValue(UserData.class);
                             user.setUserId(userId);
-                            if (user!=null) callbackGetUserData.getUserData(user);
+                            if (user!=null) {
+                                callbackGetUserData.getUserData(user);
+                            }
                         }
 
                         @Override

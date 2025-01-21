@@ -21,12 +21,11 @@ public class AllUsersFragmentViewModel extends ViewModel {
 
     private String lastKey = null;
     private UserData currUser;
-    private boolean filerFriends;
 
     private List<UserData> allUsers=new ArrayList<>();
     private List<UserData> friends = new ArrayList<>();
 
-    private LoadAllUserUseCase loadAllUserUseCase;
+    public LoadAllUserUseCase loadAllUserUseCase;
 
     public AllUsersFragmentViewModel(LoadAllUserUseCase loadAllUserUseCase) {
         this.loadAllUserUseCase = loadAllUserUseCase;
@@ -37,10 +36,21 @@ public class AllUsersFragmentViewModel extends ViewModel {
         return usersLiveData;
     }
 
-    private void setCurrUser(UserData currUser){
-        this.currUser=currUser;
+    public void setCurrUser(UserData userData) {
+        this.currUser = userData;
+        filterFriends();
     }
 
+    private void filterFriends() {
+        friends.clear();
+        if (currUser != null && currUser.getFriendsIds() != null) {
+            for (UserData user : allUsers) {
+                if (currUser.getFriendsIds().contains(user.getUserId())) {
+                    friends.add(user);
+                }
+            }
+        }
+    }
 
     //Load users from db
     public void loadMoreUsers(int limit) {
@@ -49,39 +59,51 @@ public class AllUsersFragmentViewModel extends ViewModel {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(users -> {
-                            if (!users.isEmpty()) {
+                            if (users != null && !users.isEmpty()) {
                                 lastKey = users.get(users.size() - 1).getUserId();
+                                allUsers.addAll(users);
+                                filterFriends(users);
+                                filterUsers();
+                            } else {
                             }
-                            allUsers.addAll(users);
-
-                            Log.d("AAA",String.valueOf(allUsers.size()));
-
-                            filterFriends(users);
-                            filterUsers();
-
                         }, throwable -> {
                             Log.e("LoadError", "Error loading users", throwable);
                         })
         );
     }
 
-    public void setFilerFriends(boolean bool){
-        filerFriends=bool;
-    }
-
     private void filterFriends(List<UserData> newUsers) {
-        if (currUser.getFriendsIds() == null || currUser.getFriendsIds().isEmpty()) return;
+        friends.clear();
+        if (currUser == null || currUser.getFriendsIds() == null) {
+            return;
+        }
 
         for (UserData user : newUsers) {
             if (currUser.getFriendsIds().contains(user.getUserId())) {
                 friends.add(user);
-                Log.d("friend",user.getUserId());
             }
         }
     }
 
+    private boolean filterFriends = false;
+
+    public void setFilerFriends(boolean filter) {
+        this.filterFriends = filter;
+        filterUsers();
+    }
+
     private void filterUsers() {
-        List<UserData> filteredList = Boolean.TRUE.equals(filerFriends) ? allUsers : friends;
+        List<UserData> filteredList;
+        if (filterFriends && currUser != null && currUser.getFriendsIds() != null) {
+            filteredList = new ArrayList<>();
+            for (UserData user : allUsers) {
+                if (currUser.getFriendsIds().contains(user.getUserId())) {
+                    filteredList.add(user);
+                }
+            }
+        } else {
+            filteredList = new ArrayList<>(allUsers);
+        }
         usersLiveData.setValue(filteredList);
     }
 

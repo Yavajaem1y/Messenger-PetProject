@@ -85,7 +85,7 @@ public class MainFragment extends Fragment {
         currFragment=vm.getMainFragmentSceneLiveData().getValue();
         if (currFragment!=null) getParentFragmentManager().beginTransaction().replace(R.id.fl_main_fragment_container, currFragment).commit();
 
-        vm.setFragmentsInfo();
+        vm.setFragmentsInfo(currUserData);
 
         bottomNavigationView=binding.bnvMainBottomBar;
         bottomNavigationView.setItemIconTintList(null);

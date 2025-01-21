@@ -27,15 +27,21 @@ public class MainFragmentViewModel extends ViewModel {
     }
 
     //Set fragments with info since last activity
-    public void setFragmentsInfo(){
+    public void setFragmentsInfo(UserData userData){
         if (fragmentMap.isEmpty() || this.userData!=userData){
+
+            this.userData=userData;
+            Bundle bundleForCurrentUserProfileFragment=new Bundle();
+            bundleForCurrentUserProfileFragment.putSerializable("USERDATA",userData);
 
             //Creating user profile fragment
             Fragment currUserProfileFragment=new CurrentUserProfileFragment();
+            currUserProfileFragment.setArguments(bundleForCurrentUserProfileFragment);
             fragmentMap.put(R.id.navigation_current_user_profile,currUserProfileFragment);
 
             //Creating all users fragment
             Fragment allUsersFragment= new AllUsersFragment();
+            allUsersFragment.setArguments(bundleForCurrentUserProfileFragment);
             fragmentMap.put(R.id.navigation_all_users,allUsersFragment);
 
             //Creating other models

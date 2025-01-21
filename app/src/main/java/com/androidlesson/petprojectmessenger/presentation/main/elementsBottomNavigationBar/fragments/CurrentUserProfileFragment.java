@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,10 +49,25 @@ public class CurrentUserProfileFragment extends Fragment {
     private ScrollView sv_main;
     private RelativeLayout rl_bottom;
 
+    //User data from fragment
+    private UserData currUserData;
+    public static MainFragment newInstance(UserData userData) {
+        MainFragment fragment = new MainFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("USERDATA",userData);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments()!=null){
+            currUserData=(UserData) getArguments().get("USERDATA");
+        }
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +91,7 @@ public class CurrentUserProfileFragment extends Fragment {
         vm=new ViewModelProvider(requireActivity()).get(CurrentUserProfileViewModel.class);
         sharedViewModel=new ViewModelProvider(requireActivity(),sharedViewModelFactory).get(SharedViewModel.class);
 
-        vm.setVMInfo(sharedViewModel.getUserData().getValue());
+        vm.setVMInfo(currUserData);
 
         iv_logout=binding.ivLogout;
         tv_name_and_surname=binding.tvCurrUserNameAndSurname;
@@ -127,7 +143,12 @@ public class CurrentUserProfileFragment extends Fragment {
         sharedViewModel.getUserData().observe(getViewLifecycleOwner(), new Observer<UserData>() {
             @Override
             public void onChanged(UserData userData) {
-                vm.setVMInfo(userData);
+                if (userData != null) {
+                    Log.d("CurrentUserProfile", "User data received: " + userData.getUserName());
+                    vm.setVMInfo(userData);
+                } else {
+                    Log.d("CurrentUserProfile", "User data is null");
+                }
             }
         });
     }
