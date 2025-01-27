@@ -44,7 +44,7 @@ public class CurrentUserProfileFragment extends Fragment {
     SharedViewModelFactory sharedViewModelFactory;
 
     private ImageView iv_logout;
-    private TextView tv_name_and_surname,tv_user_id;
+    private TextView tv_name_and_surname,tv_user_id,tv_number_of_friends;
     private CircleImageView ciw_profile_avatar;
     private ScrollView sv_main;
     private RelativeLayout rl_bottom;
@@ -99,6 +99,7 @@ public class CurrentUserProfileFragment extends Fragment {
         sv_main=binding.svMainLayout;
         rl_bottom=binding.rlBottomLayout;
         tv_user_id=binding.tvCurrnetUserId;
+        tv_number_of_friends=binding.tvNumbersOfFriends;
 
         rl_bottom.setVisibility(View.GONE);
 
@@ -121,6 +122,7 @@ public class CurrentUserProfileFragment extends Fragment {
             public void onChanged(UserData userData) {
                 tv_name_and_surname.setText(userData.getUserName()+" "+userData.getUserSurname());
                 tv_user_id.setText("@"+userData.getUserId());
+                tv_number_of_friends.setText(userData.getFriendsIds().size() + " " +((userData.getFriendsIds().size()>1) ? "friends" : "friend"));
             }
         });
 

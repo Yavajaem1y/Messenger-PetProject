@@ -4,14 +4,14 @@ import com.androidlesson.domain.main.callbacks.CallbackCheckAvailableIds;
 import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
 import com.androidlesson.domain.main.callbacks.CallbackWithId;
 import com.androidlesson.domain.main.models.UserData;
-import com.androidlesson.domain.main.models.UserInfo;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
 
 public interface MainFirebaseRepository {
-    public void getUserData(CallbackGetUserData callbackGetUserData);
+    public void getCurrentUserData(CallbackGetUserData callbackGetUserData);
+    public void getUserDataById(String id,CallbackGetUserData callbackGetUserData);
     public void saveUserData(UserData userInfo, CallbackGetUserData callbackGetUserData);
     public void checkAvailableIds(String id, CallbackCheckAvailableIds checkAvailableIds);
     public void getBasicId(CallbackWithId callbackWithId);

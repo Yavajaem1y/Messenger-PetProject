@@ -8,6 +8,7 @@ import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.androidlesson.domain.main.repository.MainSharedPrefRepository;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllUserUseCase;
+import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
 import com.androidlesson.domain.main.usecase.LogOutUseCase;
 import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
@@ -39,6 +40,11 @@ public class DomainModule {
     @Provides
     public LoadUserDataUseCase provideLoadUserDataUseCase(MainFirebaseRepository firebaseRepository, MainSharedPrefRepository sharedPrefRepository){
         return new LoadUserDataUseCase(firebaseRepository,sharedPrefRepository);
+    }
+
+    @Provides
+    public LoadUserDataByIdUseCase provideLoadUserDataByIdUseCase(MainFirebaseRepository mainFirebaseRepository){
+        return new LoadUserDataByIdUseCase(mainFirebaseRepository);
     }
 
     @Provides

@@ -15,20 +15,20 @@ public class UserData implements Serializable{
         this.userId = userId;
         this.userName = userName;
         this.userSurname = userSurname;
-        this.friendsIds = friendsIds;
-        this.taskToFriendsIds = taskToFriendsIds;
-        this.subscribersIds = subscribersIds;
-        this.chatIds = chatIds;
+        this.friendsIds = (friendsIds == null) ? new ArrayList<>() : friendsIds;
+        this.taskToFriendsIds = (taskToFriendsIds == null) ? new ArrayList<>() : taskToFriendsIds;
+        this.subscribersIds = (subscribersIds == null) ? new ArrayList<>() : subscribersIds;
+        this.chatIds = (chatIds == null) ? new ArrayList<>() : chatIds;
     }
 
-    public UserData(String userId, String userSurname, String userName) {
+    public UserData(String userId, String userName, String userSurname) {
         this.userId = userId;
         this.userSurname = userSurname;
         this.userName = userName;
-        friendsIds=new ArrayList<>();
-        taskToFriendsIds=new ArrayList<>();
-        subscribersIds=new ArrayList<>();
-        chatIds=new ArrayList<>();
+        this.friendsIds = new ArrayList<>();
+        this.taskToFriendsIds = new ArrayList<>();
+        this.subscribersIds = new ArrayList<>();
+        this.chatIds = new ArrayList<>();
     }
 
     public String getUserId() {
@@ -93,5 +93,21 @@ public class UserData implements Serializable{
 
     public void removeSubscriber(String id){
         subscribersIds.remove(id);
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserSurname(String userSurname) {
+        this.userSurname = userSurname;
+    }
+
+    public void setSubscribersIds(List<String> subscribersIds) {
+        this.subscribersIds = subscribersIds;
+    }
+
+    public void setChatIds(List<String> chatIds) {
+        this.chatIds = chatIds;
     }
 }

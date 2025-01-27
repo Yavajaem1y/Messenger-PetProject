@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,9 +25,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private final Context context;
     private UserData currUser;
 
-    public UserAdapter(Context context, UserData currUser) {
+    public UserAdapter(Context context) {
         this.context = context;
-        this.currUser = currUser;
+    }
+
+    public void updateCurrentUser(UserData userData){
+        currUser=userData;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -38,10 +42,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             users.addAll(newUsers);
         }
         notifyDataSetChanged();
-    }
-
-    public void setCurrUser(UserData user){
-        currUser=user;
     }
 
     @NonNull
@@ -57,6 +57,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.bind(user);
 
         holder.itemView.setOnClickListener(v -> {
+            if (currUser == null) {
+                Log.e("UserAdapter", "CURRENT_USER_DATA is null. Cannot open profile.");
+                return;
+            }
             Intent intent = new Intent(context, AnotherUserProfileActivity.class);
             intent.putExtra("ANOTHER_USER_DATA", user);
             intent.putExtra("CURRENT_USER_DATA", currUser);

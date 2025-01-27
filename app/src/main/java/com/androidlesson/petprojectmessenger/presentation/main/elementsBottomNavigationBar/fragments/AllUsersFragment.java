@@ -97,10 +97,8 @@ public class AllUsersFragment extends Fragment {
         if(sharedViewModel.getUserData().getValue()!=null && sharedViewModel.getUserData().getValue().getUserId()!=null) currUserData=sharedViewModel.getUserData().getValue();
         vm.setCurrUser(currUserData);
 
-        UserData currUser=sharedViewModel.getUserData().getValue();
-
         vm.setFilerFriends(false);
-        userAdapter = new UserAdapter(requireContext(),currUser);
+        userAdapter = new UserAdapter(requireContext());
         recyclerView.setAdapter(userAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -116,8 +114,10 @@ public class AllUsersFragment extends Fragment {
         sharedViewModel.getUserData().observe(getViewLifecycleOwner(), new Observer<UserData>() {
             @Override
             public void onChanged(UserData userData) {
-                if (userData != null) {
+                if (userData != null && userData!=currUserData) {
+                    currUserData=userData;
                     vm.setCurrUser(userData);
+                    userAdapter.updateCurrentUser(userData);
                 }
             }
         });

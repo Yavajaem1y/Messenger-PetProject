@@ -7,6 +7,7 @@ import com.androidlesson.domain.authorization.authorizationUseCase.LoginUseCase;
 import com.androidlesson.domain.authorization.authorizationUseCase.RegistrationUseCase;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllUserUseCase;
+import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
 import com.androidlesson.domain.main.usecase.LogOutUseCase;
 import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
@@ -69,8 +70,8 @@ public class AppModule {
 
     //AnotherUserProfileActivity
     @Provides
-    public AnotherUserProfileActivityViewModelFactory provideAnotherUserProfileActivityViewModelFactory(AddToFriendsUseCase addToFriendsUseCase) {
-        return new AnotherUserProfileActivityViewModelFactory(addToFriendsUseCase);
+    public AnotherUserProfileActivityViewModelFactory provideAnotherUserProfileActivityViewModelFactory(AddToFriendsUseCase addToFriendsUseCase, LoadUserDataByIdUseCase loadUserDataByIdUseCase) {
+        return new AnotherUserProfileActivityViewModelFactory(addToFriendsUseCase,loadUserDataByIdUseCase);
     }
 
     @Provides

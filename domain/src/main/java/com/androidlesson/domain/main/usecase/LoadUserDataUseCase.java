@@ -28,14 +28,22 @@ public class LoadUserDataUseCase {
         }
     };
 
-    public void execute(CallbackGetUserData callbackGetUserData){
-        userData=sharedPrefRepository.getUserData();
-        this.callbackGetUserData=callbackGetUserData;
-        if (userData.getUserId().isEmpty() || userData.getUserName().isEmpty() || userData.getUserSurname().isEmpty()){
-            userData=null;
+    public void execute(CallbackGetUserData callbackGetUserData) {
+        userData = sharedPrefRepository.getUserData();
+        this.callbackGetUserData = callbackGetUserData;
+
+        if (userData == null ||
+                userData.getUserId() == null || userData.getUserId().isEmpty() ||
+                userData.getUserName() == null || userData.getUserName().isEmpty() ||
+                userData.getUserSurname() == null || userData.getUserSurname().isEmpty()) {
+            userData = null;
         }
-        callbackGetUserData.getUserData(userData);
-        firebaseRepository.getUserData(callbackGetUserDataFromDB);
+
+        if (this.callbackGetUserData != null) {
+            this.callbackGetUserData.getUserData(userData);
+        }
+
+        firebaseRepository.getCurrentUserData(callbackGetUserDataFromDB);
     }
 
 }

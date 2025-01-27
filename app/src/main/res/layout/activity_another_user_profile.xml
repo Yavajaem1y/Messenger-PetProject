@@ -1,170 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/app_background">
 
-    <ScrollView
-        android:id="@+id/sv_main_layout"
+    <RelativeLayout
+        android:id="@+id/rl_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <RelativeLayout
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+        <ScrollView
+            android:id="@+id/sv_main_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_height="match_parent">
             <RelativeLayout
-                android:id="@+id/ll_main_user_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/layout_with_lower_roundness_bg">
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/civ_another_user_avatar"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:src="@drawable/ic_empty_user_avatar"
-                        app:civ_circle_background_color="@color/secondary_accent_color"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"
-                        android:layout_centerHorizontal="true"
-                        app:civ_border_width="3dp"
-                        app:civ_border_color="@color/accent_color"/>
-                    <TextView
-                        android:layout_below="@id/civ_another_user_avatar"
-                        android:id="@+id/tv_another_user_name_and_surname"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="name surname"
-                        android:textSize="30sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="10dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"
-                        android:layout_centerHorizontal="true"/>
-                    <TextView
-                        android:layout_below="@id/tv_another_user_name_and_surname"
-                        android:id="@+id/tv_more_detailed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="More info"
-                        android:textColor="@color/secondary_text"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="10dp"
-                        android:layout_centerHorizontal="true">
-                    </TextView>
+                android:gravity="center">
                 <RelativeLayout
+                    android:id="@+id/ll_main_user_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_below="@id/tv_more_detailed">
-                    <LinearLayout
-                        android:id="@+id/ll_button_add_to_friends"
-                        android:layout_width="wrap_content"
+                    android:background="@drawable/layout_with_lower_roundness_bg">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/civ_another_user_avatar"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:src="@drawable/ic_empty_user_avatar"
+                            app:civ_circle_background_color="@color/secondary_accent_color"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:layout_centerHorizontal="true"
+                            app:civ_border_width="3dp"
+                            app:civ_border_color="@color/accent_color"/>
+                        <TextView
+                            android:layout_below="@id/civ_another_user_avatar"
+                            android:id="@+id/tv_another_user_name_and_surname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="name surname"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:layout_marginBottom="10dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:layout_centerHorizontal="true"/>
+                        <TextView
+                            android:layout_below="@id/tv_another_user_name_and_surname"
+                            android:id="@+id/tv_more_detailed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="More info"
+                            android:textColor="@color/secondary_text"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="10dp"
+                            android:layout_centerHorizontal="true">
+                        </TextView>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_button_bg"
-                        android:layout_margin="10dp"
-                        android:padding="10dp"
-                        android:orientation="horizontal"
                         android:gravity="center"
-                        android:clickable="true">
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/add_friend"
-                            android:layout_marginRight="5dp">
-                        </ImageView>
-                        <TextView
+                        android:layout_below="@id/tv_more_detailed">
+                        <LinearLayout
+                            android:id="@+id/ll_button_add_to_friends"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add to friends"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="15sp"
-                            android:textStyle="bold">
-                        </TextView>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/ll_button_send_a_message"
+                            android:background="@drawable/rounded_button_bg"
+                            android:layout_margin="10dp"
+                            android:padding="10dp"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:clickable="true">
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/add_friend"
+                                android:layout_marginRight="5dp">
+                            </ImageView>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Add to friends"
+                                android:textColor="@color/secondary_text"
+                                android:textSize="15sp"
+                                android:textStyle="bold">
+                            </TextView>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/ll_button_send_a_message"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_button_bg"
+                            android:layout_margin="10dp"
+                            android:padding="10dp"
+                            android:layout_toEndOf="@id/ll_button_add_to_friends"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/send_a_message"
+                                android:layout_marginRight="5dp">
+                            </ImageView>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Send a message"
+                                android:textSize="15sp"
+                                android:textColor="@color/secondary_text"
+                                android:textStyle="bold">
+                            </TextView>
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/ll_counter_user_friends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:padding="10dp"
+                    android:background="@drawable/rounded_layout_bg"
+                    android:layout_below="@id/ll_main_user_info">
+                    <TextView
+                        android:id="@+id/tv_numbers_of_friends"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_button_bg"
-                        android:layout_margin="10dp"
-                        android:padding="10dp"
-                        android:layout_toEndOf="@id/ll_button_add_to_friends"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/send_a_message"
-                            android:layout_marginRight="5dp">
-                        </ImageView>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Send a message"
-                            android:textSize="15sp"
-                            android:textColor="@color/secondary_text"
-                            android:textStyle="bold">
-                        </TextView>
-                    </LinearLayout>
-                </RelativeLayout>
+                        android:text="0 friends"
+                        android:textColor="@color/secondary_text">
+                    </TextView>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_user_publication_storage"
+                    android:layout_width="match_parent"
+                    android:layout_height="600dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/rounded_layout_bg"
+                    android:layout_below="@id/ll_counter_user_friends">
+                </LinearLayout>
             </RelativeLayout>
-            <LinearLayout
-                android:id="@+id/ll_counter_user_friends"
-                android:layout_width="match_parent"
+
+        </ScrollView>
+
+        <RelativeLayout
+            android:id="@+id/rl_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/top_element_bg_with_rounding_up"
+            android:padding="15dp"
+            android:nestedScrollingEnabled="true">
+            <TextView
+                android:id="@+id/tv_another_user_id"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:padding="10dp"
-                android:background="@drawable/rounded_layout_bg"
-                android:layout_below="@id/ll_main_user_info">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0 friends"
-                    android:textColor="@color/secondary_text">
-                </TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/ll_user_publication_storage"
-                android:layout_width="match_parent"
-                android:layout_height="600dp"
-                android:orientation="vertical"
-                android:background="@drawable/rounded_layout_bg"
-                android:layout_below="@id/ll_counter_user_friends">
-            </LinearLayout>
+                android:text="User id"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="20sp">
+            </TextView>
         </RelativeLayout>
 
-    </ScrollView>
+        <ImageView
+            android:id="@+id/iv_dots_menu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/dots_menu"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp" />
 
-    <RelativeLayout
-        android:id="@+id/rl_bottom_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/top_element_bg_with_rounding_up"
-        android:padding="15dp"
-        android:nestedScrollingEnabled="true">
-        <TextView
-            android:id="@+id/tv_another_user_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="User id"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:textSize="20sp">
-        </TextView>
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/iv_dots_menu"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/dots_menu"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp" />
-
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
+</FrameLayout>
