@@ -14,6 +14,7 @@ public class MainSharedPrefRepositoryImpl implements MainSharedPrefRepository {
     //Constant values
     private final String SP_DATABASE_NAME="SP_DATABASE_NAME";
     private final String USER_ID_FROM_SP="USER_ID_FROM_SP";
+    private final String USER_SYSTEM_ID_FROM_SP="USER_SYSTEM_ID_FROM_SP";
     private final String USER_NAME_FROM_SP="USER_NAME_FROM_SP";
     private final String USER_SURNAME_FROM_SP="USER_SURNAME_FROM_SP";
 
@@ -27,15 +28,17 @@ public class MainSharedPrefRepositoryImpl implements MainSharedPrefRepository {
     @Override
     public UserData getUserData() {
         String id=spDataBase.getString(USER_ID_FROM_SP,"");
+        String systemId=spDataBase.getString(USER_ID_FROM_SP,"");
         String name=spDataBase.getString(USER_NAME_FROM_SP,"");
         String surname=spDataBase.getString(USER_SURNAME_FROM_SP,"");
-        return new UserData(id,name,surname);
+        return new UserData(id,systemId,name,surname);
     }
 
     @Override
     public void saveUserData(UserData userData) {
         SharedPreferences.Editor editor=spDataBase.edit();
         editor.putString(USER_ID_FROM_SP,userData.getUserId()).apply();
+        editor.putString(USER_SYSTEM_ID_FROM_SP,userData.getUserSystemId()).apply();
         editor.putString(USER_NAME_FROM_SP,userData.getUserName()).apply();
         editor.putString(USER_SURNAME_FROM_SP,userData.getUserSurname()).apply();
     }

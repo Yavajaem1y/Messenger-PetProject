@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserData implements Serializable{
-    private String userId,userName,userSurname;
+    private String userId,userSystemId,userName,userSurname;
     private List<String> friendsIds,taskToFriendsIds,subscribersIds,chatIds;
 
     public UserData() {
     }
 
-    public UserData(String userId, String userName, String userSurname, List<String> friendsIds, List<String> taskToFriendsIds, List<String> subscribersIds, List<String> chatIds) {
+    public UserData(String userId,String userSystemId, String userName, String userSurname, List<String> friendsIds, List<String> taskToFriendsIds, List<String> subscribersIds, List<String> chatIds) {
         this.userId = userId;
+        this.userSystemId=userSystemId;
         this.userName = userName;
         this.userSurname = userSurname;
         this.friendsIds = (friendsIds == null) ? new ArrayList<>() : friendsIds;
@@ -21,8 +22,9 @@ public class UserData implements Serializable{
         this.chatIds = (chatIds == null) ? new ArrayList<>() : chatIds;
     }
 
-    public UserData(String userId, String userName, String userSurname) {
+    public UserData(String userId,String userSystemId ,String userName, String userSurname) {
         this.userId = userId;
+        this.userSystemId=userSystemId;
         this.userSurname = userSurname;
         this.userName = userName;
         this.friendsIds = new ArrayList<>();
@@ -109,5 +111,13 @@ public class UserData implements Serializable{
 
     public void setChatIds(List<String> chatIds) {
         this.chatIds = chatIds;
+    }
+
+    public String getUserSystemId() {
+        return userSystemId;
+    }
+
+    public void setUserSystemId(String userSystemId) {
+        this.userSystemId = userSystemId;
     }
 }

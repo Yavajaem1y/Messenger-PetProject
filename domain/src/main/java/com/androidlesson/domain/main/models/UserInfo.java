@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserInfo {
-    private String userName,userSurname;
+    private String userName,userSurname,userSystemId;
     private List<String> friendsIds,taskToFriendsIds;
 
     public UserInfo(String userName, String userSurname, List<String> friendsIds, List<String> taskToFriendsIds) {
@@ -14,8 +14,9 @@ public class UserInfo {
         this.taskToFriendsIds = taskToFriendsIds;
     }
 
-    public UserInfo(String userName, String userSurname) {
+    public UserInfo(String userSystemId,String userName, String userSurname) {
         this.userName = userName;
+        this.userSystemId=userSystemId;
         this.userSurname = userSurname;
         friendsIds=new ArrayList<>();
         taskToFriendsIds=new ArrayList<>();
@@ -26,6 +27,10 @@ public class UserInfo {
         userSurname=user.getUserSurname();
         friendsIds=user.getFriendsIds();
         taskToFriendsIds=user.getTaskToFriendsIds();
+    }
+
+    public String getUserSystemId() {
+        return userSystemId;
     }
 
     public String getUserName() {

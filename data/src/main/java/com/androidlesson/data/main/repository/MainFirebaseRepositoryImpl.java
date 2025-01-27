@@ -41,6 +41,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     private final String DATABASE_SYSTEM_ID_TO_APP_ID="DATABASE_SYSTEM_ID_TO_APP_ID";
     private final String USER_NAME="userName";
     private final String USER_ID="userId";
+    private final String USER_SYSTEM_ID="userSystemId";
     private final String USER_SURNAME="userSurname";
     private final String USER_FRIENDS_IDS="friendsIds";
     private final String USER_TASK_TO_FRIEND="taskToFriendsIds";
@@ -90,11 +91,12 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
+                            String systemId= snapshot.child(USER_NAME).getValue(String.class);
                             String name = snapshot.child(USER_NAME).getValue(String.class);
                             String surname = snapshot.child(USER_SURNAME).getValue(String.class);
 
                             // Проверка на null для name и surname
-                            if (name != null && surname != null) {
+                            if (name != null && surname != null && systemId!=null) {
                                 List<String> friendsIds = new ArrayList<>();
                                 for (DataSnapshot friendSnapshot : snapshot.child(USER_FRIENDS_IDS).getChildren()) {
                                     String friendId = friendSnapshot.getValue(String.class);
@@ -128,7 +130,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                                 }
 
                                 // Возвращаем данные через callback
-                                callbackGetUserData.getUserData(new UserData(id, name, surname, friendsIds, taskToFriendsIds, subscribersIds, chatsIds));
+                                callbackGetUserData.getUserData(new UserData(id,systemId, name, surname, friendsIds, taskToFriendsIds, subscribersIds, chatsIds));
                             } else {
                                 // Если name или surname отсутствуют, возвращаем null
                                 callbackGetUserData.getUserData(null);
@@ -156,11 +158,11 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     userId=userData.getUserId();
-                    firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(userId).setValue(new UserInfo(userData.getUserName(),userData.getUserSurname())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(userId).setValue(new UserInfo(userSystemId,userData.getUserName(),userData.getUserSurname())).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                callbackGetUserData.getUserData(new UserData(userId, userData.getUserName(), userData.getUserSurname()));
+                                callbackGetUserData.getUserData(new UserData(userId,userSystemId, userData.getUserName(), userData.getUserSurname()));
                             }
                         }
                     });
@@ -243,9 +245,10 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                             existingKeys.add(key);
 
                             String userName = child.child(USER_NAME).getValue(String.class);
+                            String userSystemId = child.child(USER_SYSTEM_ID).getValue(String.class);
                             String userSurname = child.child(USER_SURNAME).getValue(String.class);
 
-                            users.add(new UserData(key, userName, userSurname));
+                            users.add(new UserData(key,userSystemId, userName, userSurname));
                         }
                     }
 

@@ -41,12 +41,11 @@ public class SaveUserDataUseCase {
             Boolean checkLetter=false;
             for (char i:id.toCharArray()){
                 if (i>='A' && i<='z') checkLetter=true;
-                else if (!(i>=0 && i<=9)){
+                else if ((i>=0 && i<=9) && !checkLetter){
                     callbackError.getError(new Error("Id can have only alphanumeric and numeric values"));
                     return;
                 }
             }
-            if (!checkLetter) callbackError.getError(new Error("Id must have letter values"));
             firebaseRepository.checkAvailableIds(id, new CallbackCheckAvailableIds() {
                 @Override
                 public void check(boolean res) {
