@@ -7,14 +7,18 @@ import com.androidlesson.domain.authorization.authorizationUseCase.LoginUseCase;
 import com.androidlesson.domain.authorization.authorizationUseCase.RegistrationUseCase;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
+import com.androidlesson.domain.main.usecase.LoadAllMessageUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllUserUseCase;
+import com.androidlesson.domain.main.usecase.LoadChatInfoUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
 import com.androidlesson.domain.main.usecase.LogOutUseCase;
 import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
 import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
+import com.androidlesson.domain.main.usecase.SendAMessageUseCase;
 import com.androidlesson.petprojectmessenger.presentation.authorization.AuthorizationViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.anotherUserProfileActivityViewModel.AnotherUserProfileActivityViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.chatWithUserActivityViewModel.ChatWithUserActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.AllUsersFragmetViewModel.AllUsersFragmentViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.MainFragmentViewModelFactory;
@@ -78,5 +82,10 @@ public class AppModule {
     @Provides
     public MainFragmentViewModelFactory provideMainFragmentViewModelFactory() {
         return new MainFragmentViewModelFactory();
+    }
+
+    @Provides
+    public ChatWithUserActivityViewModelFactory provideChatWithUserActivityViewModelFactory(SendAMessageUseCase sendAMessageUseCase, LoadAllMessageUseCase loadAllMessageUseCase, LoadUserDataByIdUseCase loadUserDataByIdUseCase, LoadChatInfoUseCase loadChatInfoUseCase){
+        return new ChatWithUserActivityViewModelFactory(sendAMessageUseCase,loadAllMessageUseCase,loadUserDataByIdUseCase,loadChatInfoUseCase);
     }
 }

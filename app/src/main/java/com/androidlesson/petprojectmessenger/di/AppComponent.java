@@ -5,6 +5,7 @@ import com.androidlesson.petprojectmessenger.presentation.main.MainActivity;
 import com.androidlesson.petprojectmessenger.presentation.main.MainFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.SetCurrentUserDataFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.anotherActivity.AnotherUserProfileActivity;
+import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.anotherActivity.ChatWithUserActivity;
 import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.AllUsersFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.CurrentUserProfileFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModel;
@@ -33,4 +34,6 @@ public interface AppComponent {
     void injectMainFragment(MainFragment mainFragment);
 
     void injectCurrentUserProfileFragment(CurrentUserProfileFragment currentUserProfileFragment);
+
+    void injectChatWithUserActivity(ChatWithUserActivity chatWithUserActivity);
 }

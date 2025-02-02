@@ -4,7 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.androidlesson.data.main.models.CurrentTimeAndDate;
+import com.androidlesson.domain.main.utils.CurrentTimeAndDate;
 import com.androidlesson.domain.main.callbacks.CallbackCheckAvailableIds;
 import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
 import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
@@ -19,11 +19,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +50,11 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     private final String USER_TASK_TO_FRIEND="taskToFriendsIds";
     private final String USER_SUBSCRIBERS_IDS="subscribersIds";
     private final String USER_CHATS_IDS="chatIds";
+    private final String CHAT_FIRST_USER="firstUser";
+    private final String CHAT_SECOND_USER="secondUser";
+    private final String CHAT_NUMBER_OF_MESSAGES="numberOfMessages";
+    private final String CHAT_TIME_LAST_MESSAGE="timeLastMessage";
+    private final String CHAT_MESSAGES="messages";
 
     //Initialization FirebaseDatabase
     public MainFirebaseRepositoryImpl() {
@@ -343,5 +346,35 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
 
             }
         });
+    }
+
+    @Override
+    public void getChatInfoById(String chatId, CallbackWithChatInfo callbackWithChatInfo) {
+        firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String firstUser=snapshot.child(CHAT_FIRST_USER).getValue(String.class);
+                    String secondUser=snapshot.child(CHAT_SECOND_USER).getValue(String.class);
+                    String timeLastMessage=snapshot.child(CHAT_TIME_LAST_MESSAGE).getValue(String.class);
+                    Integer numberOfMessage=snapshot.child(CHAT_NUMBER_OF_MESSAGES).getValue(Integer.class);
+                    ChatInfo chatInfo=new ChatInfo(chatId,firstUser,secondUser,timeLastMessage,numberOfMessage,null,null);
+                    callbackWithChatInfo.getChatInfo(chatInfo);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void sendAMessageUseCase(ChatInfo.Message message,ChatInfo chatInfo) {
+        firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_MESSAGES).push().setValue(message);
+        firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_NUMBER_OF_MESSAGES).setValue(chatInfo.getNumberOfMessages());
+        firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_TIME_LAST_MESSAGE).setValue(chatInfo.getTimeLastMessage());
     }
 }

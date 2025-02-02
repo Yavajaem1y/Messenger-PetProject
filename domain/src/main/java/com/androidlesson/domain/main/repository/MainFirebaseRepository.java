@@ -23,4 +23,6 @@ public interface MainFirebaseRepository {
     public void subscribeOnUser(UserData currUser,UserData anotherUser);
     public void observeUserData(CallbackGetUserData callbackGetUserData);
     public void goToChatView(ChatInfo chatInfo, CallbackWithChatInfo callbackWithChatInfo);
+    public void getChatInfoById(String chatId,CallbackWithChatInfo callbackWithChatInfo);
+    public void sendAMessageUseCase(ChatInfo.Message message,ChatInfo chatInfo);
 }

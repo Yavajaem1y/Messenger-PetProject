@@ -1,11 +1,13 @@
 package com.androidlesson.domain.main.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatInfo {
     private String chatId,firstUser,secondUser, timeLastMessage;
     private Integer numberOfMessages;
     private List<String> firstUserChatsIds, secondUserChatsIds;
+    private List<Message> messages;
 
     public ChatInfo() {
     }
@@ -24,18 +26,65 @@ public class ChatInfo {
         this.secondUserChatsIds = secondUserChatsIds;
     }
 
-    private class ChatInfoToDB{
+    public ChatInfo(ChatInfoToDB chatInfoToDB){
+        this.chatId = null;
+        this.firstUser = chatInfoToDB.firstUser;
+        this.secondUser = chatInfoToDB.secondUser;
+        this.timeLastMessage = chatInfoToDB.timeLastMessage;
+        this.numberOfMessages = chatInfoToDB.getNumberOfMessages();
+        this.firstUserChatsIds = new ArrayList<>();
+        this.secondUserChatsIds = new ArrayList<>();
+        this.messages=chatInfoToDB.messages;
+    }
+
+    public static class Message{
+        private String sender, message, timeSending;
+
+        public Message() {
+        }
+
+        public Message(String sender, String message, String timeSending) {
+            this.sender = sender;
+            this.message = message;
+            this.timeSending = timeSending;
+        }
+
+        public String getSender() {
+            return sender;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public String getTimeSending() {
+            return timeSending;
+        }
+
+        public void setSender(String sender) {
+            this.sender = sender;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public void setTimeSending(String timeSending) {
+            this.timeSending = timeSending;
+        }
+    }
+
+    public class ChatInfoToDB{
         private String firstUser,secondUser, timeLastMessage;
         private Integer numberOfMessages;
-        private List<String> firstUserChatsIds, secondUserChatsIds;
+        private List<Message> messages;
 
         public ChatInfoToDB() {
             this.firstUser=ChatInfo.this.firstUser;
             this.secondUser=ChatInfo.this.secondUser;
             this.timeLastMessage=ChatInfo.this.timeLastMessage;
             this.numberOfMessages=ChatInfo.this.numberOfMessages;
-            this.firstUserChatsIds=ChatInfo.this.firstUserChatsIds;
-            this.secondUserChatsIds=ChatInfo.this.secondUserChatsIds;
+            this.messages=ChatInfo.this.messages;
         }
 
         public String getFirstUser() {
@@ -50,9 +99,38 @@ public class ChatInfo {
             return timeLastMessage;
         }
 
+        public void setFirstUser(String firstUser) {
+            this.firstUser = firstUser;
+        }
+
+        public void setSecondUser(String secondUser) {
+            this.secondUser = secondUser;
+        }
+
+        public void setTimeLastMessage(String timeLastMessage) {
+            this.timeLastMessage = timeLastMessage;
+        }
+
+        public void setNumberOfMessages(Integer numberOfMessages) {
+            this.numberOfMessages = numberOfMessages;
+        }
+
+        public List<Message> getMessages() {
+            return messages;
+        }
+
+        public void setMessages(List<Message> messages) {
+            this.messages = messages;
+        }
+
         public Integer getNumberOfMessages() {
             return numberOfMessages;
         }
+    }
+
+    public void pushNewMessage(String time){
+        numberOfMessages++;
+        timeLastMessage=time;
     }
 
     public ChatInfoToDB getChatInfoToDB(){
@@ -102,5 +180,29 @@ public class ChatInfo {
 
     public void setNumberOfMessages(Integer numberOfMessages) {
         this.numberOfMessages = numberOfMessages;
+    }
+
+    public void setFirstUser(String firstUser) {
+        this.firstUser = firstUser;
+    }
+
+    public void setSecondUser(String secondUser) {
+        this.secondUser = secondUser;
+    }
+
+    public void setFirstUserChatsIds(List<String> firstUserChatsIds) {
+        this.firstUserChatsIds = firstUserChatsIds;
+    }
+
+    public void setSecondUserChatsIds(List<String> secondUserChatsIds) {
+        this.secondUserChatsIds = secondUserChatsIds;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

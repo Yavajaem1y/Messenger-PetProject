@@ -1,5 +1,6 @@
 package com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.anotherActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -152,6 +153,17 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
                 if (aBoolean) {
                     rl_progress_bar.setVisibility(View.INVISIBLE);
                     rl_main.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        vm.getChatIdLiveData().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String chatID) {
+                if (chatID!=null) {
+                    Intent intent=new Intent(getApplication(), ChatWithUserActivity.class);
+                    intent.putExtra("CHAT_ID",chatID);
+                    startActivity(intent);
                 }
             }
         });

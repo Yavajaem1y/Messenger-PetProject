@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
 import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
+import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
@@ -89,6 +90,11 @@ public class AnotherUserProfileActivityViewModel extends ViewModel {
             @Override
             public void getChatId(String chatId) {
                 if (chatId!=null) chatIdMutableLiveData.setValue(chatId);
+            }
+
+            @Override
+            public void getChatInfo(ChatInfo chatInfo) {
+
             }
         });
     }

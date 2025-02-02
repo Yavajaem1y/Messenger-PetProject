@@ -1,4 +1,4 @@
-package com.androidlesson.data.main.models;
+package com.androidlesson.domain.main.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
