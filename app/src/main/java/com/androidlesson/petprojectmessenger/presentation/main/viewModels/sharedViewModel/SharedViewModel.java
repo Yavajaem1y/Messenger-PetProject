@@ -14,13 +14,16 @@ public class SharedViewModel extends ViewModel {
 
     private final ObserveCurrentUserDataUseCase observeCurrentUserDataUseCase;
     private final MutableLiveData<UserData> userDataLiveData = new MutableLiveData<>(null);
+    private final MutableLiveData<Boolean> firstFragmentLiveData = new MutableLiveData<>(false);
 
 
     public SharedViewModel(ObserveCurrentUserDataUseCase observeCurrentUserDataUseCase) {
         this.observeCurrentUserDataUseCase = observeCurrentUserDataUseCase;
+
+        loadUserData();
     }
 
-    public void loadUserData() {
+    private void loadUserData() {
         observeCurrentUserDataUseCase.execute(new CallbackGetUserData() {
             @Override
             public void getUserData(UserData userData) {
@@ -36,7 +39,15 @@ public class SharedViewModel extends ViewModel {
         });
     }
 
+    public void setFirstFragment(boolean bool){
+        firstFragmentLiveData.setValue(bool);
+    }
+
     public LiveData<UserData> getUserData() {
         return userDataLiveData;
     }
+    public LiveData<Boolean> getFirstFragment() {
+        return firstFragmentLiveData;
+    }
+
 }

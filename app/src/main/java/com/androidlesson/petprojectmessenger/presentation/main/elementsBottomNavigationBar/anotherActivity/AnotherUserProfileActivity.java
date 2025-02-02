@@ -77,23 +77,16 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
         rl_main = findViewById(R.id.rl_main);
         tv_number_of_friends=findViewById(R.id.tv_numbers_of_friends);
 
-        // Загружаем текущие данные пользователя
-        sharedViewModel.loadUserData();
-
-        // Флаг для проверки, был ли текущий пользователь передан через Intent
         boolean isCurrUserSet = false;
 
-        // Загружаем данные из Intent
         UserData anotherUserData = (UserData) getIntent().getSerializableExtra("ANOTHER_USER_DATA");
         UserData currUserData = (UserData) getIntent().getSerializableExtra("CURRENT_USER_DATA");
 
-        // Если передан текущий пользователь через Intent
         if (currUserData != null) {
             Log.d("AnotherUserProfile", "Current user set from Intent: " + currUserData.getUserId());
             vm.setCurrentUser(currUserData);
         }
 
-        // Подписываемся на данные из SharedViewModel (если они загрузятся позже)
         sharedViewModel.getUserData().observe(this, userData -> {
             if (userData != null) {
                 Log.d("AnotherUserProfile", "Current user set from SharedViewModel: " + userData.getUserId());
@@ -103,7 +96,6 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
             }
         });
 
-        // Загружаем данные другого пользователя с логами проверки
         if (anotherUserData != null) {
             Log.d("AnotherUserProfile", "Loading another user data: " + anotherUserData.getUserId());
             vm.loadUserData(anotherUserData);
@@ -167,12 +159,11 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
 
     private void setOnClickListener() {
         b_add_to_friends.setOnClickListener(v -> {
-            Log.d("AnotherUserProfile", "Add to friend clicked");
             vm.addToFriend();
         });
 
         b_send_a_message.setOnClickListener(v -> {
-            Log.d("AnotherUserProfile", "Send a message clicked");
+            vm.sendAMessage();
         });
     }
 

@@ -7,6 +7,7 @@ import com.androidlesson.domain.authorization.repository.AuthorizationRepository
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.androidlesson.domain.main.repository.MainSharedPrefRepository;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
+import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllUserUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
@@ -70,5 +71,10 @@ public class DomainModule {
     @Provides
     public ObserveCurrentUserDataUseCase provideObserveCurrentUserDataUseCase(MainFirebaseRepository firebaseRepository){
         return new ObserveCurrentUserDataUseCase(firebaseRepository);
+    }
+
+    @Provides
+    public GoToChatViewUseCase provideGoToChatViewUseCase(MainFirebaseRepository mainFirebaseRepository){
+        return new GoToChatViewUseCase(mainFirebaseRepository);
     }
 }

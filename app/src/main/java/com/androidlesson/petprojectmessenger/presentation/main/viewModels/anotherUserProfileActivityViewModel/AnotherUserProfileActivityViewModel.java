@@ -7,8 +7,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
+import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
+import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
 
 import java.util.List;
@@ -17,12 +19,14 @@ public class AnotherUserProfileActivityViewModel extends ViewModel {
 
     private AddToFriendsUseCase addToFriendsUseCase;
     private LoadUserDataByIdUseCase loadUserDataByIdUseCase;
+    private GoToChatViewUseCase goToChatViewUseCase;
 
     private UserData currentUser=null;
 
-    public AnotherUserProfileActivityViewModel(AddToFriendsUseCase addToFriendsUseCase, LoadUserDataByIdUseCase loadUserDataByIdUseCase) {
+    public AnotherUserProfileActivityViewModel(AddToFriendsUseCase addToFriendsUseCase, LoadUserDataByIdUseCase loadUserDataByIdUseCase, GoToChatViewUseCase goToChatViewUseCase) {
         this.addToFriendsUseCase = addToFriendsUseCase;
         this.loadUserDataByIdUseCase = loadUserDataByIdUseCase;
+        this.goToChatViewUseCase=goToChatViewUseCase;
     }
 
     //userData from activity
@@ -31,6 +35,9 @@ public class AnotherUserProfileActivityViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> visibilityMutableLiveData=new MutableLiveData<>(false);
     public LiveData<Boolean> getVisibilityLiveData(){return visibilityMutableLiveData;}
+
+    private MutableLiveData<String> chatIdMutableLiveData=new MutableLiveData<>();
+    public LiveData<String> getChatIdLiveData(){return chatIdMutableLiveData;}
 
     public void loadUserData(UserData userData){
         loadUserDataByIdUseCase.execute(userData.getUserId(), new CallbackGetUserData() {
@@ -56,32 +63,34 @@ public class AnotherUserProfileActivityViewModel extends ViewModel {
         UserData anotherUser = getAnotherUserDataLiveData().getValue();
 
         if (currentUser == null || anotherUser == null) {
-            Log.e("AnotherUserProfileVM", "Error: One of the users is null");
             return;
         }
+
 
         if (currentUser.getFriendsIds() == null || anotherUser.getSubscribersIds() == null) {
-            Log.e("AnotherUserProfileVM",
-                    "Error: friends or subscribers are null. " +
-                            "currentUser.friends: " + currentUser.getFriendsIds() + ", " +
-                            "anotherUser.subscribers: " + anotherUser.getSubscribersIds());
             return;
         }
-
-        Log.d("AnotherUserProfileVM",
-                "Before adding friend: " +
-                        "currentUserId=" + currentUser.getUserId() + ", " +
-                        "anotherUserId=" + anotherUser.getUserId());
-
-        Log.d("AnotherUserProfileVM",
-                "currentUser.friends=" + currentUser.getFriendsIds().size() +
-                        ", anotherUser.subscribers=" + anotherUser.getSubscribersIds().size());
 
         addToFriendsUseCase.execute(currentUser, anotherUser);
     }
 
-    public void sendAMessage(UserData currentUser){
-        UserData user=anotherUserDataMutableLiveData.getValue();
+    public void sendAMessage(){
+        UserData anotherUser = getAnotherUserDataLiveData().getValue();
+
+        if (currentUser == null || anotherUser == null) {
+            return;
+        }
+
+        if (currentUser.getChatIds()==null || anotherUser.getChatIds()==null){
+            return;
+        }
+
+        goToChatViewUseCase.execute(currentUser, anotherUser, new CallbackWithChatInfo() {
+            @Override
+            public void getChatId(String chatId) {
+                if (chatId!=null) chatIdMutableLiveData.setValue(chatId);
+            }
+        });
     }
 
     public void setCurrentUser(UserData userData){

@@ -88,7 +88,6 @@ public class AllUsersFragment extends Fragment {
         vm= new ViewModelProvider(this,allUsersFragmentViewModelFactory).get(AllUsersFragmentViewModel.class);
         sharedViewModel=new ViewModelProvider(this,sharedViewModelFactory).get(SharedViewModel.class);
 
-        sharedViewModel.loadUserData();
 
         recyclerView=binding.rvUsers;
         rl_all_users_filter=binding.rlAllUsersFilter;

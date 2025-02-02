@@ -4,9 +4,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.androidlesson.data.main.models.CurrentTimeAndDate;
 import com.androidlesson.domain.main.callbacks.CallbackCheckAvailableIds;
 import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
+import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
 import com.androidlesson.domain.main.callbacks.CallbackWithId;
+import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.models.UserInfo;
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
@@ -39,6 +42,8 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     //Constant values
     private final String DATABASE_WITH_USERS_DATA ="USERS_DATA_DATABASE";
     private final String DATABASE_SYSTEM_ID_TO_APP_ID="DATABASE_SYSTEM_ID_TO_APP_ID";
+    private final String DATABASE_CHATS_DATA="DATABASE_CHATS_DATA";
+
     private final String USER_NAME="userName";
     private final String USER_ID="userId";
     private final String USER_SYSTEM_ID="userSystemId";
@@ -91,11 +96,10 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            String systemId= snapshot.child(USER_NAME).getValue(String.class);
+                            String systemId= snapshot.child(USER_SYSTEM_ID).getValue(String.class);
                             String name = snapshot.child(USER_NAME).getValue(String.class);
                             String surname = snapshot.child(USER_SURNAME).getValue(String.class);
 
-                            // Проверка на null для name и surname
                             if (name != null && surname != null && systemId!=null) {
                                 List<String> friendsIds = new ArrayList<>();
                                 for (DataSnapshot friendSnapshot : snapshot.child(USER_FRIENDS_IDS).getChildren()) {
@@ -306,6 +310,31 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
 
                         }
                     });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void goToChatView(ChatInfo chatInfo, CallbackWithChatInfo callbackWithChatInfo) {
+        Log.d("BBB","chatID = "+chatInfo.getChatId());
+        firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){ callbackWithChatInfo.getChatId(chatInfo.getChatId()); }
+                else {
+                    chatInfo.setNumberOfMessages(0);
+                    chatInfo.setTimeLastMessage(new CurrentTimeAndDate().execute());
+                    firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).setValue(chatInfo.getChatInfoToDB());
+                    chatInfo.addNewChatId(chatInfo.getChatId());
+                    firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(chatInfo.getFirstUser()).child(USER_CHATS_IDS).setValue(chatInfo.getFirstUserChatsIds());
+                    firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(chatInfo.getSecondUser()).child(USER_CHATS_IDS).setValue(chatInfo.getSecondUserChatsIds());
+                    callbackWithChatInfo.getChatId(chatInfo.getChatId());
                 }
             }
 

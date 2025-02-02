@@ -80,7 +80,6 @@ public class MainFragment extends Fragment {
         vm = new ViewModelProvider(requireActivity(),mvFactory).get(MainFragmentViewModel.class);
         sharedVM=new ViewModelProvider(requireActivity(),svmFactory).get(SharedViewModel.class);
 
-        sharedVM.loadUserData();
 
         currFragment=vm.getMainFragmentSceneLiveData().getValue();
         if (currFragment!=null) getParentFragmentManager().beginTransaction().replace(R.id.fl_main_fragment_container, currFragment).commit();
@@ -106,6 +105,16 @@ public class MainFragment extends Fragment {
             @Override
             public void onChanged(UserData userData) {
                 vm.setUserData(userData);
+            }
+        });
+
+        sharedVM.getFirstFragment().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    vm.replaceFragment(R.id.navigation_current_user_profile);
+                    sharedVM.setFirstFragment(false);
+                }
             }
         });
     }

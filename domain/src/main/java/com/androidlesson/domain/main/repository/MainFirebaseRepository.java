@@ -2,7 +2,9 @@ package com.androidlesson.domain.main.repository;
 
 import com.androidlesson.domain.main.callbacks.CallbackCheckAvailableIds;
 import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
+import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
 import com.androidlesson.domain.main.callbacks.CallbackWithId;
+import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.UserData;
 
 import java.util.List;
@@ -20,4 +22,5 @@ public interface MainFirebaseRepository {
     public void addFriend(UserData currUser,UserData anotherUser);
     public void subscribeOnUser(UserData currUser,UserData anotherUser);
     public void observeUserData(CallbackGetUserData callbackGetUserData);
+    public void goToChatView(ChatInfo chatInfo, CallbackWithChatInfo callbackWithChatInfo);
 }

@@ -1,7 +1,10 @@
 package com.androidlesson.petprojectmessenger.presentation.main;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +21,8 @@ import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.databinding.ActivityMainBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModel;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
 
 import javax.inject.Inject;
 
@@ -25,11 +30,15 @@ public class MainActivity extends AppCompatActivity implements OnDataPass{
 
     private ActivityMainBinding binding;
     private MainActivityViewModel vm;
+    private SharedViewModel sharedViewModel;
 
     private Fragment currFragment;
 
     @Inject
     MainActivityViewModelFactory mainActivityVMFactory;
+
+    @Inject
+    SharedViewModelFactory sharedViewModelFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements OnDataPass{
     private void init(){
         ((App) getApplication()).appComponent.injectMainActivity(this);
         vm = new ViewModelProvider(this,mainActivityVMFactory).get(MainActivityViewModel.class);
+        sharedViewModel=new ViewModelProvider(this,sharedViewModelFactory).get(SharedViewModel.class);
+
         FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
         currFragment=vm.getCurrentFragmentLiveData().getValue();
         if (currFragment!=null) fragmentTransaction.replace(R.id.fl_main_activity_fragment_container,currFragment).commit();
@@ -84,6 +95,14 @@ public class MainActivity extends AppCompatActivity implements OnDataPass{
     public void onDataPass(String data) {
         vm.logOut();
         finish();
+    }
+
+
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        sharedViewModel.setFirstFragment(true);
     }
 
 }
