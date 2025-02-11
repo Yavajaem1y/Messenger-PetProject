@@ -7,7 +7,8 @@ import com.androidlesson.domain.authorization.authorizationUseCase.LoginUseCase;
 import com.androidlesson.domain.authorization.authorizationUseCase.RegistrationUseCase;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
-import com.androidlesson.domain.main.usecase.LoadAllMessageUseCase;
+import com.androidlesson.domain.main.usecase.LoadNewMessageUseCase;
+import com.androidlesson.domain.main.usecase.LoadOldMessageUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllUserUseCase;
 import com.androidlesson.domain.main.usecase.LoadChatInfoUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
@@ -85,7 +86,7 @@ public class AppModule {
     }
 
     @Provides
-    public ChatWithUserActivityViewModelFactory provideChatWithUserActivityViewModelFactory(SendAMessageUseCase sendAMessageUseCase, LoadAllMessageUseCase loadAllMessageUseCase, LoadUserDataByIdUseCase loadUserDataByIdUseCase, LoadChatInfoUseCase loadChatInfoUseCase){
-        return new ChatWithUserActivityViewModelFactory(sendAMessageUseCase,loadAllMessageUseCase,loadUserDataByIdUseCase,loadChatInfoUseCase);
+    public ChatWithUserActivityViewModelFactory provideChatWithUserActivityViewModelFactory(SendAMessageUseCase sendAMessageUseCase, LoadOldMessageUseCase loadOldMessageUseCase, LoadUserDataByIdUseCase loadUserDataByIdUseCase, LoadChatInfoUseCase loadChatInfoUseCase, LoadNewMessageUseCase loadNewMessageUseCase){
+        return new ChatWithUserActivityViewModelFactory(sendAMessageUseCase, loadOldMessageUseCase,loadUserDataByIdUseCase,loadChatInfoUseCase,loadNewMessageUseCase);
     }
 }

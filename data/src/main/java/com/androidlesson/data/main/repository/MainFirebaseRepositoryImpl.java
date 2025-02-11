@@ -3,6 +3,7 @@ package com.androidlesson.data.main.repository;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.androidlesson.domain.main.utils.CurrentTimeAndDate;
 import com.androidlesson.domain.main.callbacks.CallbackCheckAvailableIds;
@@ -16,8 +17,10 @@ import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -55,6 +58,8 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     private final String CHAT_NUMBER_OF_MESSAGES="numberOfMessages";
     private final String CHAT_TIME_LAST_MESSAGE="timeLastMessage";
     private final String CHAT_MESSAGES="messages";
+
+    private static final int PAGE_SIZE = 20;
 
     //Initialization FirebaseDatabase
     public MainFirebaseRepositoryImpl() {
@@ -377,4 +382,89 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
         firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_NUMBER_OF_MESSAGES).setValue(chatInfo.getNumberOfMessages());
         firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_TIME_LAST_MESSAGE).setValue(chatInfo.getTimeLastMessage());
     }
+
+    List<String> messagesId=new ArrayList<>();
+    List<ChatInfo.Message> messages = new ArrayList<>();
+
+    @Override
+    public Observable<List<ChatInfo.Message>> loadOldMessages(String lastMessageTimestamp, String chatId) {
+        DatabaseReference chatRef = firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatId).child(CHAT_MESSAGES);
+        return Observable.create(emitter -> {
+            Query query;
+            if (lastMessageTimestamp == null) {
+                query = chatRef.orderByChild("timeSending").limitToLast(PAGE_SIZE);
+            } else {
+
+                query = chatRef.orderByChild("timeSending").endAt(lastMessageTimestamp).limitToLast(PAGE_SIZE);
+            }
+
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        if (!messagesId.contains(snapshot.getKey())) {
+                            messagesId.add(snapshot.getKey());
+                            ChatInfo.Message message = snapshot.getValue(ChatInfo.Message.class);
+                            if (!messages.contains(message)) {
+                                messages.add(message);
+                            }
+                        }
+                    }
+
+                    emitter.onNext(messages);
+                    emitter.onComplete();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    emitter.onError(databaseError.toException());
+                }
+            });
+        });
+    }
+
+    @Override
+    public void loadNewMessage(String chatId, CallbackWithChatInfo callbackWithChatInfo) {
+        firebaseDatabase.getReference(DATABASE_CHATS_DATA)
+                .child(chatId)
+                .child(CHAT_MESSAGES)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        if (snapshot.exists()) {
+                            // Получаем только новое сообщение
+                            ChatInfo.Message newMessage = snapshot.getValue(ChatInfo.Message.class);
+                            if (newMessage != null) {
+                                // Отправляем новое сообщение в callback
+                                callbackWithChatInfo.getMessage(newMessage);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        // Этот метод сработает, если сообщение будет обновлено
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                        // Этот метод сработает, если сообщение будет удалено
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        // Этот метод сработает, если сообщение будет перемещено
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Обработка ошибок
+                    }
+                });
+    }
+
+
 }
+
+
+

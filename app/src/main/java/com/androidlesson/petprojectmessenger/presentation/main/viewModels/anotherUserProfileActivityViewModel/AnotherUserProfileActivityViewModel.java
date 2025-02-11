@@ -96,6 +96,11 @@ public class AnotherUserProfileActivityViewModel extends ViewModel {
             public void getChatInfo(ChatInfo chatInfo) {
 
             }
+
+            @Override
+            public void getMessage(ChatInfo.Message message) {
+
+            }
         });
     }
 

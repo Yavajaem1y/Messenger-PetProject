@@ -8,7 +8,8 @@ import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.androidlesson.domain.main.repository.MainSharedPrefRepository;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
-import com.androidlesson.domain.main.usecase.LoadAllMessageUseCase;
+import com.androidlesson.domain.main.usecase.LoadNewMessageUseCase;
+import com.androidlesson.domain.main.usecase.LoadOldMessageUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllUserUseCase;
 import com.androidlesson.domain.main.usecase.LoadChatInfoUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
@@ -87,12 +88,17 @@ public class DomainModule {
     }
 
     @Provides
-    public LoadAllMessageUseCase provideLoadAllMessageUseCase(MainFirebaseRepository mainFirebaseRepository){
-        return new LoadAllMessageUseCase(mainFirebaseRepository);
+    public LoadOldMessageUseCase provideLoadAllMessageUseCase(MainFirebaseRepository mainFirebaseRepository){
+        return new LoadOldMessageUseCase(mainFirebaseRepository);
     }
 
     @Provides
     public LoadChatInfoUseCase provideLoadChatInfoUseCase(MainFirebaseRepository mainFirebaseRepository){
         return new LoadChatInfoUseCase(mainFirebaseRepository);
+    }
+
+    @Provides
+    public LoadNewMessageUseCase provideLoadNewMessageUseCase(MainFirebaseRepository mainFirebaseRepository){
+        return new LoadNewMessageUseCase(mainFirebaseRepository);
     }
 }

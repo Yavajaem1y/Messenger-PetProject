@@ -25,4 +25,6 @@ public interface MainFirebaseRepository {
     public void goToChatView(ChatInfo chatInfo, CallbackWithChatInfo callbackWithChatInfo);
     public void getChatInfoById(String chatId,CallbackWithChatInfo callbackWithChatInfo);
     public void sendAMessageUseCase(ChatInfo.Message message,ChatInfo chatInfo);
+    public Observable<List<ChatInfo.Message>> loadOldMessages(String lastMessageTimestamp, String chatId);
+    public void loadNewMessage(String chatId, CallbackWithChatInfo callbackWithChatInfo);
 }
