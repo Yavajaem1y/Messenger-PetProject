@@ -1,12 +1,9 @@
 package com.androidlesson.domain.main.usecase;
 
-import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
+import com.androidlesson.domain.main.interfaces.CallbackWithChatInfo;
 import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class GoToChatViewUseCase {
     private MainFirebaseRepository firebaseRepository;

@@ -1,6 +1,6 @@
 package com.androidlesson.domain.main.usecase;
 
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
+import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.androidlesson.domain.main.repository.MainSharedPrefRepository;

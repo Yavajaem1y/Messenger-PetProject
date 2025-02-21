@@ -1,20 +1,16 @@
 package com.androidlesson.petprojectmessenger.presentation.main.viewModels.anotherUserProfileActivityViewModel;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
-import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
+import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
+import com.androidlesson.domain.main.interfaces.CallbackWithChatInfo;
 import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
-
-import java.util.List;
 
 public class AnotherUserProfileActivityViewModel extends ViewModel {
 

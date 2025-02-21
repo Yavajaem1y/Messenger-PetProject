@@ -1,7 +1,6 @@
 package com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -9,12 +8,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.androidlesson.domain.main.models.UserData;
-import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
 import com.androidlesson.petprojectmessenger.R;
-import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.AllUsersFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.ChatsFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.CurrentUserProfileFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.bottomFragments.AllUsersFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.bottomFragments.AllChatsFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.bottomFragments.CurrentUserProfileFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +42,7 @@ public class MainFragmentViewModel extends ViewModel {
             fragmentMap.put(R.id.navigation_all_users,allUsersFragment);
 
             //Creating other models
-            fragmentMap.put(R.id.navigation_chats,new ChatsFragment());
+            fragmentMap.put(R.id.navigation_chats,new AllChatsFragment());
             mainFragmentSceneMutableLiveData.setValue(fragmentMap.get(R.id.navigation_current_user_profile));
         }
     }

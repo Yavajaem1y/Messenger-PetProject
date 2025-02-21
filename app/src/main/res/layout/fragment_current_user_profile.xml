@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/app_background"
-    tools:context=".presentation.main.elementsBottomNavigationBar.fragments.CurrentUserProfileFragment">
+    tools:context=".presentation.main.ui.fragments.bottomFragments.CurrentUserProfileFragment">
 
     <ScrollView
         android:id="@+id/sv_main_layout"

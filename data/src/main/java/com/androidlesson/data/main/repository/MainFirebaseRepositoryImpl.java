@@ -5,11 +5,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.androidlesson.domain.main.models.ChatInfoForLoad;
 import com.androidlesson.domain.main.utils.CurrentTimeAndDate;
-import com.androidlesson.domain.main.callbacks.CallbackCheckAvailableIds;
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
-import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
-import com.androidlesson.domain.main.callbacks.CallbackWithId;
+import com.androidlesson.domain.main.interfaces.CallbackCheckAvailableIds;
+import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
+import com.androidlesson.domain.main.interfaces.CallbackWithChatInfo;
+import com.androidlesson.domain.main.interfaces.CallbackWithId;
 import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.models.UserInfo;
@@ -58,6 +59,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     private final String CHAT_NUMBER_OF_MESSAGES="numberOfMessages";
     private final String CHAT_TIME_LAST_MESSAGE="timeLastMessage";
     private final String CHAT_MESSAGES="messages";
+    private final String CHAT_TEXT_LAST_MESSAGE="textLastMessage";
 
     private static final int PAGE_SIZE = 20;
 
@@ -381,6 +383,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
         firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_MESSAGES).push().setValue(message);
         firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_NUMBER_OF_MESSAGES).setValue(chatInfo.getNumberOfMessages());
         firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_TIME_LAST_MESSAGE).setValue(chatInfo.getTimeLastMessage());
+        firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_TEXT_LAST_MESSAGE).setValue(message.getMessage());
     }
 
     List<String> messagesId=new ArrayList<>();
@@ -461,6 +464,87 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                         // Обработка ошибок
                     }
                 });
+    }
+
+    @Override
+    public Observable<List<ChatInfoForLoad>> loadChats(UserData userData) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(DATABASE_CHATS_DATA);
+        return Observable.create(emitter -> {
+
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    List<ChatInfoForLoad> chats = new ArrayList<>();
+                    List<String> usersToFetch = new ArrayList<>();
+
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        String chatId = data.getKey();
+
+                        if (userData.getChatIds().contains(chatId)) {
+                            ChatInfoForLoad chat = data.getValue(ChatInfoForLoad.class);
+                            if (chat != null && chat.getNumberOfMessages()!=null && chat.getNumberOfMessages()!=0) {
+                                chat.setChatId(chatId);
+                                String anotherUserId = (chat.getFirstUser().equals(userData.getUserId())) ? chat.getSecondUser() : chat.getFirstUser();
+                                usersToFetch.add(anotherUserId);
+                                chats.add(chat);
+                            }
+                        }
+                    }
+
+                    if (!usersToFetch.isEmpty()) {
+
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA);
+                        for (String userId : usersToFetch) {
+
+                            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                    if (snapshot.exists()) {
+
+                                        String nameAndSurname = snapshot.child(USER_NAME).getValue(String.class) + " " + snapshot.child(USER_SURNAME).getValue(String.class);
+
+                                        boolean updated = false;
+                                        for (ChatInfoForLoad chat : chats) {
+                                            String anotherUserId = (chat.getFirstUser().equals(userData.getUserId())) ? chat.getSecondUser() : chat.getFirstUser();
+                                            if (anotherUserId.equals(userId)) {
+                                                chat.setAnotherUserNameAndSurname(nameAndSurname);
+                                                updated = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!updated) {
+                                        }
+                                    } else {
+                                    }
+
+                                    if (chats.size() == usersToFetch.size()) {
+                                        emitter.onNext(chats);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Log.e("LoadChats", "Error loading user data for user: " + userId, error.toException());
+                                    emitter.onError(error.toException());
+                                }
+                            });
+                        }
+                    } else {
+                        Log.d("LoadChats", "No additional user data needed, sending chats");
+                        emitter.onNext(chats);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("LoadChats", "Error loading chats data", error.toException());
+                    emitter.onError(error.toException());
+                }
+            });
+        });
     }
 
 

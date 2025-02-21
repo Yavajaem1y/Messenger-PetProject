@@ -1,14 +1,14 @@
 package com.androidlesson.petprojectmessenger.di;
 
 import com.androidlesson.petprojectmessenger.presentation.authorization.AuthorizationActivity;
-import com.androidlesson.petprojectmessenger.presentation.main.MainActivity;
-import com.androidlesson.petprojectmessenger.presentation.main.MainFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.SetCurrentUserDataFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.anotherActivity.AnotherUserProfileActivity;
-import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.anotherActivity.ChatWithUserActivity;
-import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.AllUsersFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.elementsBottomNavigationBar.fragments.CurrentUserProfileFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.activity.MainActivity;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.MainFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.SetCurrentUserDataFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.activity.AnotherUserProfileActivity;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.activity.ChatWithUserActivity;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.bottomFragments.AllChatsFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.bottomFragments.AllUsersFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.bottomFragments.CurrentUserProfileFragment;
 
 import dagger.Component;
 
@@ -36,4 +36,6 @@ public interface AppComponent {
     void injectCurrentUserProfileFragment(CurrentUserProfileFragment currentUserProfileFragment);
 
     void injectChatWithUserActivity(ChatWithUserActivity chatWithUserActivity);
+
+    void injectAllChatsFragment(AllChatsFragment allChatsFragment);
 }

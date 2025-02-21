@@ -19,7 +19,7 @@ import com.androidlesson.domain.authorization.models.LoginData;
 import com.androidlesson.domain.authorization.models.RegistrationData;
 import com.androidlesson.petprojectmessenger.R;
 import com.androidlesson.petprojectmessenger.app.App;
-import com.androidlesson.petprojectmessenger.presentation.main.MainActivity;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.activity.MainActivity;
 
 import javax.inject.Inject;
 
@@ -28,7 +28,7 @@ public class AuthorizationActivity extends AppCompatActivity {
 
     private EditText et_email,et_password,et_repassword;
     private TextView tv_go_to_log,tv_go_to_reg;
-    private Button b_reg,b_log;
+    private TextView b_reg,b_log;
     private LinearLayout ll_login,ll_registration,ll_main_auth_layout;
     private RelativeLayout rl_progress_bar;
 

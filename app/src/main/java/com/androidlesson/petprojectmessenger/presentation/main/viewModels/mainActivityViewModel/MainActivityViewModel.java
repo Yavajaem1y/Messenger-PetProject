@@ -7,13 +7,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
+import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
 import com.androidlesson.domain.main.usecase.LoadUserDataUseCase;
-import com.androidlesson.petprojectmessenger.presentation.main.callback.CallbackWithUserData;
+import com.androidlesson.petprojectmessenger.presentation.main.interfaces.CallbackWithUserData;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.usecase.LogOutUseCase;
-import com.androidlesson.petprojectmessenger.presentation.main.MainFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.SetCurrentUserDataFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.MainFragment;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.SetCurrentUserDataFragment;
 
 public class MainActivityViewModel extends ViewModel {
 

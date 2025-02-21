@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.main.elementsBottomNavigationBar.fragments.ChatsFragment"
+    tools:context=".presentation.main.ui.fragments.bottomFragments.AllChatsFragment"
     android:background="@color/app_background">
 
     <RelativeLayout
@@ -16,42 +16,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/iv_search">
-            <View
-                android:id="@+id/main_separator"
-                android:layout_width="1dp"
-                android:layout_height="30dp"
-                android:layout_centerInParent="true"
-                android:background="@color/layout_background" />
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@id/main_separator"
-                android:clickable="true"
-                android:focusable="true">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="All users"
-                    android:layout_centerInParent="true"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toRightOf="@id/main_separator"
-                android:clickable="true"
-                android:focusable="true">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My friends"
-                    android:layout_centerInParent="true"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"/>
-            </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My chats"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_centerInParent="true"/>
             <View
                 android:layout_width="1dp"
                 android:layout_height="30dp"

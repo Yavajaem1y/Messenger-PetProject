@@ -3,14 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.main.SetCurrentUserDataFragment">
+    tools:context=".presentation.main.ui.fragments.SetCurrentUserDataFragment"
+    android:background="@color/app_background">
 
     <LinearLayout
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_centerInParent="true"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@drawable/rounded_layout_bg"
+        android:padding="10dp">
         <EditText
             android:id="@+id/et_current_user_id"
             android:layout_width="match_parent"
@@ -26,11 +29,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Your surname"/>
-        <Button
+        <TextView
             android:id="@+id/b_save_curr_user_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SAVE"/>
+            android:focusable="true"
+            android:text="SAVE"
+            android:background="@drawable/button_style"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:clickable="true"/>
     </LinearLayout>
 
 </RelativeLayout>

@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
+import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
 
@@ -15,12 +15,15 @@ public class SharedViewModel extends ViewModel {
     private final ObserveCurrentUserDataUseCase observeCurrentUserDataUseCase;
     private final MutableLiveData<UserData> userDataLiveData = new MutableLiveData<>(null);
     private final MutableLiveData<Boolean> firstFragmentLiveData = new MutableLiveData<>(false);
+    private SharedViewModelFactory sharedViewModelFactory;
 
 
     public SharedViewModel(ObserveCurrentUserDataUseCase observeCurrentUserDataUseCase) {
         this.observeCurrentUserDataUseCase = observeCurrentUserDataUseCase;
 
         loadUserData();
+
+        Log.d("SharedViewModel","SharedViewModel is created");
     }
 
     private void loadUserData() {
@@ -50,4 +53,19 @@ public class SharedViewModel extends ViewModel {
         return firstFragmentLiveData;
     }
 
+    public void setSharedViewModelFactory(SharedViewModelFactory sharedViewModelFactory){
+        if (this.sharedViewModelFactory==null)
+            this.sharedViewModelFactory=sharedViewModelFactory;
+    }
+
+    public SharedViewModelFactory getSharedViewModelFactory(){
+        return sharedViewModelFactory;
+    }
+
+
+    @Override
+    protected void onCleared() {
+        Log.d("SharedViewModel","SharedViewModel is cleared");
+        super.onCleared();
+    }
 }

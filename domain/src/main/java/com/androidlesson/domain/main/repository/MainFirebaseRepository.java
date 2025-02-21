@@ -1,10 +1,11 @@
 package com.androidlesson.domain.main.repository;
 
-import com.androidlesson.domain.main.callbacks.CallbackCheckAvailableIds;
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
-import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
-import com.androidlesson.domain.main.callbacks.CallbackWithId;
+import com.androidlesson.domain.main.interfaces.CallbackCheckAvailableIds;
+import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
+import com.androidlesson.domain.main.interfaces.CallbackWithChatInfo;
+import com.androidlesson.domain.main.interfaces.CallbackWithId;
 import com.androidlesson.domain.main.models.ChatInfo;
+import com.androidlesson.domain.main.models.ChatInfoForLoad;
 import com.androidlesson.domain.main.models.UserData;
 
 import java.util.List;
@@ -27,4 +28,5 @@ public interface MainFirebaseRepository {
     public void sendAMessageUseCase(ChatInfo.Message message,ChatInfo chatInfo);
     public Observable<List<ChatInfo.Message>> loadOldMessages(String lastMessageTimestamp, String chatId);
     public void loadNewMessage(String chatId, CallbackWithChatInfo callbackWithChatInfo);
+    public Observable<List<ChatInfoForLoad>> loadChats(UserData userData);
 }

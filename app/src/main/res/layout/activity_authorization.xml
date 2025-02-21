@@ -4,14 +4,18 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.authorization.AuthorizationActivity">
+    tools:context=".presentation.authorization.AuthorizationActivity"
+    android:background="@color/app_background">
 
     <LinearLayout
+        android:layout_centerInParent="true"
         android:id="@+id/ll_main_authorization_layout"
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/rounded_layout_bg">
         <EditText
             android:id="@+id/et_email"
             android:layout_width="250dp"
@@ -34,22 +38,32 @@
                 android:gravity="center"
                 android:visibility="visible">
                 <EditText
+                    android:layout_marginTop="10dp"
                     android:id="@+id/et_repassword"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     android:hint="Repassword"/>
-                <Button
+                <TextView
                     android:id="@+id/b_reg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="REGISTRATION" />
+                    android:focusable="true"
+                    android:text="REGISTRATION"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="@drawable/button_style"
+                    android:clickable="true"
+                    android:textColor="@color/black"/>
                 <TextView
                     android:id="@+id/tv_go_to_log"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:text="go to login"/>
+                    android:text="go to login"
+                    android:textColor="@color/accent_color"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/ll_login"
@@ -58,17 +72,27 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:visibility="invisible">
-                <Button
+                <TextView
                     android:id="@+id/b_log"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LOGIN" />
+                    android:focusable="true"
+                    android:text="LOGIN"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="@drawable/button_style"
+                    android:clickable="true"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"/>
                 <TextView
                     android:id="@+id/tv_go_to_reg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:text="go to registration"/>
+                    android:text="go to registration"
+                    android:textColor="@color/accent_color"/>
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>

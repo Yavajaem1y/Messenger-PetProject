@@ -18,13 +18,13 @@
         android:theme="@style/Theme.PetProjectMessenger"
         tools:targetApi="31" >
         <activity
-            android:name=".presentation.main.elementsBottomNavigationBar.anotherActivity.ChatWithUserActivity"
+            android:name=".presentation.main.ui.activity.ChatWithUserActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.main.elementsBottomNavigationBar.anotherActivity.AnotherUserProfileActivity"
+            android:name=".presentation.main.ui.activity.AnotherUserProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.main.MainActivity"
+            android:name=".presentation.main.ui.activity.MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main" />
         <activity

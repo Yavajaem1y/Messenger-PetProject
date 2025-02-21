@@ -7,6 +7,7 @@ import com.androidlesson.domain.authorization.authorizationUseCase.LoginUseCase;
 import com.androidlesson.domain.authorization.authorizationUseCase.RegistrationUseCase;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
+import com.androidlesson.domain.main.usecase.LoadAllChatsUseCase;
 import com.androidlesson.domain.main.usecase.LoadNewMessageUseCase;
 import com.androidlesson.domain.main.usecase.LoadOldMessageUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllUserUseCase;
@@ -18,11 +19,12 @@ import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
 import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
 import com.androidlesson.domain.main.usecase.SendAMessageUseCase;
 import com.androidlesson.petprojectmessenger.presentation.authorization.AuthorizationViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.AllChatsFragmentViewModel.AllChatsFragmentViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.anotherUserProfileActivityViewModel.AnotherUserProfileActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.chatWithUserActivityViewModel.ChatWithUserActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModelFactory;
-import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.AllUsersFragmetViewModel.AllUsersFragmentViewModelFactory;
-import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.fragmentsViewModel.MainFragmentViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.AllUsersFragmetViewModel.AllUsersFragmentViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.setCurrentUserDataFragmentViewModel.SetCurrentUserDataFragmentVMFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
 
@@ -88,5 +90,10 @@ public class AppModule {
     @Provides
     public ChatWithUserActivityViewModelFactory provideChatWithUserActivityViewModelFactory(SendAMessageUseCase sendAMessageUseCase, LoadOldMessageUseCase loadOldMessageUseCase, LoadUserDataByIdUseCase loadUserDataByIdUseCase, LoadChatInfoUseCase loadChatInfoUseCase, LoadNewMessageUseCase loadNewMessageUseCase){
         return new ChatWithUserActivityViewModelFactory(sendAMessageUseCase, loadOldMessageUseCase,loadUserDataByIdUseCase,loadChatInfoUseCase,loadNewMessageUseCase);
+    }
+
+    @Provides
+    public AllChatsFragmentViewModelFactory provideAllChatsFragmentViewModelFactory(LoadAllChatsUseCase loadAllChatsUseCase){
+        return new AllChatsFragmentViewModelFactory(loadAllChatsUseCase);
     }
 }

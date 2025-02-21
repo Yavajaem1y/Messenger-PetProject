@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
-import com.androidlesson.domain.main.callbacks.CallbackWithChatInfo;
+import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
+import com.androidlesson.domain.main.interfaces.CallbackWithChatInfo;
 import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.usecase.LoadNewMessageUseCase;
@@ -16,7 +16,6 @@ import com.androidlesson.domain.main.usecase.LoadChatInfoUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
 import com.androidlesson.domain.main.usecase.SendAMessageUseCase;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

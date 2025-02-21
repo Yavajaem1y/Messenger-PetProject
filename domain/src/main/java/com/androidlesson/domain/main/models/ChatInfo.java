@@ -75,7 +75,7 @@ public class ChatInfo {
     }
 
     public class ChatInfoToDB{
-        private String firstUser,secondUser, timeLastMessage;
+        private String firstUser,secondUser, timeLastMessage,textLastMessage;
         private Integer numberOfMessages;
         private List<Message> messages;
 
@@ -85,6 +85,14 @@ public class ChatInfo {
             this.timeLastMessage=ChatInfo.this.timeLastMessage;
             this.numberOfMessages=ChatInfo.this.numberOfMessages;
             this.messages=ChatInfo.this.messages;
+        }
+
+        public String getTextLastMessage() {
+            return textLastMessage;
+        }
+
+        public void setTextLastMessage(String textLastMessage) {
+            this.textLastMessage = textLastMessage;
         }
 
         public String getFirstUser() {

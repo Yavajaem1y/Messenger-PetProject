@@ -4,11 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.androidlesson.domain.main.callbacks.CallbackError;
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
+import com.androidlesson.domain.main.interfaces.CallbackError;
+import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
 import com.androidlesson.domain.main.models.Error;
 import com.androidlesson.domain.main.models.UserData;
-import com.androidlesson.domain.main.models.UserInfo;
 import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
 
 public class SetCurrentUserDataFragmentVM extends ViewModel {

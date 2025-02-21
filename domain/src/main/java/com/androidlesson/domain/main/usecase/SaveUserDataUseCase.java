@@ -1,12 +1,11 @@
 package com.androidlesson.domain.main.usecase;
 
-import com.androidlesson.domain.main.callbacks.CallbackCheckAvailableIds;
-import com.androidlesson.domain.main.callbacks.CallbackError;
-import com.androidlesson.domain.main.callbacks.CallbackGetUserData;
-import com.androidlesson.domain.main.callbacks.CallbackWithId;
+import com.androidlesson.domain.main.interfaces.CallbackCheckAvailableIds;
+import com.androidlesson.domain.main.interfaces.CallbackError;
+import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
+import com.androidlesson.domain.main.interfaces.CallbackWithId;
 import com.androidlesson.domain.main.models.Error;
 import com.androidlesson.domain.main.models.UserData;
-import com.androidlesson.domain.main.models.UserInfo;
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.androidlesson.domain.main.repository.MainSharedPrefRepository;
 
@@ -38,11 +37,18 @@ public class SaveUserDataUseCase {
             callbackError.getError(new Error("The fields should not be empty"));
         }
         if(!id.isEmpty()){
-            Boolean checkLetter=false;
-            for (char i:id.toCharArray()){
-                if (i>='A' && i<='z') checkLetter=true;
-                else if ((i>=0 && i<=9) && !checkLetter){
-                    callbackError.getError(new Error("Id can have only alphanumeric and numeric values"));
+            boolean checkLetter = false;
+
+            for (char i : id.toCharArray()) {
+                if ((i >= 'A' && i <= 'Z') || (i >= 'a' && i <= 'z')) {
+                    checkLetter = true;
+                } else if (i >= '0' && i <= '9') {
+                    if (!checkLetter) {
+                        callbackError.getError(new Error("Id must start with a letter, followed by numbers"));
+                        return;
+                    }
+                } else {
+                    callbackError.getError(new Error("Id can only contain letters and numbers"));
                     return;
                 }
             }
