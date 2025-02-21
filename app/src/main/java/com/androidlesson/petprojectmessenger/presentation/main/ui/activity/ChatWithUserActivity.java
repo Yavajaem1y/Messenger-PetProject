@@ -1,6 +1,7 @@
 package com.androidlesson.petprojectmessenger.presentation.main.ui.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -23,10 +24,13 @@ import com.androidlesson.petprojectmessenger.presentation.main.viewModels.chatWi
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.chatWithUserActivityViewModel.ChatWithUserActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatWithUserActivity extends AppCompatActivity {
 
@@ -34,6 +38,7 @@ public class ChatWithUserActivity extends AppCompatActivity {
     private ImageView iv_send_a_message;
     private TextView tv_another_user_name_and_surname;
     private RecyclerView rv_all_chats;
+    private CircleImageView civ_user_avatar;
 
     private ChatWithUserActivityViewModel vm;
     private SharedViewModel sharedViewModel;
@@ -69,6 +74,7 @@ public class ChatWithUserActivity extends AppCompatActivity {
         et_with_message = findViewById(R.id.et_write_your_message);
         tv_another_user_name_and_surname = findViewById(R.id.tv_user_name_and_surname);
         rv_all_chats = findViewById(R.id.rv_all_chats);
+        civ_user_avatar= findViewById(R.id.civ_user_avatar);
 
         adapter = new MessageAdapter();
         rv_all_chats.setLayoutManager(new LinearLayoutManager(this));
@@ -103,6 +109,10 @@ public class ChatWithUserActivity extends AppCompatActivity {
             public void onChanged(UserData userData) {
                 if (userData != null) {
                     tv_another_user_name_and_surname.setText(userData.getUserName() + " " + userData.getUserSurname());
+                    Log.d("image",userData.getImageData());
+                    if (!TextUtils.isEmpty(userData.getImageData())) {
+                        Glide.with(ChatWithUserActivity.this).load(userData.getImageData()).into(civ_user_avatar);
+                    }
                 }
             }
         });

@@ -25,13 +25,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     public void setCurrentUser(UserData userData) {
         currentUserId = userData.getUserId();
-        Log.d("MessageAdapter", "Current user set: " + currentUserId);
     }
 
     @Override
     public int getItemViewType(int position) {
         ChatInfo.Message message = messages.get(position);
-        Log.d("MessageAdapter", "getItemViewType - position: " + position + ", message sender: " + message.getSender());
 
         return message.getSender().equals(currentUserId) ?
                 R.layout.current_user_message_item_rv :
@@ -41,7 +39,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("MessageAdapter", "onCreateViewHolder - viewType: " + viewType);
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         return new MessageViewHolder(view);
     }
@@ -49,7 +46,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         ChatInfo.Message message = messages.get(position);
-        Log.d("MessageAdapter", "onBindViewHolder - position: " + position + ", message sender: " + message.getSender());
 
         holder.tvMessage.setText(message.getMessage());
         FullDateToTime fullDateToTime=new FullDateToTime();

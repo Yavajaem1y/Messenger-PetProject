@@ -67,7 +67,7 @@ public class AllChatsFragment extends Fragment {
             Intent intent = new Intent(getContext(), ChatWithUserActivity.class);
             intent.putExtra("CHAT_ID", chat.getChatId());
             getContext().startActivity(intent);
-        });
+        },getContext());
 
         recyclerView.setAdapter(chatsAdapter);
     }

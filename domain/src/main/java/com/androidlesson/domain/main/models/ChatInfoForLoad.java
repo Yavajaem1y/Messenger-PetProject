@@ -1,20 +1,29 @@
 package com.androidlesson.domain.main.models;
 
 public class ChatInfoForLoad {
-    private String chatId, firstUser, secondUser ,timeLastMessage,textLastMessage, anotherUserNameAndSurname;
+    private String chatId, firstUser, secondUser ,timeLastMessage,textLastMessage, anotherUserNameAndSurname , anotherUserAvatar;
     private Integer numberOfMessages;
 
-    public ChatInfoForLoad(String chatId, String firstUser, String secondUser, String timeLastMessage, String textLastMessage, String anotherUserNameAndSurname, Integer numberOfMessages) {
+    public ChatInfoForLoad(String chatId, String firstUser, String secondUser, String timeLastMessage, String textLastMessage, String anotherUserNameAndSurname, String anotherUserAvatar, Integer numberOfMessages) {
         this.chatId = chatId;
         this.firstUser = firstUser;
         this.secondUser = secondUser;
         this.timeLastMessage = timeLastMessage;
         this.textLastMessage = textLastMessage;
         this.anotherUserNameAndSurname = anotherUserNameAndSurname;
+        this.anotherUserAvatar = anotherUserAvatar;
         this.numberOfMessages = numberOfMessages;
     }
 
     public ChatInfoForLoad() {
+    }
+
+    public String getAnotherUserAvatar() {
+        return anotherUserAvatar;
+    }
+
+    public void setAnotherUserAvatar(String anotherUserAvatar) {
+        this.anotherUserAvatar = anotherUserAvatar;
     }
 
     public String getChatId() {

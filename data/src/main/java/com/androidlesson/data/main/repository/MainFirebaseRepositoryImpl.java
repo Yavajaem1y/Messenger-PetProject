@@ -185,7 +185,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                callbackGetUserData.getUserData(new UserData(userId,userSystemId, userData.getUserName(), userData.getUserSurname(),null));
+                                callbackGetUserData.getUserData(new UserData(userId,userSystemId, userData.getUserName(), userData.getUserSurname(),""));
                             }
                         }
                     });
@@ -515,12 +515,15 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                                     if (snapshot.exists()) {
 
                                         String nameAndSurname = snapshot.child(USER_NAME).getValue(String.class) + " " + snapshot.child(USER_SURNAME).getValue(String.class);
+                                        String imageUri= snapshot.child(USER_AVATAR_IMAGE).getValue(String.class);
+                                        if (imageUri==null) imageUri="";
 
                                         boolean updated = false;
                                         for (ChatInfoForLoad chat : chats) {
                                             String anotherUserId = (chat.getFirstUser().equals(userData.getUserId())) ? chat.getSecondUser() : chat.getFirstUser();
                                             if (anotherUserId.equals(userId)) {
                                                 chat.setAnotherUserNameAndSurname(nameAndSurname);
+                                                chat.setAnotherUserAvatar(imageUri);
                                                 updated = true;
                                                 break;
                                             }

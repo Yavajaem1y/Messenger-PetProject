@@ -19,7 +19,7 @@
             android:paddingStart="15dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/icv_user_avatar"
+                android:id="@+id/civ_user_avatar"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_empty_user_avatar"
@@ -36,7 +36,7 @@
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/icv_user_avatar"
+                android:layout_toRightOf="@id/civ_user_avatar"
                 android:layout_marginStart="5dp"/>
         </RelativeLayout>
         <ImageView
