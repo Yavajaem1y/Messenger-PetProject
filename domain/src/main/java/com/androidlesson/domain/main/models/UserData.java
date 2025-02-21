@@ -5,32 +5,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserData implements Serializable{
-    private String userId,userSystemId,userName,userSurname;
+    private String userId,userSystemId,userName,userSurname,imageData;
     private List<String> friendsIds,taskToFriendsIds,subscribersIds,chatIds;
 
     public UserData() {
     }
 
-    public UserData(String userId,String userSystemId, String userName, String userSurname, List<String> friendsIds, List<String> taskToFriendsIds, List<String> subscribersIds, List<String> chatIds) {
+    public UserData(String userId,String userSystemId, String userName, String userSurname, String imageData, List<String> friendsIds, List<String> taskToFriendsIds, List<String> subscribersIds, List<String> chatIds) {
         this.userId = userId;
         this.userSystemId=userSystemId;
         this.userName = userName;
         this.userSurname = userSurname;
+        this.imageData=imageData;
         this.friendsIds = (friendsIds == null) ? new ArrayList<>() : friendsIds;
         this.taskToFriendsIds = (taskToFriendsIds == null) ? new ArrayList<>() : taskToFriendsIds;
         this.subscribersIds = (subscribersIds == null) ? new ArrayList<>() : subscribersIds;
         this.chatIds = (chatIds == null) ? new ArrayList<>() : chatIds;
     }
 
-    public UserData(String userId,String userSystemId ,String userName, String userSurname) {
+    public UserData(String userId,String userSystemId ,String userName, String userSurname, String imageData) {
         this.userId = userId;
         this.userSystemId=userSystemId;
         this.userSurname = userSurname;
         this.userName = userName;
+        this.imageData=imageData;
         this.friendsIds = new ArrayList<>();
         this.taskToFriendsIds = new ArrayList<>();
         this.subscribersIds = new ArrayList<>();
         this.chatIds = new ArrayList<>();
+    }
+
+    public String getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(String imageData) {
+        this.imageData = imageData;
     }
 
     public String getUserId() {

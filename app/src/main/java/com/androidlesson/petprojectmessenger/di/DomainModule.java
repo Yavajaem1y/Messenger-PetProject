@@ -19,6 +19,8 @@ import com.androidlesson.domain.main.usecase.LogOutUseCase;
 import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
 import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
 import com.androidlesson.domain.main.usecase.SendAMessageUseCase;
+import com.androidlesson.domain.main.usecase.UploadImageAvatarUseCase;
+import com.androidlesson.domain.main.usecase.UserAvatarImageListener;
 
 import dagger.Module;
 import dagger.Provides;
@@ -106,5 +108,15 @@ public class DomainModule {
     @Provides
     public LoadAllChatsUseCase provideLoadAllChatsUseCase(MainFirebaseRepository mainFirebaseRepository){
         return new LoadAllChatsUseCase(mainFirebaseRepository);
+    }
+
+    @Provides
+    public UploadImageAvatarUseCase provideUploadImageAvatarUseCase(MainFirebaseRepository mainFirebaseRepository){
+        return new UploadImageAvatarUseCase(mainFirebaseRepository);
+    }
+
+    @Provides
+    public UserAvatarImageListener provideUserAvatarImageListener(MainFirebaseRepository mainFirebaseRepository){
+        return new UserAvatarImageListener(mainFirebaseRepository);
     }
 }

@@ -4,8 +4,10 @@ import com.androidlesson.domain.main.interfaces.CallbackCheckAvailableIds;
 import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
 import com.androidlesson.domain.main.interfaces.CallbackWithChatInfo;
 import com.androidlesson.domain.main.interfaces.CallbackWithId;
+import com.androidlesson.domain.main.interfaces.OnImageUrlFetchedListener;
 import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.ChatInfoForLoad;
+import com.androidlesson.domain.main.models.ImageToDb;
 import com.androidlesson.domain.main.models.UserData;
 
 import java.util.List;
@@ -29,4 +31,6 @@ public interface MainFirebaseRepository {
     public Observable<List<ChatInfo.Message>> loadOldMessages(String lastMessageTimestamp, String chatId);
     public void loadNewMessage(String chatId, CallbackWithChatInfo callbackWithChatInfo);
     public Observable<List<ChatInfoForLoad>> loadChats(UserData userData);
+    public void addImage(ImageToDb imageToDb);
+    public void userAvatarListenerById(String userId, OnImageUrlFetchedListener onImageUrlFetchedListener);
 }

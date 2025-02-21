@@ -1,8 +1,14 @@
 package com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.bottomFragments;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,6 +16,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +33,14 @@ import com.androidlesson.petprojectmessenger.databinding.FragmentCurrentUserProf
 import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.MainFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.interfaces.OnDataPass;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.CurrentUserProfileFragmentViewModel.CurrentUserProfileViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.CurrentUserProfileFragmentViewModel.CurrentUserProfileViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
+import com.bumptech.glide.Glide;
 
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -42,6 +54,8 @@ public class CurrentUserProfileFragment extends Fragment {
     private SharedViewModel sharedViewModel;
     @Inject
     SharedViewModelFactory sharedViewModelFactory;
+    @Inject
+    CurrentUserProfileViewModelFactory currentUserProfileViewModelFactory;
 
     private ImageView iv_logout;
     private TextView tv_name_and_surname,tv_user_id,tv_number_of_friends;
@@ -59,15 +73,49 @@ public class CurrentUserProfileFragment extends Fragment {
         return fragment;
     }
 
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments()!=null){
-            currUserData=(UserData) getArguments().get("USERDATA");
+        if (getArguments() != null) {
+            currUserData = (UserData) getArguments().get("USERDATA");
         }
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                        Uri imageUri = result.getData().getData();
+
+                        try {
+                            Context context = getContext();
+                            if (context == null) return; // Проверяем, что контекст не null
+
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+
+                            byte[] imageData = convertBitmapToByteArray(bitmap);
+
+                            vm.uploadImageAvatar(imageData);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
     }
 
-
+    private byte[] convertBitmapToByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+        byte[] byteArray = stream.toByteArray();
+        try {
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return byteArray;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,7 +136,7 @@ public class CurrentUserProfileFragment extends Fragment {
     private void init() {
         ((App) requireActivity().getApplication()).appComponent.injectCurrentUserProfileFragment(this);
 
-        vm=new ViewModelProvider(requireActivity()).get(CurrentUserProfileViewModel.class);
+        vm=new ViewModelProvider(requireActivity(),currentUserProfileViewModelFactory).get(CurrentUserProfileViewModel.class);
         sharedViewModel=new ViewModelProvider(requireActivity(),sharedViewModelFactory).get(SharedViewModel.class);
 
         vm.setVMInfo(currUserData);
@@ -102,6 +150,10 @@ public class CurrentUserProfileFragment extends Fragment {
         tv_number_of_friends=binding.tvNumbersOfFriends;
 
         rl_bottom.setVisibility(View.GONE);
+
+        if (sharedViewModel.getCurrentUserAvatarLiveData().getValue()!=null){
+            Glide.with(getContext()).load(sharedViewModel.getCurrentUserAvatarLiveData().getValue()).into(ciw_profile_avatar);
+        }
 
     }
 
@@ -153,6 +205,13 @@ public class CurrentUserProfileFragment extends Fragment {
                 }
             }
         });
+
+        sharedViewModel.getCurrentUserAvatarLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String imageUri) {
+                Glide.with(getContext()).load(imageUri).into(ciw_profile_avatar);
+            }
+        });
     }
     OnDataPass onDataPass;
 
@@ -166,5 +225,15 @@ public class CurrentUserProfileFragment extends Fragment {
         iv_logout.setOnClickListener(v->{
             onDataPass.onDataPass("sda");
         });
+
+        ciw_profile_avatar.setOnClickListener(v->{
+            pickImageFromGallery();
+        });
     }
+
+    public void pickImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        imagePickerLauncher.launch(intent);
+    }
+
 }

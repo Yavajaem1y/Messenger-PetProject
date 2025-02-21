@@ -15,9 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.petprojectmessenger.R;
 import com.androidlesson.petprojectmessenger.presentation.main.ui.activity.AnotherUserProfileActivity;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private final List<UserData> users = new ArrayList<>();
@@ -26,6 +29,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     public UserAdapter(Context context) {
         this.context = context;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public void updateCurrentUser(UserData userData){
@@ -47,7 +54,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item_rv, parent, false);
-        return new UserViewHolder(view);
+        return new UserViewHolder(view,context);
     }
 
     @Override
@@ -74,14 +81,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameTextView;
+        private final CircleImageView civAvatar;
 
-        public UserViewHolder(@NonNull View itemView) {
+        private Context context;
+
+        public UserViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
+
+            this.context=context;
+
             nameTextView = itemView.findViewById(R.id.tv_user_name_and_surname);
+            civAvatar=itemView.findViewById(R.id.civ_user_avatar);
         }
 
         public void bind(UserData user) {
             nameTextView.setText(user.getUserName() + " " + user.getUserSurname());
+            if (user.getImageData()!=null && !user.getImageData().isEmpty()){
+                Glide.with(context).load(user.getImageData()).into(civAvatar);
+            }
         }
     }
 }

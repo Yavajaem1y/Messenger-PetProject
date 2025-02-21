@@ -24,13 +24,15 @@
                     android:id="@+id/civ_curr_user_avatar"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
+                    android:focusable="true"
                     android:src="@drawable/ic_empty_user_avatar"
                     app:civ_circle_background_color="@color/secondary_accent_color"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
                     android:layout_centerHorizontal="true"
                     app:civ_border_width="3dp"
-                    app:civ_border_color="@color/accent_color"/>
+                    app:civ_border_color="@color/accent_color"
+                    android:clickable="true"/>
                 <TextView
                     android:id="@+id/tv_curr_user_name_and_surname"
                     android:layout_width="wrap_content"
@@ -80,6 +82,34 @@
                 android:orientation="vertical"
                 android:background="@drawable/rounded_layout_bg"
                 android:layout_below="@id/ll_curr_user_counter_friends">
+                <RelativeLayout
+                    android:id="@+id/rl_add_new_publication"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_layout_bg"
+                    android:clickable="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="New publication"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/plus"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"/>
+                </RelativeLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_publication_storage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>

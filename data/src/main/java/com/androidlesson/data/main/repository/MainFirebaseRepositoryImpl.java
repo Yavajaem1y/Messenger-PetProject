@@ -1,11 +1,14 @@
 package com.androidlesson.data.main.repository;
 
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.androidlesson.domain.main.interfaces.OnImageUrlFetchedListener;
 import com.androidlesson.domain.main.models.ChatInfoForLoad;
+import com.androidlesson.domain.main.models.ImageToDb;
 import com.androidlesson.domain.main.utils.CurrentTimeAndDate;
 import com.androidlesson.domain.main.interfaces.CallbackCheckAvailableIds;
 import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
@@ -25,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,6 +56,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     private final String USER_SYSTEM_ID="userSystemId";
     private final String USER_SURNAME="userSurname";
     private final String USER_FRIENDS_IDS="friendsIds";
+    private final String USER_AVATAR_IMAGE="imageData";
     private final String USER_TASK_TO_FRIEND="taskToFriendsIds";
     private final String USER_SUBSCRIBERS_IDS="subscribersIds";
     private final String USER_CHATS_IDS="chatIds";
@@ -109,6 +115,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                             String systemId= snapshot.child(USER_SYSTEM_ID).getValue(String.class);
                             String name = snapshot.child(USER_NAME).getValue(String.class);
                             String surname = snapshot.child(USER_SURNAME).getValue(String.class);
+                            String imageData=snapshot.child(USER_AVATAR_IMAGE).getValue(String.class);
 
                             if (name != null && surname != null && systemId!=null) {
                                 List<String> friendsIds = new ArrayList<>();
@@ -143,8 +150,10 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                                     }
                                 }
 
+                                if (imageData==null) imageData="";
+
                                 // Возвращаем данные через callback
-                                callbackGetUserData.getUserData(new UserData(id,systemId, name, surname, friendsIds, taskToFriendsIds, subscribersIds, chatsIds));
+                                callbackGetUserData.getUserData(new UserData(id,systemId, name, surname, imageData, friendsIds, taskToFriendsIds, subscribersIds, chatsIds));
                             } else {
                                 // Если name или surname отсутствуют, возвращаем null
                                 callbackGetUserData.getUserData(null);
@@ -176,7 +185,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                callbackGetUserData.getUserData(new UserData(userId,userSystemId, userData.getUserName(), userData.getUserSurname()));
+                                callbackGetUserData.getUserData(new UserData(userId,userSystemId, userData.getUserName(), userData.getUserSurname(),null));
                             }
                         }
                     });
@@ -261,8 +270,10 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                             String userName = child.child(USER_NAME).getValue(String.class);
                             String userSystemId = child.child(USER_SYSTEM_ID).getValue(String.class);
                             String userSurname = child.child(USER_SURNAME).getValue(String.class);
+                            String imageData= child.child(USER_AVATAR_IMAGE).getValue(String.class);
+                            if (imageData==null) imageData="";
 
-                            users.add(new UserData(key,userSystemId, userName, userSurname));
+                            users.add(new UserData(key,userSystemId, userName, userSurname,imageData));
                         }
                     }
 
@@ -339,7 +350,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                 if (snapshot.exists()){ callbackWithChatInfo.getChatId(chatInfo.getChatId()); }
                 else {
                     chatInfo.setNumberOfMessages(0);
-                    chatInfo.setTimeLastMessage(new CurrentTimeAndDate().execute());
+                    chatInfo.setTimeLastMessage(new CurrentTimeAndDate().getCurrentTime());
                     firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).setValue(chatInfo.getChatInfoToDB());
                     chatInfo.addNewChatId(chatInfo.getChatId());
                     firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(chatInfo.getFirstUser()).child(USER_CHATS_IDS).setValue(chatInfo.getFirstUserChatsIds());
@@ -547,7 +558,41 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
         });
     }
 
+    @Override
+    public void addImage(ImageToDb imageToDb) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child(imageToDb.getImageId());
+        storageRef.putBytes(imageToDb.getImageData())
+                .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    saveImageUrl(uri.toString(),imageToDb.getUserId());
+                }))
+                .addOnFailureListener(e -> Log.e("Firebase", "Ошибка загрузки", e));
+    }
 
+    @Override
+    public void userAvatarListenerById(String userId, OnImageUrlFetchedListener onImageUrlFetchedListener) {
+        DatabaseReference databaseRef=FirebaseDatabase.getInstance().getReference().child(DATABASE_WITH_USERS_DATA).child(userId).child(USER_AVATAR_IMAGE);
+        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String imageUri=snapshot.getValue(String.class);
+                    onImageUrlFetchedListener.onSuccess(imageUri);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                onImageUrlFetchedListener.onFailure(new Exception("Изображение не найдено"));
+            }
+        });
+    }
+
+    private void saveImageUrl(String imageId,String userId) {
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child(DATABASE_WITH_USERS_DATA).child(userId).child(USER_AVATAR_IMAGE);
+        if (imageId != null) {
+            databaseRef.setValue(imageId);
+        }
+    }
 }
 
 

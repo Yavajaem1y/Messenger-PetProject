@@ -17,7 +17,7 @@ public class SendAMessageUseCase {
         if (message!=null) {
             message = message.trim();
             if (chatInfo != null && currentUserData != null && !message.isEmpty()) {
-                chatInfo.pushNewMessage(new CurrentTimeAndDate().execute());
+                chatInfo.pushNewMessage(new CurrentTimeAndDate().getCurrentTime());
                 ChatInfo.Message messageToDb = new ChatInfo.Message(currentUserData.getUserId(), message, chatInfo.getTimeLastMessage());
                 firebaseRepository.sendAMessageUseCase(messageToDb, chatInfo);
             }

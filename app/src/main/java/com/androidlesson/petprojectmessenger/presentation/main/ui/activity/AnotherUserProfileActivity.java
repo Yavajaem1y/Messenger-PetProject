@@ -22,6 +22,7 @@ import com.androidlesson.petprojectmessenger.presentation.main.viewModels.anothe
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.anotherUserProfileActivityViewModel.AnotherUserProfileActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
+import com.bumptech.glide.Glide;
 
 import javax.inject.Inject;
 
@@ -110,6 +111,9 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
                     tv_userNameAndSurname.setText(user.getUserName() + " " + user.getUserSurname());
                     tv_userId.setText("@" + user.getUserId());
                     tv_number_of_friends.setText(user.getFriendsIds().size() + " " +((user.getFriendsIds().size()>1) ? "friends" : "friend"));
+                    if (user.getImageData()!=null && !user.getImageData().isEmpty()){
+                        Glide.with(getApplicationContext()).load(user.getImageData()).into(civ_userAvatar);
+                    }
                     Log.d("AnotherUserProfile", "User data updated: " + user.getUserId());
                 } else {
                     Log.d("AnotherUserProfile", "Another user data is null");

@@ -18,8 +18,12 @@ import com.androidlesson.domain.main.usecase.LogOutUseCase;
 import com.androidlesson.domain.main.usecase.ObserveCurrentUserDataUseCase;
 import com.androidlesson.domain.main.usecase.SaveUserDataUseCase;
 import com.androidlesson.domain.main.usecase.SendAMessageUseCase;
+import com.androidlesson.domain.main.usecase.UploadImageAvatarUseCase;
+import com.androidlesson.domain.main.usecase.UserAvatarImageListener;
 import com.androidlesson.petprojectmessenger.presentation.authorization.AuthorizationViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.bottomFragments.CurrentUserProfileFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.AllChatsFragmentViewModel.AllChatsFragmentViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.CurrentUserProfileFragmentViewModel.CurrentUserProfileViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.anotherUserProfileActivityViewModel.AnotherUserProfileActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.chatWithUserActivityViewModel.ChatWithUserActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModelFactory;
@@ -48,8 +52,8 @@ public class AppModule {
 
     //SharedViewModelFactory
     @Provides
-    public SharedViewModelFactory provideSharedViewModelFactory(ObserveCurrentUserDataUseCase observeCurrentUserDataUseCase){
-        return new SharedViewModelFactory(observeCurrentUserDataUseCase);
+    public SharedViewModelFactory provideSharedViewModelFactory(ObserveCurrentUserDataUseCase observeCurrentUserDataUseCase, UserAvatarImageListener userAvatarImageListener){
+        return new SharedViewModelFactory(observeCurrentUserDataUseCase,userAvatarImageListener);
     }
 
     //AuthorizationViewModelFactory
@@ -95,5 +99,10 @@ public class AppModule {
     @Provides
     public AllChatsFragmentViewModelFactory provideAllChatsFragmentViewModelFactory(LoadAllChatsUseCase loadAllChatsUseCase){
         return new AllChatsFragmentViewModelFactory(loadAllChatsUseCase);
+    }
+
+    @Provides
+    public CurrentUserProfileViewModelFactory provideCurrentUserProfileViewModelFactory(UploadImageAvatarUseCase uploadImageAvatarUseCase){
+        return new CurrentUserProfileViewModelFactory(uploadImageAvatarUseCase);
     }
 }

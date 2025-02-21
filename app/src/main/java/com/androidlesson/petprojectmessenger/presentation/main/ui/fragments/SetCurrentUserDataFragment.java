@@ -87,7 +87,7 @@ public class SetCurrentUserDataFragment extends Fragment {
             String name=et_name.getText().toString().trim();
             String surname=et_surname.getText().toString().trim();
             String userId=et_user_id.getText().toString().trim();
-            vm.SaveUserData(new UserData(userId,null,name,surname));
+            vm.SaveUserData(new UserData(userId,null,name,surname,""));
         });
     }
 

@@ -31,7 +31,7 @@ public class MainSharedPrefRepositoryImpl implements MainSharedPrefRepository {
         String systemId=spDataBase.getString(USER_ID_FROM_SP,"");
         String name=spDataBase.getString(USER_NAME_FROM_SP,"");
         String surname=spDataBase.getString(USER_SURNAME_FROM_SP,"");
-        return new UserData(id,systemId,name,surname);
+        return new UserData(id,systemId,name,surname,"");
     }
 
     @Override
