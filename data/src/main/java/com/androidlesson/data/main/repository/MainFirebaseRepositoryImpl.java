@@ -108,7 +108,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     @Override
     public void getUserDataById(String id, CallbackGetUserData callbackGetUserData) {
         firebaseDatabase.getReference(DATABASE_WITH_USERS_DATA).child(id)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {

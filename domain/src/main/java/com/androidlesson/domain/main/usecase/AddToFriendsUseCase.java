@@ -24,7 +24,7 @@ public class AddToFriendsUseCase {
                 return;
             }
 
-            if (anotherTasks.contains(currUser.getUserId())) {
+            if (anotherTasks.contains(currUser.getUserId()) || currUser.getSubscribersIds().contains(anotherUser.getUserId())) {
                 anotherUser.removeTaskToFriend(currUser.getUserId());
                 anotherUser.addToFriend(currUser.getUserId());
 
