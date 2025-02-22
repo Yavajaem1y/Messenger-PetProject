@@ -33,4 +33,6 @@ public interface MainFirebaseRepository {
     public Observable<List<ChatInfoForLoad>> loadChats(UserData userData);
     public void addImage(ImageToDb imageToDb);
     public void userAvatarListenerById(String userId, OnImageUrlFetchedListener onImageUrlFetchedListener);
+    public void removeFriend(UserData currentUser,UserData anotherUser);
+    public void unsubscribeFromUser(UserData currentUser,UserData anotherUser);
 }

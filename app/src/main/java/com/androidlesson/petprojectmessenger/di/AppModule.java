@@ -6,6 +6,7 @@ import com.androidlesson.domain.authorization.authorizationUseCase.CheckCurrentU
 import com.androidlesson.domain.authorization.authorizationUseCase.LoginUseCase;
 import com.androidlesson.domain.authorization.authorizationUseCase.RegistrationUseCase;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
+import com.androidlesson.domain.main.usecase.DeleteAFriendUseCase;
 import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllChatsUseCase;
 import com.androidlesson.domain.main.usecase.LoadNewMessageUseCase;
@@ -82,8 +83,8 @@ public class AppModule {
 
     //AnotherUserProfileActivity
     @Provides
-    public AnotherUserProfileActivityViewModelFactory provideAnotherUserProfileActivityViewModelFactory(AddToFriendsUseCase addToFriendsUseCase, LoadUserDataByIdUseCase loadUserDataByIdUseCase, GoToChatViewUseCase goToChatViewUseCase) {
-        return new AnotherUserProfileActivityViewModelFactory(addToFriendsUseCase,loadUserDataByIdUseCase,goToChatViewUseCase);
+    public AnotherUserProfileActivityViewModelFactory provideAnotherUserProfileActivityViewModelFactory(AddToFriendsUseCase addToFriendsUseCase, LoadUserDataByIdUseCase loadUserDataByIdUseCase, GoToChatViewUseCase goToChatViewUseCase, DeleteAFriendUseCase deleteAFriendUseCase) {
+        return new AnotherUserProfileActivityViewModelFactory(addToFriendsUseCase,loadUserDataByIdUseCase,goToChatViewUseCase,deleteAFriendUseCase);
     }
 
     @Provides

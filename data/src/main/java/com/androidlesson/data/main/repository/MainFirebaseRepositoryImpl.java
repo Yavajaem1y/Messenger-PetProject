@@ -590,6 +590,21 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
         });
     }
 
+    @Override
+    public void removeFriend(UserData currentUser, UserData anotherUser) {
+        FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(currentUser.getUserId()).child(USER_FRIENDS_IDS).setValue(currentUser.getFriendsIds());
+        FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(anotherUser.getUserId()).child(USER_FRIENDS_IDS).setValue(anotherUser.getFriendsIds());
+
+        FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(anotherUser.getUserId()).child(USER_TASK_TO_FRIEND).setValue(anotherUser.getTaskToFriendsIds());
+        FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(currentUser.getUserId()).child(USER_SUBSCRIBERS_IDS).setValue(currentUser.getSubscribersIds());
+    }
+
+    @Override
+    public void unsubscribeFromUser(UserData currentUser, UserData anotherUser) {
+        FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(anotherUser.getUserId()).child(USER_SUBSCRIBERS_IDS).setValue(anotherUser.getSubscribersIds());
+        FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(currentUser.getUserId()).child(USER_TASK_TO_FRIEND).setValue(currentUser.getTaskToFriendsIds());
+    }
+
     private void saveImageUrl(String imageId,String userId) {
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child(DATABASE_WITH_USERS_DATA).child(userId).child(USER_AVATAR_IMAGE);
         if (imageId != null) {

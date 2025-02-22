@@ -7,6 +7,7 @@ import com.androidlesson.domain.authorization.repository.AuthorizationRepository
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.androidlesson.domain.main.repository.MainSharedPrefRepository;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
+import com.androidlesson.domain.main.usecase.DeleteAFriendUseCase;
 import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllChatsUseCase;
 import com.androidlesson.domain.main.usecase.LoadNewMessageUseCase;
@@ -118,5 +119,10 @@ public class DomainModule {
     @Provides
     public UserAvatarImageListener provideUserAvatarImageListener(MainFirebaseRepository mainFirebaseRepository){
         return new UserAvatarImageListener(mainFirebaseRepository);
+    }
+
+    @Provides
+    public DeleteAFriendUseCase provideDeleteAFriendUseCase(MainFirebaseRepository mainFirebaseRepository){
+        return new DeleteAFriendUseCase(mainFirebaseRepository);
     }
 }

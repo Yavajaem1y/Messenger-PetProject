@@ -32,8 +32,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         ChatInfo.Message message = messages.get(position);
 
         return message.getSender().equals(currentUserId) ?
-                R.layout.current_user_message_item_rv :
-                R.layout.another_user_message_item_rv;
+                R.layout.item_rv_current_user_message :
+                R.layout.item_rv_another_user_message;
     }
 
     @NonNull

@@ -60,35 +60,119 @@
                             android:layout_centerHorizontal="true">
                         </TextView>
                     <RelativeLayout
+                        android:layout_below="@id/tv_more_detailed"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_below="@id/tv_more_detailed">
-                        <LinearLayout
-                            android:id="@+id/ll_button_add_to_friends"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/rounded_button_bg"
-                            android:layout_margin="10dp"
-                            android:padding="10dp"
-                            android:orientation="horizontal"
-                            android:gravity="center"
-                            android:clickable="true">
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/add_friend"
-                                android:layout_marginRight="5dp">
-                            </ImageView>
-                            <TextView
-                                android:layout_width="wrap_content"
+                        android:gravity="center">
+                        <FrameLayout
+                            android:id="@+id/fl_action_container"
+                            android:layout_width="180dp"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:id="@+id/ll_button_add_to_friends"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Add to friends"
-                                android:textColor="@color/secondary_text"
-                                android:textSize="15sp"
-                                android:textStyle="bold">
-                            </TextView>
-                        </LinearLayout>
+                                android:background="@drawable/rounded_button_bg"
+                                android:layout_margin="10dp"
+                                android:padding="10dp"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:visibility="invisible">
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/add_friend"
+                                    android:layout_marginRight="5dp">
+                                </ImageView>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Add to friends"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold">
+                                </TextView>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/ll_button_subscribe"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/rounded_button_bg"
+                                android:layout_margin="10dp"
+                                android:padding="10dp"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:visibility="visible">
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/add_friend"
+                                    android:layout_marginRight="5dp">
+                                </ImageView>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Subscribe"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold">
+                                </TextView>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/ll_button_delete_friend"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/rounded_button_bg"
+                                android:layout_margin="10dp"
+                                android:padding="10dp"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:visibility="invisible">
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/delete_user"
+                                    android:layout_marginRight="5dp">
+                                </ImageView>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Delete а friend"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold">
+                                </TextView>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/ll_button_unsubscribe"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/rounded_button_bg"
+                                android:layout_margin="10dp"
+                                android:padding="10dp"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:clickable="true"
+                                android:visibility="invisible">
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/delete_user"
+                                    android:layout_marginRight="5dp">
+                                </ImageView>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Unsubscribe"
+                                    android:textColor="@color/secondary_text"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold">
+                                </TextView>
+                            </LinearLayout>
+                        </FrameLayout>
                         <LinearLayout
                             android:id="@+id/ll_button_send_a_message"
                             android:layout_width="wrap_content"
@@ -96,7 +180,7 @@
                             android:background="@drawable/rounded_button_bg"
                             android:layout_margin="10dp"
                             android:padding="10dp"
-                            android:layout_toEndOf="@id/ll_button_add_to_friends"
+                            android:layout_toEndOf="@id/fl_action_container"
                             android:orientation="horizontal"
                             android:gravity="center">
                             <ImageView
@@ -176,6 +260,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:visibility="visible"
         android:id="@+id/rl_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

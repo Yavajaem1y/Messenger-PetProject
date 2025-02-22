@@ -2,8 +2,6 @@ package com.androidlesson.petprojectmessenger.presentation.main.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidlesson.domain.main.models.ChatInfoForLoad;
-import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.utils.FullDateToTime;
 import com.androidlesson.petprojectmessenger.R;
-import com.androidlesson.petprojectmessenger.presentation.main.ui.activity.AnotherUserProfileActivity;
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -63,7 +58,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
     @NonNull
     @Override
     public ChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rv_chat, parent, false);
         return new ChatViewHolder(view,context);
     }
 

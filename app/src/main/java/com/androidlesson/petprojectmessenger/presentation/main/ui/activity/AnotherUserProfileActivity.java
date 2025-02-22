@@ -43,7 +43,7 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
     private ScrollView scrollView_main;
     private RelativeLayout relativeLayout_bottom, rl_main, rl_progress_bar;
     private ImageView iv_dots_menu;
-    private LinearLayout b_add_to_friends, b_send_a_message;
+    private LinearLayout b_add_to_friends, b_send_a_message, b_subscribe, b_unsubscribe, b_delete_friend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,9 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
         rl_progress_bar = findViewById(R.id.rl_progress_bar);
         rl_main = findViewById(R.id.rl_main);
         tv_number_of_friends=findViewById(R.id.tv_numbers_of_friends);
+        b_delete_friend=findViewById(R.id.ll_button_delete_friend);
+        b_subscribe=findViewById(R.id.ll_button_subscribe);
+        b_unsubscribe=findViewById(R.id.ll_button_unsubscribe);
 
         boolean isCurrUserSet = false;
 
@@ -114,9 +117,8 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
                     if (user.getImageData()!=null && !user.getImageData().isEmpty()){
                         Glide.with(getApplicationContext()).load(user.getImageData()).into(civ_userAvatar);
                     }
-                    Log.d("AnotherUserProfile", "User data updated: " + user.getUserId());
+
                 } else {
-                    Log.d("AnotherUserProfile", "Another user data is null");
                 }
             }
         });
@@ -168,6 +170,36 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
+        vm.getButtonSceneLiveData().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer==0){
+                    b_subscribe.setVisibility(View.VISIBLE);
+                    b_unsubscribe.setVisibility(View.INVISIBLE);
+                    b_delete_friend.setVisibility(View.INVISIBLE);
+                    b_add_to_friends.setVisibility(View.INVISIBLE);
+                }
+                else if (integer==1){
+                    b_subscribe.setVisibility(View.INVISIBLE);
+                    b_unsubscribe.setVisibility(View.VISIBLE);
+                    b_delete_friend.setVisibility(View.INVISIBLE);
+                    b_add_to_friends.setVisibility(View.INVISIBLE);
+                }
+                else if (integer==2){
+                    b_subscribe.setVisibility(View.INVISIBLE);
+                    b_unsubscribe.setVisibility(View.INVISIBLE);
+                    b_delete_friend.setVisibility(View.INVISIBLE);
+                    b_add_to_friends.setVisibility(View.VISIBLE);
+                }
+                else if (integer==3){
+                    b_subscribe.setVisibility(View.INVISIBLE);
+                    b_unsubscribe.setVisibility(View.INVISIBLE);
+                    b_delete_friend.setVisibility(View.VISIBLE);
+                    b_add_to_friends.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 
     private void setOnClickListener() {
@@ -175,8 +207,20 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
             vm.addToFriend();
         });
 
+        b_subscribe.setOnClickListener(v->{
+            vm.addToFriend();
+        });
+
         b_send_a_message.setOnClickListener(v -> {
             vm.sendAMessage();
+        });
+
+        b_delete_friend.setOnClickListener(v->{
+            vm.deleteAFriend();
+        });
+
+        b_unsubscribe.setOnClickListener(v->{
+            vm.deleteAFriend();
         });
     }
 
