@@ -1,11 +1,13 @@
 package com.androidlesson.petprojectmessenger.presentation.main.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,10 +37,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChatWithUserActivity extends AppCompatActivity {
 
     private EditText et_with_message;
-    private ImageView iv_send_a_message;
+    private ImageView iv_send_a_message,iv_dots_menu;
     private TextView tv_another_user_name_and_surname;
     private RecyclerView rv_all_chats;
     private CircleImageView civ_user_avatar;
+    private RelativeLayout rl_go_to_user_profile;
 
     private ChatWithUserActivityViewModel vm;
     private SharedViewModel sharedViewModel;
@@ -75,6 +78,10 @@ public class ChatWithUserActivity extends AppCompatActivity {
         tv_another_user_name_and_surname = findViewById(R.id.tv_user_name_and_surname);
         rv_all_chats = findViewById(R.id.rv_all_chats);
         civ_user_avatar= findViewById(R.id.civ_user_avatar);
+        rl_go_to_user_profile=findViewById(R.id.rl_go_to_user_profile);
+        iv_dots_menu=findViewById(R.id.iv_dots_menu);
+
+        iv_dots_menu.setColorFilter(getResources().getColor(R.color.secondary_accent_color));
 
         adapter = new MessageAdapter();
         rv_all_chats.setLayoutManager(new LinearLayoutManager(this));
@@ -126,7 +133,6 @@ public class ChatWithUserActivity extends AppCompatActivity {
             int topOffset = (firstVisibleView != null) ? firstVisibleView.getTop() : 0;
 
             adapter.addMessagesToStart(messages);
-            Log.d("DDD","new messages loaded " + String.valueOf(messages.size()));
 
             if (previousCount == 0) {
                 rv_all_chats.post(() -> rv_all_chats.scrollToPosition(adapter.getItemCount() - 1));
@@ -144,7 +150,7 @@ public class ChatWithUserActivity extends AppCompatActivity {
             public void onChanged(ChatInfo.Message message) {
                 if (message != null) {
                     adapter.addMessageToEnd(message);
-                    rv_all_chats.post(() -> rv_all_chats.scrollToPosition(adapter.getItemCount() - 1)); // Прокручиваем к последнему сообщению
+                    rv_all_chats.post(() -> rv_all_chats.scrollToPosition(adapter.getItemCount() - 1));
                 }
             }
         });
@@ -155,6 +161,14 @@ public class ChatWithUserActivity extends AppCompatActivity {
             String messageText = et_with_message.getText().toString();
             vm.sendAMessage(messageText);
             et_with_message.setText("");
+        });
+
+        rl_go_to_user_profile.setOnClickListener(v->{
+            if (vm.getAnotherUserLiveData().getValue()!=null){
+                Intent intent=new Intent(this, AnotherUserProfileActivity.class);
+                intent.putExtra("ANOTHER_USER_DATA",vm.getAnotherUserLiveData().getValue());
+                startActivity(intent);
+            }
         });
     }
 

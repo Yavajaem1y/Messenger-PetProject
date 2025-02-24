@@ -5,10 +5,12 @@ import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
 import com.androidlesson.domain.main.interfaces.CallbackWithChatInfo;
 import com.androidlesson.domain.main.interfaces.CallbackWithId;
 import com.androidlesson.domain.main.interfaces.OnImageUrlFetchedListener;
+import com.androidlesson.domain.main.interfaces.OnSuccessCallback;
 import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.ChatInfoForLoad;
 import com.androidlesson.domain.main.models.ImageToDb;
 import com.androidlesson.domain.main.models.UserData;
+import com.androidlesson.domain.main.models.UserDataToEdit;
 
 import java.util.List;
 
@@ -35,4 +37,5 @@ public interface MainFirebaseRepository {
     public void userAvatarListenerById(String userId, OnImageUrlFetchedListener onImageUrlFetchedListener);
     public void removeFriend(UserData currentUser,UserData anotherUser);
     public void unsubscribeFromUser(UserData currentUser,UserData anotherUser);
+    public void editUserData(String userId,UserDataToEdit userDataToEdit, OnSuccessCallback onSuccessCallback);
 }

@@ -7,8 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.androidlesson.domain.main.interfaces.OnImageUrlFetchedListener;
+import com.androidlesson.domain.main.interfaces.OnSuccessCallback;
 import com.androidlesson.domain.main.models.ChatInfoForLoad;
 import com.androidlesson.domain.main.models.ImageToDb;
+import com.androidlesson.domain.main.models.UserDataToEdit;
 import com.androidlesson.domain.main.utils.CurrentTimeAndDate;
 import com.androidlesson.domain.main.interfaces.CallbackCheckAvailableIds;
 import com.androidlesson.domain.main.interfaces.CallbackGetUserData;
@@ -19,6 +21,7 @@ import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.models.UserInfo;
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -53,6 +56,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
 
     private final String USER_NAME="userName";
     private final String USER_ID="userId";
+    private final String USER_INFO="userInfo";
     private final String USER_SYSTEM_ID="userSystemId";
     private final String USER_SURNAME="userSurname";
     private final String USER_FRIENDS_IDS="friendsIds";
@@ -89,7 +93,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     //Get current user data
     @Override
     public void getCurrentUserData(CallbackGetUserData callbackGetUserData) {
-        firebaseDatabase.getReference(DATABASE_SYSTEM_ID_TO_APP_ID).child(userSystemId).addListenerForSingleValueEvent(new ValueEventListener() {
+        firebaseDatabase.getReference(DATABASE_SYSTEM_ID_TO_APP_ID).child(userSystemId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -116,6 +120,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                             String name = snapshot.child(USER_NAME).getValue(String.class);
                             String surname = snapshot.child(USER_SURNAME).getValue(String.class);
                             String imageData=snapshot.child(USER_AVATAR_IMAGE).getValue(String.class);
+                            String userInfo=snapshot.child(USER_INFO).getValue(String.class);
 
                             if (name != null && surname != null && systemId!=null) {
                                 List<String> friendsIds = new ArrayList<>();
@@ -153,7 +158,7 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
                                 if (imageData==null) imageData="";
 
                                 // Возвращаем данные через callback
-                                callbackGetUserData.getUserData(new UserData(id,systemId, name, surname, imageData, friendsIds, taskToFriendsIds, subscribersIds, chatsIds));
+                                callbackGetUserData.getUserData(new UserData(id,systemId, name, surname, imageData, friendsIds, taskToFriendsIds, subscribersIds, chatsIds,userInfo));
                             } else {
                                 // Если name или surname отсутствуют, возвращаем null
                                 callbackGetUserData.getUserData(null);
@@ -603,6 +608,14 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     public void unsubscribeFromUser(UserData currentUser, UserData anotherUser) {
         FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(anotherUser.getUserId()).child(USER_SUBSCRIBERS_IDS).setValue(anotherUser.getSubscribersIds());
         FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(currentUser.getUserId()).child(USER_TASK_TO_FRIEND).setValue(currentUser.getTaskToFriendsIds());
+    }
+
+    @Override
+    public void editUserData(String userId,UserDataToEdit userDataToEdit, OnSuccessCallback onSuccessCallback) {
+        FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(userId).child(USER_NAME).setValue(userDataToEdit.getUserName());
+        FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(userId).child(USER_SURNAME).setValue(userDataToEdit.getUserSurname());
+        FirebaseDatabase.getInstance().getReference(DATABASE_WITH_USERS_DATA).child(userId).child(USER_INFO).setValue(userDataToEdit.getUserInfo());
+        onSuccessCallback.Success(true);
     }
 
     private void saveImageUrl(String imageId,String userId) {

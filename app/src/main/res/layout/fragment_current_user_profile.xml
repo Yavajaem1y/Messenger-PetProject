@@ -94,7 +94,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:text="New publication"/>
+                        android:text="New publication"
+                        android:textColor="@color/secondary_text"/>
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -132,9 +133,9 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/iv_logout"
+        android:id="@+id/iv_dots_menu"
         android:focusable="true"
-        android:src="@drawable/ic_logout"
+        android:src="@drawable/dots_menu"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:clickable="true"

@@ -11,13 +11,16 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
 import com.androidlesson.domain.main.models.UserData;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.dialogFragments.DotsMenuFragmentFromAnotherUserActivity;
 import com.androidlesson.petprojectmessenger.R;
 import com.androidlesson.petprojectmessenger.app.App;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.dialogFragments.MoreInfoDialogFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.anotherUserProfileActivityViewModel.AnotherUserProfileActivityViewModel;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.anotherUserProfileActivityViewModel.AnotherUserProfileActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
@@ -39,7 +42,7 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
     SharedViewModelFactory sharedViewModelFactory;
 
     private CircleImageView civ_userAvatar;
-    private TextView tv_userNameAndSurname, tv_userId,tv_number_of_friends;
+    private TextView tv_userNameAndSurname, tv_userId,tv_number_of_friends,tv_more_info;
     private ScrollView scrollView_main;
     private RelativeLayout relativeLayout_bottom, rl_main, rl_progress_bar;
     private ImageView iv_dots_menu;
@@ -78,6 +81,7 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
         b_delete_friend=findViewById(R.id.ll_button_delete_friend);
         b_subscribe=findViewById(R.id.ll_button_subscribe);
         b_unsubscribe=findViewById(R.id.ll_button_unsubscribe);
+        tv_more_info=findViewById(R.id.tv_more_info);
 
         boolean isCurrUserSet = false;
 
@@ -85,24 +89,17 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
         UserData currUserData = (UserData) getIntent().getSerializableExtra("CURRENT_USER_DATA");
 
         if (currUserData != null) {
-            Log.d("AnotherUserProfile", "Current user set from Intent: " + currUserData.getUserId());
             vm.setCurrentUser(currUserData);
         }
 
         sharedViewModel.getUserData().observe(this, userData -> {
             if (userData != null) {
-                Log.d("AnotherUserProfile", "Current user set from SharedViewModel: " + userData.getUserId());
                 vm.setCurrentUser(userData);
-            } else {
-                Log.d("AnotherUserProfile", "SharedViewModel data is still null");
             }
         });
 
         if (anotherUserData != null) {
-            Log.d("AnotherUserProfile", "Loading another user data: " + anotherUserData.getUserId());
             vm.loadUserData(anotherUserData);
-        } else {
-            Log.d("AnotherUserProfile", "Another user data from Intent is null");
         }
     }
 
@@ -133,7 +130,7 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
                 } else {
                     relativeLayout_bottom.animate().alpha(0f).setDuration(300).start();
                     relativeLayout_bottom.setVisibility(View.GONE);
-                    iv_dots_menu.setColorFilter(getResources().getColor(R.color.accent_color));
+                    iv_dots_menu.setColorFilter(getResources().getColor(R.color.secondary_accent_color));
                 }
             }
         });
@@ -142,10 +139,7 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
             @Override
             public void onChanged(UserData userData) {
                 if (userData != null) {
-                    Log.d("AnotherUserProfile", "Current user from SharedViewModel: " + userData.getUserId());
                     vm.setCurrentUser(userData);
-                } else {
-                    Log.d("AnotherUserProfile", "SharedViewModel data is null");
                 }
             }
         });
@@ -221,6 +215,18 @@ public class AnotherUserProfileActivity extends AppCompatActivity {
 
         b_unsubscribe.setOnClickListener(v->{
             vm.deleteAFriend();
+        });
+
+        iv_dots_menu.setOnClickListener(v->{
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            DotsMenuFragmentFromAnotherUserActivity dialogFragment = new DotsMenuFragmentFromAnotherUserActivity();
+            dialogFragment.show(fragmentManager, "my_dialog");
+        });
+
+        tv_more_info.setOnClickListener(v->{
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            MoreInfoDialogFragment dialogFragment = new MoreInfoDialogFragment(vm.getAnotherUserDataLiveData().getValue().getUserInfo());
+            dialogFragment.show(fragmentManager, "my_dialog");
         });
     }
 

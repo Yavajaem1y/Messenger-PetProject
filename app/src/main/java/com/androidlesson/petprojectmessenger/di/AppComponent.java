@@ -1,6 +1,7 @@
 package com.androidlesson.petprojectmessenger.di;
 
 import com.androidlesson.petprojectmessenger.presentation.authorization.AuthorizationActivity;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.activity.EditUserDataActivity;
 import com.androidlesson.petprojectmessenger.presentation.main.ui.activity.MainActivity;
 import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.MainFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.SetCurrentUserDataFragment;
@@ -38,4 +39,6 @@ public interface AppComponent {
     void injectChatWithUserActivity(ChatWithUserActivity chatWithUserActivity);
 
     void injectAllChatsFragment(AllChatsFragment allChatsFragment);
+
+    void injectEditUserDataActivity(EditUserDataActivity editUserDataActivity);
 }

@@ -10,7 +10,7 @@
         android:id="@+id/rl_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="visible">
         <ScrollView
             android:id="@+id/sv_main_layout"
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                             android:layout_centerHorizontal="true"/>
                         <TextView
                             android:layout_below="@id/tv_another_user_name_and_surname"
-                            android:id="@+id/tv_more_detailed"
+                            android:id="@+id/tv_more_info"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="More info"
@@ -60,7 +60,7 @@
                             android:layout_centerHorizontal="true">
                         </TextView>
                     <RelativeLayout
-                        android:layout_below="@id/tv_more_detailed"
+                        android:layout_below="@id/tv_more_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center">

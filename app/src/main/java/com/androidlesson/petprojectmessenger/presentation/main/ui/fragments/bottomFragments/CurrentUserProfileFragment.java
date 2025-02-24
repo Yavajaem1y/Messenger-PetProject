@@ -9,9 +9,9 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -25,13 +25,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidlesson.domain.main.models.UserData;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.dialogFragments.DotsMenuFragmentFromCurrnetUserActivity;
 import com.androidlesson.petprojectmessenger.R;
 import com.androidlesson.petprojectmessenger.app.App;
 import com.androidlesson.petprojectmessenger.databinding.FragmentCurrentUserProfileBinding;
 import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.MainFragment;
-import com.androidlesson.petprojectmessenger.presentation.main.interfaces.OnDataPass;
+import com.androidlesson.petprojectmessenger.presentation.main.ui.fragments.dialogFragments.MoreInfoDialogFragment;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.CurrentUserProfileFragmentViewModel.CurrentUserProfileViewModel;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.CurrentUserProfileFragmentViewModel.CurrentUserProfileViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModel;
@@ -57,8 +59,8 @@ public class CurrentUserProfileFragment extends Fragment {
     @Inject
     CurrentUserProfileViewModelFactory currentUserProfileViewModelFactory;
 
-    private ImageView iv_logout;
-    private TextView tv_name_and_surname,tv_user_id,tv_number_of_friends;
+    private ImageView iv_dots_menu;
+    private TextView tv_name_and_surname,tv_user_id,tv_number_of_friends,tv_more_info;
     private CircleImageView ciw_profile_avatar;
     private ScrollView sv_main;
     private RelativeLayout rl_bottom;
@@ -141,13 +143,14 @@ public class CurrentUserProfileFragment extends Fragment {
 
         vm.setVMInfo(currUserData);
 
-        iv_logout=binding.ivLogout;
+        iv_dots_menu =binding.ivDotsMenu;
         tv_name_and_surname=binding.tvCurrUserNameAndSurname;
         ciw_profile_avatar=binding.civCurrUserAvatar;
         sv_main=binding.svMainLayout;
         rl_bottom=binding.rlBottomLayout;
         tv_user_id=binding.tvCurrnetUserId;
         tv_number_of_friends=binding.tvNumbersOfFriends;
+        tv_more_info=binding.tvMoreDetailed;
 
         rl_bottom.setVisibility(View.GONE);
 
@@ -184,12 +187,12 @@ public class CurrentUserProfileFragment extends Fragment {
                 if (aBoolean) {
                     rl_bottom.animate().alpha(1f).setDuration(300).start();
                     rl_bottom.setVisibility(View.VISIBLE);
-                    iv_logout.setColorFilter(getResources().getColor(R.color.white));
+                    iv_dots_menu.setColorFilter(getResources().getColor(R.color.white));
                 }
                 else {
                     rl_bottom.animate().alpha(0f).setDuration(300).start();
                     rl_bottom.setVisibility(View.GONE);
-                    iv_logout.setColorFilter(getResources().getColor(R.color.accent_color));
+                    iv_dots_menu.setColorFilter(getResources().getColor(R.color.accent_color));
                 }
             }
         });
@@ -213,21 +216,23 @@ public class CurrentUserProfileFragment extends Fragment {
             }
         });
     }
-    OnDataPass onDataPass;
-
-    @Override
-    public void onAttach(@NonNull Activity activity) {
-        super.onAttach(activity);
-        onDataPass=(OnDataPass) activity;
-    }
 
     private void setOnClickListener(){
-        iv_logout.setOnClickListener(v->{
-            onDataPass.onDataPass("sda");
+        iv_dots_menu.setOnClickListener(v->{
+            FragmentManager fragmentManager = getChildFragmentManager();
+            DotsMenuFragmentFromCurrnetUserActivity dialogFragment = new DotsMenuFragmentFromCurrnetUserActivity();
+            dialogFragment.show(fragmentManager, "my_dialog");
         });
 
         ciw_profile_avatar.setOnClickListener(v->{
             pickImageFromGallery();
+        });
+
+        tv_more_info.setOnClickListener(v->{
+                FragmentManager fragmentManager = getParentFragmentManager();
+                MoreInfoDialogFragment dialogFragment = new MoreInfoDialogFragment(vm.getUserDataLiveData().getValue().getUserInfo());
+                dialogFragment.show(fragmentManager, "my_dialog");
+
         });
     }
 
@@ -235,5 +240,6 @@ public class CurrentUserProfileFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
     }
+
 
 }

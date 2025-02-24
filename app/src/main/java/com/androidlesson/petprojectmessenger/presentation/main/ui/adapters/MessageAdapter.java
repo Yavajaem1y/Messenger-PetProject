@@ -65,6 +65,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if (message == null) return;
 
         new Handler(Looper.getMainLooper()).post(() -> {
+            if (!messages.contains(message)) messages.add(message);
         });
     }
 

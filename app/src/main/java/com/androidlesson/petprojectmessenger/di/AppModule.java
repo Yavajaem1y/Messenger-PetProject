@@ -7,6 +7,7 @@ import com.androidlesson.domain.authorization.authorizationUseCase.LoginUseCase;
 import com.androidlesson.domain.authorization.authorizationUseCase.RegistrationUseCase;
 import com.androidlesson.domain.main.usecase.AddToFriendsUseCase;
 import com.androidlesson.domain.main.usecase.DeleteAFriendUseCase;
+import com.androidlesson.domain.main.usecase.EditUserDataUseCase;
 import com.androidlesson.domain.main.usecase.GoToChatViewUseCase;
 import com.androidlesson.domain.main.usecase.LoadAllChatsUseCase;
 import com.androidlesson.domain.main.usecase.LoadNewMessageUseCase;
@@ -27,6 +28,8 @@ import com.androidlesson.petprojectmessenger.presentation.main.viewModels.AllCha
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.CurrentUserProfileFragmentViewModel.CurrentUserProfileViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.anotherUserProfileActivityViewModel.AnotherUserProfileActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.chatWithUserActivityViewModel.ChatWithUserActivityViewModelFactory;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.editUserDataActivityViewModel.EditUserDataActivityViewModel;
+import com.androidlesson.petprojectmessenger.presentation.main.viewModels.editUserDataActivityViewModel.EditUserDataActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainActivityViewModel.MainActivityViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.AllUsersFragmetViewModel.AllUsersFragmentViewModelFactory;
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.mainFragmentViewModel.MainFragmentViewModelFactory;
@@ -105,5 +108,10 @@ public class AppModule {
     @Provides
     public CurrentUserProfileViewModelFactory provideCurrentUserProfileViewModelFactory(UploadImageAvatarUseCase uploadImageAvatarUseCase){
         return new CurrentUserProfileViewModelFactory(uploadImageAvatarUseCase);
+    }
+
+    @Provides
+    public EditUserDataActivityViewModelFactory provideEditUserDataActivityViewModelFactory(EditUserDataUseCase editUserDataUseCase){
+        return new EditUserDataActivityViewModelFactory(editUserDataUseCase);
     }
 }

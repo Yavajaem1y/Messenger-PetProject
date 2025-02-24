@@ -13,10 +13,12 @@
         android:layout_height="40dp"
         android:background="@drawable/top_element_bg">
         <RelativeLayout
+            android:id="@+id/rl_go_to_user_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:paddingStart="15dp">
+            android:paddingStart="15dp"
+            android:paddingRight="15dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/civ_user_avatar"
@@ -37,9 +39,10 @@
                 android:textSize="20sp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/civ_user_avatar"
-                android:layout_marginStart="5dp"/>
+                android:layout_marginStart="15dp"/>
         </RelativeLayout>
         <ImageView
+            android:id="@+id/iv_dots_menu"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/dots_menu"
