@@ -14,8 +14,8 @@ public class UploadImageAvatarUseCase {
 
     public void execute(byte[] imageData, UserData currnetUserData){
         if (imageData!=null) {
-            String imageId="images/"+currnetUserData.getUserSystemId()+ new CurrentTimeAndDate().getCurrentTimeToId()+".jpg";
-            firebaseRepository.addImage(new ImageToDb(imageId,currnetUserData.getUserId(),imageData));
+            String imageId="images/avatar/"+currnetUserData.getUserSystemId()+ new CurrentTimeAndDate().getCurrentTimeToId()+".jpg";
+            firebaseRepository.addImageAvatar(new ImageToDb(imageId,currnetUserData.getUserId(),imageData));
         }
 
     }

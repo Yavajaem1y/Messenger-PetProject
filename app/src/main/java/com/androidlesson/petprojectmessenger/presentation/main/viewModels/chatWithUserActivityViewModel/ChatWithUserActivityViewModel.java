@@ -16,6 +16,7 @@ import com.androidlesson.domain.main.usecase.LoadChatInfoUseCase;
 import com.androidlesson.domain.main.usecase.LoadUserDataByIdUseCase;
 import com.androidlesson.domain.main.usecase.SendAMessageUseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,11 +53,11 @@ public class ChatWithUserActivityViewModel extends ViewModel {
     private final MutableLiveData<UserData> currentUserMutableLiveData=new MutableLiveData<>();
     public LiveData<UserData> getCurrentUserLiveData(){return currentUserMutableLiveData;}
 
-    private final MutableLiveData<List<ChatInfo.Message>> messagesMutableLiveData=new MutableLiveData<>();
+    private final MutableLiveData<List<ChatInfo.Message>> messagesMutableLiveData=new MutableLiveData<>(new ArrayList<>());
     public LiveData<List<ChatInfo.Message>> getMessagesUserLiveData(){return messagesMutableLiveData;}
 
-    private final MutableLiveData<ChatInfo.Message> newMessageMutableLiveData=new MutableLiveData<>();
-    public LiveData<ChatInfo.Message> getNewMessagesUserLiveData(){return newMessageMutableLiveData;}
+    private final MutableLiveData<byte[]> imageInMessageMutableLiveData=new MutableLiveData<>();
+    public LiveData<byte[]> getImageInMessageLiveData(){return imageInMessageMutableLiveData;}
 
     public String getChatId(){
         return chatId;
@@ -72,7 +73,6 @@ public class ChatWithUserActivityViewModel extends ViewModel {
 
             @Override
             public void getChatInfo(ChatInfo chatInfo) {
-                Log.d("ChatWithUserActivityViewModel", "ChatInfo loaded: " + (chatInfo != null ? "OK" : "null"));
                 if (chatInfo != null) {
                     chatInfoMutableLiveData.setValue(chatInfo);
                     if (getCurrentUserLiveData().getValue() != null && getAnotherUserLiveData().getValue() == null) {
@@ -80,12 +80,10 @@ public class ChatWithUserActivityViewModel extends ViewModel {
                                 ? chatInfo.getSecondUser()
                                 : chatInfo.getFirstUser();
 
-                        Log.d("ChatWithUserActivityViewModel", "Loading another user data with ID: " + anotherUserId);
 
                         loadUserDataByIdUseCase.execute(anotherUserId, new CallbackGetUserData() {
                             @Override
                             public void getUserData(UserData userData) {
-                                Log.d("ChatWithUserActivityViewModel", "Another user data loaded: " + (userData != null ? userData.getUserId() : "null"));
                                 if (userData != null) {
                                     anotherUserMutableLiveData.setValue(userData);
                                 }
@@ -105,7 +103,6 @@ public class ChatWithUserActivityViewModel extends ViewModel {
     }
 
     public void setCurrentUser(UserData userData) {
-        Log.d("ChatWithUserActivityViewModel", "setCurrentUser() called with: " + (userData != null ? userData.getUserId() : "null"));
         currentUserMutableLiveData.setValue(userData);
 
         if (getCurrentUserLiveData().getValue() != null && getAnotherUserLiveData().getValue() == null && getChatInfoLiveData().getValue() != null) {
@@ -114,12 +111,10 @@ public class ChatWithUserActivityViewModel extends ViewModel {
                     ? chatInfo.getSecondUser()
                     : chatInfo.getFirstUser();
 
-            Log.d("ChatWithUserActivityViewModel", "Loading another user data with ID: " + anotherUserId);
 
             loadUserDataByIdUseCase.execute(anotherUserId, new CallbackGetUserData() {
                 @Override
                 public void getUserData(UserData userData) {
-                    Log.d("ChatWithUserActivityViewModel", "Another user data loaded: " + (userData != null ? userData.getUserId() : "null"));
                     if (userData != null) {
                         anotherUserMutableLiveData.setValue(userData);
                     }
@@ -131,7 +126,8 @@ public class ChatWithUserActivityViewModel extends ViewModel {
 
     public void sendAMessage(String message){
         if (getCurrentUserLiveData().getValue()!=null && getChatInfoLiveData()!=null){
-            sendAMessageUseCase.execute(message,getChatInfoLiveData().getValue(),getCurrentUserLiveData().getValue());
+            sendAMessageUseCase.execute(message,getChatInfoLiveData().getValue(),getCurrentUserLiveData().getValue(),imageInMessageMutableLiveData.getValue());
+            imageInMessageMutableLiveData.setValue(null);
         }
     }
 
@@ -142,6 +138,12 @@ public class ChatWithUserActivityViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(messages -> {
                     if (!messages.isEmpty()) {
+                        List<ChatInfo.Message> outMessages=getMessagesUserLiveData().getValue();
+                        for (ChatInfo.Message message:messages){
+                            if (!outMessages.contains(message)){
+                                outMessages.add(message);
+                            }
+                        }
                         messagesMutableLiveData.setValue(messages);
                     }
                     isLoading = false;
@@ -156,28 +158,46 @@ public class ChatWithUserActivityViewModel extends ViewModel {
             loadNewMessageUseCase.execute(chatId, new CallbackWithChatInfo() {
                 @Override
                 public void getChatId(String chatId) {
-
                 }
 
                 @Override
                 public void getChatInfo(ChatInfo chatInfo) {
-
                 }
 
                 @Override
                 public void getMessage(ChatInfo.Message message) {
-                    if (message!=null){
-                        Log.d("NewMessage",message.getMessage());
-                        List <ChatInfo.Message> messages = getMessagesUserLiveData().getValue();
-                        if (messages!=null && !messages.contains(message)){
-                            messages.add(message);
-                            messagesMutableLiveData.setValue(messages);
-                            newMessageMutableLiveData.setValue(message);
+                    if (message != null) {
+                        List<ChatInfo.Message> messages = getMessagesUserLiveData().getValue();
+                        if (messages != null) {
+                            boolean isDuplicate = false;
+                            for (ChatInfo.Message msg : messages) {
+                                if (msg.getTimeSending().equals(message.getTimeSending())) {
+                                    isDuplicate = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isDuplicate) {
+                                Log.d("NewMessage", message.getMessage());
+                                messages.add(message);
+                                messagesMutableLiveData.setValue(new ArrayList<>(messages));
+                            }
                         }
                     }
                 }
+
             });
         }
+    }
+
+    public void addImage(byte[] imageData){
+        if (imageData!=null){
+            imageInMessageMutableLiveData.setValue(imageData);
+        }
+    }
+
+    public void removeImage(){
+        imageInMessageMutableLiveData.setValue(null);
     }
 
     @Override

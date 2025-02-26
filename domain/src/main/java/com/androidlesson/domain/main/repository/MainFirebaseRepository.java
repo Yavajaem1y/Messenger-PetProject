@@ -6,6 +6,7 @@ import com.androidlesson.domain.main.interfaces.CallbackWithChatInfo;
 import com.androidlesson.domain.main.interfaces.CallbackWithId;
 import com.androidlesson.domain.main.interfaces.OnImageUrlFetchedListener;
 import com.androidlesson.domain.main.interfaces.OnSuccessCallback;
+import com.androidlesson.domain.main.interfaces.StringCallback;
 import com.androidlesson.domain.main.models.ChatInfo;
 import com.androidlesson.domain.main.models.ChatInfoForLoad;
 import com.androidlesson.domain.main.models.ImageToDb;
@@ -33,9 +34,10 @@ public interface MainFirebaseRepository {
     public Observable<List<ChatInfo.Message>> loadOldMessages(String lastMessageTimestamp, String chatId);
     public void loadNewMessage(String chatId, CallbackWithChatInfo callbackWithChatInfo);
     public Observable<List<ChatInfoForLoad>> loadChats(UserData userData);
-    public void addImage(ImageToDb imageToDb);
+    public void addImageAvatar(ImageToDb imageToDb);
     public void userAvatarListenerById(String userId, OnImageUrlFetchedListener onImageUrlFetchedListener);
     public void removeFriend(UserData currentUser,UserData anotherUser);
     public void unsubscribeFromUser(UserData currentUser,UserData anotherUser);
     public void editUserData(String userId,UserDataToEdit userDataToEdit, OnSuccessCallback onSuccessCallback);
+    public void sendImageMessage(ImageToDb imageToDb, StringCallback stringCallback);
 }

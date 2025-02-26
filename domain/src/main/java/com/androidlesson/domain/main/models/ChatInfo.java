@@ -38,7 +38,7 @@ public class ChatInfo {
     }
 
     public static class Message{
-        private String sender, message, timeSending;
+        private String sender, message, timeSending,imageUri;
 
         public Message() {
         }
@@ -47,6 +47,21 @@ public class ChatInfo {
             this.sender = sender;
             this.message = message;
             this.timeSending = timeSending;
+        }
+
+        public Message(String sender, String message, String timeSending, String imageUri) {
+            this.sender = sender;
+            this.message = message;
+            this.timeSending = timeSending;
+            this.imageUri = imageUri;
+        }
+
+        public String getImageUri() {
+            return imageUri;
+        }
+
+        public void setImageUri(String imageUri) {
+            this.imageUri = imageUri;
         }
 
         public String getSender() {

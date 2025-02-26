@@ -1,7 +1,13 @@
 package com.androidlesson.petprojectmessenger.presentation.main.ui.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -28,6 +36,8 @@ import com.androidlesson.petprojectmessenger.presentation.main.viewModels.shared
 import com.androidlesson.petprojectmessenger.presentation.main.viewModels.sharedViewModel.SharedViewModelFactory;
 import com.bumptech.glide.Glide;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,11 +47,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChatWithUserActivity extends AppCompatActivity {
 
     private EditText et_with_message;
-    private ImageView iv_send_a_message,iv_dots_menu;
+    private ImageView iv_send_a_message,iv_dots_menu,iv_add_image,iv_remove_image,iv_image;
     private TextView tv_another_user_name_and_surname;
     private RecyclerView rv_all_chats;
     private CircleImageView civ_user_avatar;
-    private RelativeLayout rl_go_to_user_profile;
+    private RelativeLayout rl_go_to_user_profile,rl_add_image;
 
     private ChatWithUserActivityViewModel vm;
     private SharedViewModel sharedViewModel;
@@ -53,12 +63,16 @@ public class ChatWithUserActivity extends AppCompatActivity {
     @Inject
     SharedViewModelFactory sharedViewModelFactory;
 
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_with_user);
 
         initialization();
+
+        setImagePickerLauncher();
 
         observable();
 
@@ -80,10 +94,14 @@ public class ChatWithUserActivity extends AppCompatActivity {
         civ_user_avatar= findViewById(R.id.civ_user_avatar);
         rl_go_to_user_profile=findViewById(R.id.rl_go_to_user_profile);
         iv_dots_menu=findViewById(R.id.iv_dots_menu);
+        iv_add_image=findViewById(R.id.iv_add_image);
+        iv_remove_image=findViewById(R.id.iv_remove_image);
+        iv_image=findViewById(R.id.iv_image);
+        rl_add_image=findViewById(R.id.rl_add_image);
 
         iv_dots_menu.setColorFilter(getResources().getColor(R.color.secondary_accent_color));
 
-        adapter = new MessageAdapter();
+        adapter = new MessageAdapter(getSupportFragmentManager(),getApplicationContext());
         rv_all_chats.setLayoutManager(new LinearLayoutManager(this));
         rv_all_chats.setAdapter(adapter);
         List<ChatInfo.Message> messages =vm.getMessagesUserLiveData().getValue();
@@ -96,6 +114,31 @@ public class ChatWithUserActivity extends AppCompatActivity {
             vm.setChatId(chatId);
             vm.loadMessages(null);
         }
+    }
+
+    private void setImagePickerLauncher(){
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                        Uri imageUri = result.getData().getData();
+
+                        try {
+                            Context context = getApplicationContext();
+                            if (context == null) return;
+
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+
+                            byte[] imageData = convertBitmapToByteArray(bitmap);
+
+                            vm.addImage(imageData);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
     }
 
 
@@ -144,13 +187,16 @@ public class ChatWithUserActivity extends AppCompatActivity {
             isLoading = false;
         });
 
-
-        vm.getNewMessagesUserLiveData().observe(this, new Observer<ChatInfo.Message>() {
+        vm.getImageInMessageLiveData().observe(this, new Observer<byte[]>() {
             @Override
-            public void onChanged(ChatInfo.Message message) {
-                if (message != null) {
-                    adapter.addMessageToEnd(message);
-                    rv_all_chats.post(() -> rv_all_chats.scrollToPosition(adapter.getItemCount() - 1));
+            public void onChanged(byte[] bytes) {
+                if (bytes!=null){
+                    rl_add_image.setVisibility(View.VISIBLE);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    iv_image.setImageBitmap(bitmap);
+                }
+                else {
+                    rl_add_image.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -169,6 +215,14 @@ public class ChatWithUserActivity extends AppCompatActivity {
                 intent.putExtra("ANOTHER_USER_DATA",vm.getAnotherUserLiveData().getValue());
                 startActivity(intent);
             }
+        });
+
+        iv_add_image.setOnClickListener(v->{
+            pickImageFromGallery();
+        });
+
+        iv_remove_image.setOnClickListener(v->{
+            vm.removeImage();
         });
     }
 
@@ -224,6 +278,23 @@ public class ChatWithUserActivity extends AppCompatActivity {
                 layoutManager.scrollToPositionWithOffset(scrollPosition, 0);
             }
         }
+    }
+
+    public void pickImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        imagePickerLauncher.launch(intent);
+    }
+
+    private byte[] convertBitmapToByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+        byte[] byteArray = stream.toByteArray();
+        try {
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return byteArray;
     }
 
 }

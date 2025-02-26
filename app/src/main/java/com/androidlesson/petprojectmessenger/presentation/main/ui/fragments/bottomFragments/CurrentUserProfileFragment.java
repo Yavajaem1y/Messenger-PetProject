@@ -91,7 +91,7 @@ public class CurrentUserProfileFragment extends Fragment {
 
                         try {
                             Context context = getContext();
-                            if (context == null) return; // Проверяем, что контекст не null
+                            if (context == null) return;
 
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
 

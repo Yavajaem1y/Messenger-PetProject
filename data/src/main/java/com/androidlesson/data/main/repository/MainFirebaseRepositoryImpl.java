@@ -1,6 +1,5 @@
 package com.androidlesson.data.main.repository;
 
-import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -8,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.androidlesson.domain.main.interfaces.OnImageUrlFetchedListener;
 import com.androidlesson.domain.main.interfaces.OnSuccessCallback;
+import com.androidlesson.domain.main.interfaces.StringCallback;
 import com.androidlesson.domain.main.models.ChatInfoForLoad;
 import com.androidlesson.domain.main.models.ImageToDb;
 import com.androidlesson.domain.main.models.UserDataToEdit;
@@ -21,7 +21,6 @@ import com.androidlesson.domain.main.models.UserData;
 import com.androidlesson.domain.main.models.UserInfo;
 import com.androidlesson.domain.main.repository.MainFirebaseRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -399,7 +398,9 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
         firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_MESSAGES).push().setValue(message);
         firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_NUMBER_OF_MESSAGES).setValue(chatInfo.getNumberOfMessages());
         firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_TIME_LAST_MESSAGE).setValue(chatInfo.getTimeLastMessage());
-        firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_TEXT_LAST_MESSAGE).setValue(message.getMessage());
+        if (message.getMessage()==null){
+            firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_TEXT_LAST_MESSAGE).setValue(message.getMessage());
+        } else firebaseDatabase.getReference(DATABASE_CHATS_DATA).child(chatInfo.getChatId()).child(CHAT_TEXT_LAST_MESSAGE).setValue("Image");
     }
 
     List<String> messagesId=new ArrayList<>();
@@ -567,11 +568,11 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
     }
 
     @Override
-    public void addImage(ImageToDb imageToDb) {
+    public void addImageAvatar(ImageToDb imageToDb) {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference().child(imageToDb.getImageId());
         storageRef.putBytes(imageToDb.getImageData())
                 .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    saveImageUrl(uri.toString(),imageToDb.getUserId());
+                    saveImageAvatarUrl(uri.toString(),imageToDb.getUserId());
                 }))
                 .addOnFailureListener(e -> Log.e("Firebase", "Ошибка загрузки", e));
     }
@@ -618,7 +619,17 @@ public class MainFirebaseRepositoryImpl implements MainFirebaseRepository {
         onSuccessCallback.Success(true);
     }
 
-    private void saveImageUrl(String imageId,String userId) {
+    @Override
+    public void sendImageMessage(ImageToDb imageToDb, StringCallback stringCallback) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child(imageToDb.getImageId());
+        storageRef.putBytes(imageToDb.getImageData())
+                .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    stringCallback.getString(uri.toString());
+                }))
+                .addOnFailureListener(e -> Log.e("Firebase", "Ошибка загрузки", e));
+    }
+
+    private void saveImageAvatarUrl(String imageId, String userId) {
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child(DATABASE_WITH_USERS_DATA).child(userId).child(USER_AVATAR_IMAGE);
         if (imageId != null) {
             databaseRef.setValue(imageId);
